@@ -47,3 +47,21 @@ po/*~
 
 # RStudio Connect folder
 rsconnect/
+
+# Mac specific
+*.DS_Store
+
+#.nc files are too heavy
+*.nc
+
+#.rds files are too heavy
+*.rds
+
+# environmental variables
+/data/environmental/
+
+# data too heavy
+data/trawl_surveys/fishglob_clean.rds
+
+# no html please
+*.html
