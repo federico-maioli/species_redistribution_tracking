@@ -45,3 +45,6 @@ fit <- sdmTMB(
   share_range = TRUE
 )
 ```
+Fitted models are in `sdm_modeling/fitted/` directory, named by region and species (not on Github because of size).
+
+In `sdm_modeling/02_derive_quantities/`, we derive annual estimates of range centroid, depth niche and thermal niche per species. We save these in `data/processed/derived_quantities/` for further analyses.

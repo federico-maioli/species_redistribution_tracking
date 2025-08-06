@@ -117,7 +117,7 @@ process_species_region <- function(i) {
     }
     
     # Save the fitted model object
-    saveRDS(fit, file = here("SDM/fitted", paste0(this_region, "_", this_species, "_sdm.rds")))
+    saveRDS(fit, file = here("sdm_modeling/fitted", paste0(this_region, "_", this_species, "_sdm.rds")))
     
     message("Completed: ", this_species, " - ", this_region)
     return(NULL)
