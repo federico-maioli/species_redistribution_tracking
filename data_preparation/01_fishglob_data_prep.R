@@ -321,5 +321,5 @@ data <- data %>%
          year, quarter, month, day, min_month, month_year_date, latitude, longitude, haul_dur,
          area_swept, gear, mean_temp, sd_temp , coldest_temp, warmest_temp, sbt, sst, depth, accepted_name, wgt_cpua)
 
-write_rds(data, here("data/trawl_surveys/fishglob_clean.rds"))
+write_rds(data, here("data/processed/fishglob_clean.rds"))
 
