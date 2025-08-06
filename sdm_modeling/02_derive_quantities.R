@@ -92,7 +92,7 @@ process_model_file <- function(model_file) {
       thermal_niche = sum(mean_temp * biomass) / sum(biomass),
       thermal_niche_min = sum(coldest_temp * biomass) / sum(biomass),
       thermal_niche_max = sum(warmest_temp * biomass) / sum(biomass),
-      upr90_thermal = Hmisc::wtd.quantile(mean_temp, weights = biomass, probs = 0.9),
+      upr90_thermal = Hmisc::wtd.quantile(mean_temp, weights = biomass, probs = 0.9), # remember to reduce dependencies
       lwr10_thermal = Hmisc::wtd.quantile(mean_temp, weights = biomass, probs = 0.1),
       upr90_depth = Hmisc::wtd.quantile(depth, weights = biomass, probs = 0.9),
       lwr10_depth = Hmisc::wtd.quantile(depth, weights = biomass, probs = 0.1),
