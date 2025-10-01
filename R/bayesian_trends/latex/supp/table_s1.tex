@@ -1,0 +1,14 @@
+\begin{table}
+
+\caption{Model comparison based on leave-one-out cross-validation (LOO).  MVN denotes a multivariate normal distribution, while Student-t $+$ MVN specifies a univariate Student-t distribution for each response combined with multivariate normal random effects.
+  The expected log predictive density (ELPD) reflects out-of-sample predictive accuracy, with higher values indicating better performance. ELPD differences are shown relative to the best-fitting model, so negative values indicate worse fit. The standard error (SE) of the difference reflects uncertainty; differences large relative to SE suggest meaningful performance gaps.}
+\centering
+\begin{tabular}[t]{lrr}
+\toprule
+Model & ELPD difference & SE difference\\
+\midrule
+Student-t + MVN & 0.0 & 0.00\\
+MVN & -169139.8 & 11054.05\\
+\bottomrule
+\end{tabular}
+\end{table}
