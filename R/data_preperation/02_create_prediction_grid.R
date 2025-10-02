@@ -10,8 +10,8 @@ library(ncdf4)
 
 # load function and data -------------------------------------------------
 
-source(here('utils/exclude_too_far.R'))
-data <- readRDS(here('data/processed/fishglob_clean.rds'))
+source(here('R/utils/exclude_too_far.R'))
+data <- readRDS(here('R/data/processed/fishglob_clean.rds'))
 
 # prepare survey spatial grid ----------------------------------------------
 
@@ -30,7 +30,19 @@ coastline <- rnaturalearth::ne_countries(scale = 10, returnclass = "sf") |>
   st_transform(crs = 4326) |> 
   st_make_valid()
 
-depth_raster <- terra::rast(here('data/environmental/depth/GEBCO_2023_sub_ice_topo.nc'))
+depth_raster <- terra::rast(here('R/data/environmental/depth/GEBCO_2023_sub_ice_topo.nc'))
+
+depth_raster[depth_raster > 0] <- NA # remove positive values
+
+depth_raster <- terra::focal(
+  depth_raster,
+  w = 5,                 # 5x5 neighborhood
+  fun = mean,             # average nearby cell values
+  na.rm = TRUE,
+  na.policy = "only"      # ONLY fill NA cells
+)
+
+names(depth_raster) <- 'elevation' # focal changes name
 
 # process regions ----------------------------------------------------------
 
@@ -70,7 +82,7 @@ for (this_region in names(split_data)) {
   
   # apply depth filter
   pred_grid$depth <- terra::extract(depth_raster$elevation, 
-                                    pred_grid |> select(longitude, latitude), method = 'bilinear')$elevation
+                                    pred_grid |> select(longitude, latitude),method = 'simple')$elevation
   pred_grid <- pred_grid |> filter(depth <= 0)
   pred_grid$depth <- abs(pred_grid$depth)
   
@@ -96,89 +108,85 @@ grid <- replicate_df(grid, time_name = "year", time_values = 1994:2021) %>%
     month_year_date = as.Date(paste0(year, "-", sprintf("%02d", min_month), "-01"))
   )
 
-# load temperature rasters ------------------------------------------------
-temp_files <- list.files(here("data/environmental/temperature"), full.names = TRUE)
-raster_list <- list()
 
-for (file in temp_files) {
-  file_date <- gsub(".*bottomT_|\\.csv", "", basename(file))
-  file_date <- as.Date(paste0("01-", file_date), format = "%d-%m-%Y")
-  
-  temp_tibble <- read.csv(file) %>%
-    select(longitude, latitude, bottomT)
-  
-  temp_points <- vect(temp_tibble, geom = c("longitude", "latitude"), crs = "EPSG:4326")
-  template_raster <- rast(temp_points, resolution = 0.083)
-  raster_layer <- rasterize(temp_points, template_raster, field = "bottomT", fun = mean)
-  
-  raster_list[[as.character(file_date)]] <- raster_layer
-}
+# match temperature data --------------------------------------------------
 
-temp_raster_stack <- rast(raster_list)
+nc_path <- here('R/data/environmental/temperature/cmems_mod_glo_phy_my_0.083deg_P1M-m_bottomT_180.00W-179.92E_20.00N-87.00N_1993-01-01-2021-06-01.nc')
 
-#plot(temp_raster_stack)
+# source time to date function for .nc files
+source(here('R/utils/nc_time_to_date.R'))
 
-# process regions ---------------------------------------------------------
+# Extract time dimension
+nc_temp <- nc_open(nc_path)
+dates <- nc_time_to_date(nc_temp$dim$time$vals, nc_temp$dim$time$units)
+nc_close(nc_temp)
+
+# Load rasters
+temp_rast <- rast(nc_path)
+
+names(temp_rast) <- as.character(dates)
+
+temp_rast <- terra::focal(
+  temp_rast,
+  w = 7,                 # 5x5 neighborhood
+  fun = mean,             # average nearby cell values
+  na.rm = TRUE,
+  na.policy = "only"      # ONLY fill NA cells
+)
+
 temp_list <- list()
 
-for (this_region in unique(grid$region_short)) {
-  grid_region <- filter(grid, region_short == this_region)
+unique_dates <- sort(unique(grid$month_year_date))
+
+for (i in seq_along(unique_dates)) {
   
-  unique_dates <- sort(unique(grid_region$month_year_date))
+  this_date <- unique_dates[i]
   
-  for (i in seq_along(unique_dates)) {
-    
-    this_date <- unique_dates[i]
-    
-    grid_region_date <- filter(grid_region, month_year_date == this_date)
-    
-    past_12_months <- seq(from = this_date %m-% months(12), to = this_date %m-% months(1), by = "1 month")
-    past_12_months_str <- as.character(past_12_months)
-    
-    selected_rasters <- temp_raster_stack[[which(names(temp_raster_stack) %in% past_12_months_str)]]
-    
-    if (is.null(selected_rasters) || nlyr(selected_rasters) == 0) {
-      warning(paste("No raster data available for region", this_region, "and date", this_date))
-      next
-    }
-    
-    extracted_values <- terra::extract(
-      selected_rasters,
-      grid_region_date %>% select(longitude, latitude)
-    )
-    
-    if (nrow(extracted_values) == 0 || ncol(extracted_values) <= 1) {
-      warning(paste("No extracted data for region", this_region, "and date", this_date))
-      next
-    }
-    
-    extracted_matrix <- as.matrix(extracted_values[, -1])
-    region_mean_temp <- colMeans(extracted_matrix, na.rm = TRUE)
-    
-    coldest_month_idx <- which.min(region_mean_temp)
-    warmest_month_idx <- which.max(region_mean_temp)
-    
-    coldest_monthT <- extracted_matrix[, coldest_month_idx]
-    warmest_monthT <- extracted_matrix[, warmest_month_idx]
-    
-    grid_region_date <- grid_region_date %>%
-      mutate(
-        mean_temp = rowMeans(extracted_matrix, na.rm = TRUE),
-        sd_temp = apply(extracted_matrix, 1, sd, na.rm = TRUE),
-        coldest_temp = coldest_monthT,
-        warmest_temp = warmest_monthT
-      )
-    
-    temp_list[[paste(this_region, this_date, sep = "_")]] <- grid_region_date
+  data_date <- filter(grid, month_year_date == this_date)
+  
+  past_12_months <- seq(from = this_date %m-% months(12), to = this_date %m-% months(1), by = "1 month")
+  past_12_months_str <- as.character(past_12_months)
+  
+  selected_rasters <- temp_rast[[which(names(temp_rast) %in% past_12_months_str)]]
+  
+  if (is.null(selected_rasters) || nlyr(selected_rasters) == 0) {
+    warning(paste("No raster data available for region", this_region, "and date", this_date))
+    next
   }
+  
+  extracted_values <- terra::extract(
+    selected_rasters,
+    data_date %>% select(longitude, latitude), method = 'simple'
+  )
+  
+  if (nrow(extracted_values) == 0 || ncol(extracted_values) <= 1) {
+    warning(paste("No extracted data for region", this_region, "and date", this_date))
+    next
+  }
+  
+  extracted_matrix <- as.matrix(extracted_values[, -1])
+  mean_temp <- colMeans(extracted_matrix, na.rm = TRUE) # get the mean per month slice in the previous 12 months
+  
+  coldest_month_idx <- which.min(mean_temp) # get the month with the coldest temp in the previous 12 months
+  warmest_month_idx <- which.max(mean_temp) # get the month with the warmest temp in the previous 12 months
+  
+  coldest_monthT <- extracted_matrix[, coldest_month_idx]
+  warmest_monthT <- extracted_matrix[, warmest_month_idx]
+  
+  data_date <- data_date %>%
+    mutate(
+      mean_temp = rowMeans(extracted_matrix, na.rm = TRUE),
+      #sd_temp = apply(extracted_matrix, 1, sd, na.rm = TRUE),
+      coldest_temp = coldest_monthT,
+      warmest_temp = warmest_monthT
+    )
+  
+  temp_list[[this_date]] <- data_date
 }
 
-# combine and save results ------------------------------------------------
-grid <- bind_rows(temp_list)
+grid <- bind_rows(temp_list) %>% filter(!is.na(mean_temp)) # remove if NA values, just to be safe
 
-saveRDS(grid, here("data/processed/prediction_grid.rds"))
-
-
+saveRDS(grid, here("R/data/processed/prediction_grid.rds"))
 
 
 # ### Plot and save survey grids ----------------------------------------------
@@ -210,23 +218,4 @@ saveRDS(grid, here("data/processed/prediction_grid.rds"))
 #   
 #   ggsave(plot = plot, filename = paste0(here('output/region_domain/'), this_region, '.png'))
 # }
-
-
-# new way of working with .nc files  --------------------------------------
-
-nc_path <- here('data/environmental/temperature/cmems_mod_glo_phy_my_0.083deg_P1M-m_bottomT_180.00W-179.92E_20.00N-87.00N_1993-01-01-2021-06-01.nc')
-
-# source time to date function for .nc files
-source(here('utils/nc_time_to_date.R'))
-
-# Extract time dimension
-nc_temp <- nc_open(nc_path)
-dates <- nc_time_to_date(nc_temp$dim$time$vals, nc_temp$dim$time$units)
-nc_close(nc_temp)
-
-# Load rasters
-temp_rast <- rast(nc_path)
-#plot(temp_rast[[1]])
-
-# get the time index right
 
