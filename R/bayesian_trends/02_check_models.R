@@ -58,6 +58,7 @@ loo_df$`SE difference` <- round(loo_df$`SE difference`, 2)
 table_elpd <- kable(
   loo_df, 
   format = "latex", 
+  label = "tab:elpd",
   booktabs = TRUE,
   escape = FALSE,
   caption = "Model comparison based on leave-one-out cross-validation (LOO).  MVN denotes a multivariate normal distribution, while Student-t $+$ MVN specifies a univariate Student-t distribution for each response combined with multivariate normal random effects.
