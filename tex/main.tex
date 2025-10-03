@@ -26,6 +26,7 @@
 \usepackage{xspace}
 \usepackage{color}
 \usepackage{subfloat}
+\usepackage{float}
 \usepackage{lineno}
 \usepackage{ragged2e}
 \usepackage{placeins}
@@ -246,7 +247,7 @@ For estimating abundance of each fish population, we calculated an area-weighted
 
 \subsection{Bayesian trend analysis}\label{sec:Bayesian trend analysis}
 
-We estimated trends in the set of spatial and thermal metrics discribed above using multivariate Bayesian mixed-effects models because these metrics are often correlated. For example, depth shifts can co-occur with changes in range centroid, and we modeled them jointly to capture shared variation. We initially modelled the outcomes using a multivariate normal (MVN) distribution, but posterior predictive checks revealed heavier tails than the MVN could capture, so we refitted the model using univariate Student-t distribution for each response, which are more robust to extreme values \citep[e.g.,][]{anderson_black-swan_2017}. Residual correlations across responses were retained using a multivariate normal correlation structure. This change improved predictive accuracy, as confirmed by higher leave-one-out cross-validation (LOO) scores \citep{vehtari_practical_2017} (Supplementary Table~\ref{tab:loo}).
+We estimated trends in the set of spatial and thermal metrics discribed above using multivariate Bayesian mixed-effects models because these metrics are often correlated. For example, depth shifts can co-occur with changes in range centroid, and we modeled them jointly to capture shared variation. We initially modelled the outcomes using a multivariate normal (MVN) distribution, but posterior predictive checks revealed heavier tails than the MVN could capture, so we refitted the model using univariate Student-t distribution for each response, which are more robust to extreme values \citep[e.g.,][]{anderson_black-swan_2017}. Residual correlations across responses were retained using a multivariate normal correlation structure. This change improved predictive accuracy, as confirmed by higher leave-one-out cross-validation (LOO) scores \citep{vehtari_practical_2017} (Supplementary Table~\ref{tab:elpd}).
 
 Next, we compared two alternative random-effects structures using LOO cross-validation: (i) random slopes varying by species–region combinations, and (ii) a hierarchicalstructure with species nested within regions. The nested specification was better supported and was therefore adopted for all subsequent analyses (Supplementary Table~\ref{tab:elpd}). This hierarchical framework improved model fit and, importantly, allowed us to estimate global, regional, and species-level trends within a single unified model.
 
@@ -469,16 +470,11 @@ Dani? Eric? Sean?
 
 \clearpage
 
-\appendix
-\section{Supplementary}
-
-
 \renewcommand{\thefigure}{S\arabic{figure}}
 \renewcommand{\thetable}{S\arabic{table}}
 \setcounter{figure}{0}
 \setcounter{table}{0}
 \addtocontents{toc}{\protect\setcounter{tocdepth}{0}}
-
 \onehalfspacing
 \linenumbers
 \resetlinenumber
@@ -486,32 +482,12 @@ Dani? Eric? Sean?
 \setcounter{page}{1}
 \setcounter{equation}{0}
 \nolinenumbers
+\floatplacement{table}{H}
+\floatplacement{figure}{H}
 
+\section{Supplementary Information}
 
 \input{output/tables/supp/table_elpd}
-
-\begin{table}[htbp]
-\caption{
-Model comparison based on leave-one-out cross-validation (LOO). 
-Expected log predictive density (ELPD) measures out-of-sample predictive accuracy, with higher values indicating better performance. 
-ELPD differences are calculated relative to the best-fitting model such that negative values indicate worse performance. 
-The standard error (SE) of the difference quantifies uncertainty, and large absolute differences relative to SE suggest meaningful performance gaps.
-}
-\label{tab:loo}
-\centering
-\begin{tabular}[t]{llrr}
-\toprule
-Distribution & Random effects & ELPD difference & SE difference\\
-\midrule
-Student-t $+$ MVN & Species nested in region & 0.00 & 0.00\\
-Student-t $+$ MVN & Region–species combination & -53.42 & 16.37\\
-MVN & Species nested in region & -4760.32 & 276.85\\
-MVN & Region–species combination & -4788.45 & 277.20\\
-\bottomrule
-\end{tabular}
-\end{table}
-
-
 
 \newpage
 
