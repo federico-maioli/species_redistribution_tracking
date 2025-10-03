@@ -160,7 +160,7 @@ a large-scale compilation of standardized, fishery-independent bottom-trawl surv
     \label{fig:map}
 \end{figure}
 
-To avoid sampling bias and ensure robust estimation of the spatial and temporal dynamics of species, we retained only taxa that (i) contributed 99\% of the cumulative biomass within each region and (ii) occurred in at least 15\% of hauls within that region. This filtering yielded a final dataset of 237 fish populations (species–region combinations) across all regions (Table S1).
+To avoid sampling bias and ensure robust estimation of the spatial and temporal dynamics of species, we retained only taxa that (i) contributed 99\% of the cumulative biomass within each region and (ii) occurred in at least 15\% of hauls within that region. This filtering yielded a final dataset of 237 fish populations (species–region combinations) across all regions (Table S).
 
 
 \subsubsection{Temperature data}
@@ -248,7 +248,7 @@ For estimating abundance of each fish population, we calculated an area-weighted
 
 We estimated trends in the set of spatial and thermal metrics discribed above using multivariate Bayesian mixed-effects models because these metrics are often correlated. For example, depth shifts can co-occur with changes in range centroid, and we modeled them jointly to capture shared variation. We initially modelled the outcomes using a multivariate normal (MVN) distribution, but posterior predictive checks revealed heavier tails than the MVN could capture, so we refitted the model using univariate Student-t distribution for each response, which are more robust to extreme values \citep[e.g.,][]{anderson_black-swan_2017}. Residual correlations across responses were retained using a multivariate normal correlation structure. This change improved predictive accuracy, as confirmed by higher leave-one-out cross-validation (LOO) scores \citep{vehtari_practical_2017} (Supplementary Table~\ref{tab:loo}).
 
-Next, we compared two alternative random-effects structures using LOO cross-validation: (i) random slopes varying by species–region combinations, and (ii) a hierarchicalstructure with species nested within regions. The nested specification was better supported and was therefore adopted for all subsequent analyses (Supplementary Table~\ref{tab:loo}). This hierarchical framework improved model fit and, importantly, allowed us to estimate global, regional, and species-level trends within a single unified model.
+Next, we compared two alternative random-effects structures using LOO cross-validation: (i) random slopes varying by species–region combinations, and (ii) a hierarchicalstructure with species nested within regions. The nested specification was better supported and was therefore adopted for all subsequent analyses (Supplementary Table~\ref{tab:elpd}). This hierarchical framework improved model fit and, importantly, allowed us to estimate global, regional, and species-level trends within a single unified model.
 
 An alternative would have been to fit separate models for each species and outcome. But this ignores information shared across taxa, regions, and outcomes. Instead, a hierarchical specification applies partial pooling: estimates draw strength from the broader dataset while still allowing region- and species-specific deviations. This shrinkage produces estimates that are more stable than those from independent fits (Supplementary Fig.~\ref{fig:shrinkage}; \citealt{mcelreath_statistical_2018}).
 
