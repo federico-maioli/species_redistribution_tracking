@@ -8,8 +8,8 @@ library(knitr)
 
 # add loo criterion -------------------------------------------------------
 
-m_stud <- readRDS(here("bayesian_trends/fitted/m_stud.rds"))
-m_mvn <- readRDS(here("bayesian_trends/fitted/m_mvn.rds"))
+m_stud <- readRDS(here("R/bayesian_trends/fitted/m_stud.rds"))
+m_mvn <- readRDS(here("R/bayesian_trends/fitted/m_mvn.rds"))
 
 m_stud <- add_criterion(m_stud, c("loo"),moment_match = TRUE)
 m_mvn <- add_criterion(m_mvn, c("loo"),moment_match = TRUE)
@@ -32,10 +32,15 @@ loo_df <- as.data.frame(loo)
 loo_df$Model <- rownames(loo_df)
 rownames(loo_df) <- NULL
 
-# Pretty model names
+# make a lookup table of nicer labels
 model_labels <- c(
-  "Student-t $+$ MVN",
-  "MVN")
+  "m_stud" = "Student-t $+$ MVN",
+  "m_mvn"  = "MVN"
+)
+
+# map safely
+loo_df <- loo_df %>%
+  mutate(Model = model_labels[Model])
 
 
 # Reorder and rename columns
@@ -50,14 +55,15 @@ loo_df$`ELPD difference` <- round(loo_df$`ELPD difference`, 2)
 loo_df$`SE difference` <- round(loo_df$`SE difference`, 2)
 
 # Export LaTeX table
-table_s1 <- kable(
+table_elpd <- kable(
   loo_df, 
   format = "latex", 
   booktabs = TRUE,
+  escape = FALSE,
   caption = "Model comparison based on leave-one-out cross-validation (LOO).  MVN denotes a multivariate normal distribution, while Student-t $+$ MVN specifies a univariate Student-t distribution for each response combined with multivariate normal random effects.
   The expected log predictive density (ELPD) reflects out-of-sample predictive accuracy, with higher values indicating better performance. ELPD differences are shown relative to the best-fitting model, so negative values indicate worse fit. The standard error (SE) of the difference reflects uncertainty; differences large relative to SE suggest meaningful performance gaps."
 )
-writeLines(table_s1, here('bayesian_trends/latex/supp/table_s1.tex'))
+writeLines(table_elpd, here('output/tables/supp/table_elpd.tex'))
 
 # pp_check ----------------------------------------------------------------
 pp_norm_combo <- pp_check(m_norm_combo, resp = 'cogyc',type = "stat", stat = "mean")
