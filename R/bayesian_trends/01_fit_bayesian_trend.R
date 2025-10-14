@@ -7,7 +7,7 @@ library(ggdist)
 
 # load raw data -----------------------------------------------------------
 
-data <- readRDS(here("data/processed/derived_quantities.rds"))
+data <- readRDS(here("R/data/processed/derived_quantities.rds"))
 
 # cleaning -----------------------------------------------------------
 
@@ -72,29 +72,27 @@ priors_custom <- c(
 )
 
 
-
-
 ## MVN model with species nested in region ---------------------------------
 
 mvn <- brm(
   formula = bf(
     cog_y_c |
-      se(cog_y_se) ~ 0 + year_c + (0 + year_c |
+      se(cog_y_se, sigma = TRUE) ~ 0 + year_c + (0 + year_c |
                                      region) + (0 + year_c | ID | gr(region:species, by = region))
   ) +
     bf(
       cog_x_c |
-        se(cog_x_se) ~ 0 + year_c +  (0 + year_c  |
+        se(cog_x_se, sigma = TRUE) ~ 0 + year_c +  (0 + year_c  |
                                         region) + (0 + year_c | ID | gr(region:species, by = region))
     ) +
     bf(
       depth_niche_c |
-        se(depth_niche_se) ~ 0 + year_c + (0 + year_c  |
+        se(depth_niche_se, sigma = TRUE) ~ 0 + year_c + (0 + year_c  |
                                              region) + (0 + year_c | ID | gr(region:species, by = region))
     ) +
     bf(
       thermal_niche_c |
-        se(thermal_niche_se) ~ 0 + year_c + (0 + year_c |
+        se(thermal_niche_se, sigma = TRUE) ~ 0 + year_c + (0 + year_c |
                                                region) + (0 + year_c | ID | gr(region:species, by = region))
     ) +
     set_rescor(FALSE),  # remov2 residual correlation
@@ -108,7 +106,7 @@ mvn <- brm(
   control = model_control,
   prior = priors_custom,
   backend = "cmdstanr",
-  file = here("bayesian_trends/fitted/m_mvn.rds")
+  file = here("R/bayesian_trends/fitted/m_mvn.rds")
 )
 
 
@@ -117,22 +115,22 @@ mvn <- brm(
 stud <- brm(
   formula = bf(
     cog_y_c |
-      se(cog_y_se) ~ 0 + year_c + (0 + year_c |
+      se(cog_y_se, sigma = TRUE) ~ 0 + year_c + (0 + year_c |
                                      region) + (0 + year_c | ID | gr(region:species, by = region))
   ) +
     bf(
       cog_x_c |
-        se(cog_x_se) ~ 0 + year_c +  (0 + year_c  |
+        se(cog_x_se, sigma = TRUE) ~ 0 + year_c +  (0 + year_c  |
                                         region) + (0 + year_c | ID | gr(region:species, by = region))
     ) +
     bf(
       depth_niche_c |
-        se(depth_niche_se) ~ 0 + year_c + (0 + year_c  |
+        se(depth_niche_se, sigma = TRUE) ~ 0 + year_c + (0 + year_c  |
                                              region) + (0 + year_c | ID | gr(region:species, by = region))
     ) +
     bf(
       thermal_niche_c |
-        se(thermal_niche_se) ~ 0 + year_c + (0 + year_c |
+        se(thermal_niche_se, sigma = TRUE) ~ 0 + year_c + (0 + year_c |
                                                region) + (0 + year_c | ID | gr(region:species, by = region))
     ) +
     set_rescor(FALSE), # remove residual correlation
@@ -146,7 +144,7 @@ stud <- brm(
   control = model_control,
   prior = priors_custom,
   backend = "cmdstanr",
-  file = here("bayesian_trends/fitted/m_stud.rds")
+  file = here("R/bayesian_trends/fitted/m_stud.rds")
 )
 
 

@@ -5,16 +5,69 @@ library(broom)
 library(ggdist)
 library(patchwork)
 library(cowplot)
+library(knitr)
 
-# read in model  ----------------------------------------------------------
+# print priors  ----------------------------------------------------------
 
-fit <- read_rds(here('bayesian_trends/fitted/m_final.rds'))
+fit <- read_rds(here('R/bayesian_trends/fitted/m_stud.rds'))
 
-get_prior(fit)
+clean_priors <- prior_summary(fit) %>% as.data.frame() %>%
+  filter(prior != "") %>%          # drop rows with no prior
+  select(prior, class, coef, group, resp, source) %>%  # keep key columns
+  arrange(class, group, coef) %>%    # keep only rows with an explicit prior
+  mutate(
+    # convert distribution names to nicer LaTeX-friendly text
+    prior = str_replace_all(prior, fixed("student_t"), "Student-t"),
+    prior = str_replace_all(prior, fixed("normal"), "Normal"),
+    prior = str_replace_all(prior, fixed("gamma"), "Gamma"),
+    prior = str_replace_all(prior, fixed("lkj_corr_cholesky"), "LKJ"),
+    
+    # replace with Greek symbols
+    class = case_when(
+      class == "b" ~ "$\\beta$",
+      class == "sd" ~ "$\\sigma$",
+      class == "sigma" ~ "$\\sigma$",
+      class == "nu" ~ "$\\nu$",
+      class == "L" ~ "$\\mathbf{L}$",
+      TRUE ~ class
+    ),
+    # replace coef variable names
+    coef = case_when(coef == "year_c" ~ "decade", TRUE ~ coef),
+    # replace resp
+    resp = case_when(
+      resp == "cogxc" ~ "lat centroid",
+      resp == "cogyc" ~ "lon centroid",
+      resp == "depthnichec" ~ "depth niche",
+      resp == "thermalnichec" ~ "thermal niche",
+      TRUE ~ resp
+    )
+  ) %>%
+  rename(
+    Prior = prior,
+    Parameter = class,
+    Coefficient = coef,
+    Group  = group,
+    Response = resp,
+    Source = source
+  )
 
-# global slopes -----------------------------------------------------------
+# Export LaTeX table
+table_priors <- kable(
+  clean_priors, 
+  format = "latex", 
+  label = "priors",
+  booktabs = TRUE,
+  escape = FALSE,
+  caption = "Prior distributions for model parameters. Fixed effects ($\\beta$), group-level and residual standard deviations ($\\sigma$), degrees of freedom ($\\nu$) for the Student-t distribution, and the correlation matrix of group-level effects parameterized via its Cholesky factor ($L$). The source column indicates whether the prior was changed from the default."
+)
 
-# Define priors
+writeLines(table_priors, here('output/tables/supp/table_priors.tex'))
+
+# prior validation -----------------------------------------------------------
+
+## global slopes ------------------------------------------------------------
+
+# define priors
 priors <- c(
   prior(normal(0, 50), class = b, coef = year_c, resp = cogxc),
   prior(normal(0, 50), class = b, coef = year_c, resp = cogyc),
@@ -22,7 +75,7 @@ priors <- c(
   prior(normal(0, 0.5), class = b, coef = year_c, resp = thermalnichec)
 )
 
-# Metadata for plotting
+# metadata for plotting
 priors_meta <- tibble::tibble(
   coef  = "year_c",
   resp  = c("cogxc", "cogyc", "depthnichec", "thermalnichec"),
@@ -34,8 +87,8 @@ priors_meta <- tibble::tibble(
     "Chen et al. (2020)"
   ),
   resp_label = c(
-    "beta^{latitude~centroid}",
-    "beta^{longitude~centroid}",
+    "beta^{lat~centroid}",
+    "beta^{lon~centroid}",
     "beta^{depth~niche}",
     "beta^{thermal~niche}"
   )
@@ -54,14 +107,14 @@ p1 = ggplot(priors_df, aes(
   xdist = .dist_obj
 )) +
   stat_halfeye(normalize = "xy", color = "steelblue4", fill = "steelblue1") +
-  geom_vline(aes(xintercept = vline), colour = "black", linetype = "dashed") +
+  geom_vline(aes(xintercept = vline), colour = "black", linetype = "dashed", size = .6) +
   geom_text(aes(x = vline, y = 0.2, label = paper),
             color = "black", angle = 90, vjust = -0.6, hjust = 0, size = 3) +
   facet_wrap(~prior, scales = "free") + scale_y_discrete(labels = function(x) parse(text = x)) +
   labs(
     x = NULL,
     y = NULL
-  ) + theme_minimal(base_size = 12)
+  ) 
 
 
 
@@ -69,7 +122,7 @@ p1 = ggplot(priors_df, aes(
 
 # get data
 
-data <- readRDS(here("data/processed/derived_quantities.rds"))
+data <- readRDS(here("R/data/processed/derived_quantities.rds"))
 
 
 data <- data |> mutate(
@@ -144,8 +197,8 @@ priors_meta <- tibble::tibble(
   resp  = c("cogxc", "cogyc", "depthnichec", "thermalnichec"),
   vline = c(9.24, 13.9, 1.68, 0.178),
   resp_label = c(
-    "beta['region']^{latitude~centroid}",
-    "beta['region']^{longitude~centroid}",
+    "beta['region']^{lat~centroid}",
+    "beta['region']^{lon~centroid}",
     "beta['region']^{depth~niche}",
     "beta['region']^{thermal~niche}"
   )
@@ -160,11 +213,15 @@ priors_df <- priors %>%
     # Assign the label for the facet strip
     # Facet label now is the prior distribution
     facet_label = case_when(
-      prior == "student_t(3, 0, 3)"   ~ "Student t(3, 0, 3)",
-      prior == "student_t(3, 0, 1)"   ~ "Student t(3, 0, 1)",
-      prior == "student_t(3, 0, 0.02)" ~ "Student t(3, 0, 0.02)",
+      prior == "student_t(3, 0, 30)"   ~ "Student-t(3, 0, 3)",
+      prior == "student_t(3, 0, 10)"   ~ "Student-t(3, 0, 1)",
+      prior == "student_t(3, 0, 0.2)" ~ "Student-t(3, 0, 0.2)",
       TRUE ~ prior
     ))
+
+facet_labels <- priors_df %>%
+  distinct(facet_id, facet_label) %>%
+  deframe
 
 # plot 
 p2 = ggplot(priors_df, aes(
@@ -172,16 +229,16 @@ p2 = ggplot(priors_df, aes(
   xdist = .dist_obj
 )) +
   stat_halfeye(normalize = "xy", color = "steelblue4", fill = "steelblue1", p_limits = c(0, 0.99)) +
-  geom_vline(aes(xintercept = vline), colour = "orange", linetype = "dashed",size = 1) +
+  geom_vline(aes(xintercept = vline), colour = "orange", linetype = "dashed",size = .6) +
   facet_wrap(
     ~facet_id,
-    scales = "free",
-    labeller = labeller(facet_id = setNames(priors_df$facet_label, priors_df$facet_id))
+    labeller = labeller(facet_id = facet_labels),
+    scales = "free"
   ) + scale_y_discrete(labels = function(x) parse(text = x)) +
   labs(
     x = NULL,
     y = NULL
-  ) + theme_minimal(base_size = 12)
+  )
 
 # species in region -------------------------------------------------------
 
@@ -236,8 +293,8 @@ priors_meta <- tibble::tibble(
   resp  = c("cogxc", "cogyc", "depthnichec", "thermalnichec"),
   vline = c(31.7, 42.4, 8.06, 0.253),
   resp_label = c(
-    "beta['region:species']^{latitude~centroid}",
-    "beta['region:species']^{longitude~centroid}",
+    "beta['region:species']^{lat~centroid}",
+    "beta['region:species']^{lon~centroid}",
     "beta['region:species']^{depth~niche}",
     "beta['region:species']^{thermal~niche}"
   )
@@ -252,9 +309,9 @@ priors_df <- priors %>%
     # Assign the label for the facet strip
     # Facet label now is the prior distribution
     facet_label = case_when(
-      prior == "student_t(3, 0, 40)"   ~ "Student t(3, 0, 40)",
-      prior == "student_t(3, 0, 20)"   ~ "Student t(3, 0, 20)",
-      prior == "student_t(3, 0, 0.4)" ~ "Student t(3, 0, 0.4)",
+      prior == "student_t(3, 0, 40)"   ~ "Student-t(3, 0, 40)",
+      prior == "student_t(3, 0, 20)"   ~ "Student-t(3, 0, 20)",
+      prior == "student_t(3, 0, 0.4)" ~ "Student-t(3, 0, 0.4)",
       TRUE ~ prior
     ))
 
@@ -264,7 +321,7 @@ p3 = ggplot(priors_df, aes(
   xdist = .dist_obj
 )) +
   stat_halfeye(normalize = "xy", color = "steelblue4", fill = "steelblue1", p_limits = c(0, 0.99)) +
-  geom_vline(aes(xintercept = vline), colour = "orange", linetype = "dashed",size = 1) +
+  geom_vline(aes(xintercept = vline), colour = "orange", linetype = "dashed",size = .6) +
   facet_wrap(
     ~facet_id,
     scales = "free",
@@ -273,10 +330,7 @@ p3 = ggplot(priors_df, aes(
   labs(
     x = NULL,
     y = NULL
-  ) + theme_minimal(base_size = 12)
-
-
-#cowplot::plot_grid(p1, p2, p3, ncol = 1, align = "v", axis = "lr", labels = c("a)", "b)", "c)"),label_size = 12)
+  ) 
 
 combined <- plot_grid(
   p1, p2, p3,
@@ -284,12 +338,18 @@ combined <- plot_grid(
   labels = c("a)", "b)", "c)"), label_size = 10
 )
 
-# Overlay horizontal divider lines
-ggdraw(combined) +
-  draw_line(x = c(0, 1), y = c(0.67, 0.67), color = "gray90", size = 0.5) +
-  draw_line(x = c(0, 1), y = c(0.34, 0.34), color = "gray90", size = 0.5)
+#ggdraw(combined) +
+#  draw_line(x = c(0, 1), y = c(0.67, 0.67), color = "gray90", size = 0.5) +
+#  draw_line(x = c(0, 1), y = c(0.34, 0.34), color = "gray90", size = 0.5)
+
+combined
 
 ggsave(
-  here("bayesian_trends/figures/supp/prior_checks.png"),
-  width = 8, height = 9, dpi = 600, bg = "white"
+  here('output/figures/supp/priors.png'),
+  #plot = pp_plot,  
+  width = 180,  
+  height = 190,
+  dpi = 600,
+  units = "mm"
 )
+
