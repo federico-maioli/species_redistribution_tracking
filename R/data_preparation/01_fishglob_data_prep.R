@@ -3,10 +3,9 @@ library(here)
 library(tidyverse)
 library(tidylog)
 library(sf)
-library(rnaturalearth)
-library(rnaturalearthdata)
 library(tidyterra)
 library(terra)
+library(ncdf4)
 
 # load survey data --------------------------------------------------------
 fishglob_url <- "https://github.com/AquaAuma/FishGlob_data/raw/d71dfa03c2912b4e9d9cd10412ae2af52ba56ae5/outputs/Compiled_data/FishGlob_public_std_clean.RData" # stick with this version
@@ -18,10 +17,6 @@ excl_surveys <- c('GSL-N','GSL-S','ROCKALL','AI','DFO-SOG','WCTRI','SEUS','FR-CG
 
 data <- data %>%
   filter(!survey %in% excl_surveys) # exclude the surveys
-#   mutate(survey = case_when(
-#     survey %in% c("DFO-HS", "DFO-QCS", "DFO-WCHG", "DFO-WCVI") ~ "BC",
-#     TRUE ~ survey
-#   )) # British Columbia survey go together
 
 # remove bad hauls --------------------------------------------------------
 # most of the following filters are based on https://www.nature.com/articles/s41586-023-06449-y https://github.com/afredston/marine_heatwaves_trawl
@@ -90,7 +85,7 @@ data <- data %>%
 data$month <- as.numeric(data$month)
 
 data <- data %>%
-  mutate(region = case_when(
+  mutate(region_full = case_when(
     survey %in% c('GOA') ~ "Gulf of Alaska",
     survey %in% c("DFO-HS", "DFO-QCS", "DFO-WCHG", "DFO-WCVI") ~ "British Columbia",
     survey %in% c('WCANN') ~ "U.S. West Coast",
@@ -101,28 +96,28 @@ data <- data %>%
     survey %in% c("GMEX") ~ "Gulf of Mexico",
     survey %in% c("EVHOE","IE-IGFS","SWC-IBTS", "NIGF") ~ "Celtic-Biscay Shelf",
     survey %in% c("SP-NORTH") ~ "North Iberian Coast",
-    survey %in% c("SCS","NEUS") ~ "Northeast U.S. and Scotian Shelf",
+    survey %in% c("SCS","NEUS") ~ "Northeast U.S. & Scotian Shelf",
     TRUE ~ NA_character_
   )) %>%
-  filter(!is.na(region)) %>%
+  filter(!is.na(region_full)) %>%
   mutate(region_short = case_when(
-    region == "Gulf of Alaska" ~ "GOA",
-    region == "British Columbia" ~ "BC",
-    region == "U.S. West Coast" ~ "USWC",
-    region == "Baltic Sea" ~ "BAL",
-    region == "North Sea" ~ "NS",
-    region == "Barents Sea" ~ "BS",
-    region == "East Bering Sea" ~ "EBS",
-    region == "Gulf of Mexico" ~ "GOM",
-    region == "Celtic-Biscay Shelf" ~ "CBS",
-    region == "North Iberian Coast" ~ "NIC",
-    region == "Northeast U.S. and Scotian Shelf" ~ "NEUS-SS",
+    region_full == "Gulf of Alaska" ~ "GOA",
+    region_full == "British Columbia" ~ "BC",
+    region_full == "U.S. West Coast" ~ "USWC",
+    region_full == "Baltic Sea" ~ "BAL",
+    region_full == "North Sea" ~ "NS",
+    region_full == "Barents Sea" ~ "BS",
+    region_full == "East Bering Sea" ~ "EBS",
+    region_full == "Gulf of Mexico" ~ "GOM",
+    region_full == "Celtic-Biscay Shelf" ~ "CBS",
+    region_full == "North Iberian Coast" ~ "NIC",
+    region_full == "Northeast U.S. & Scotian Shelf" ~ "NEUS-SS",
     TRUE ~ NA_character_
   ))
 
 # reorder columns ---------------------------------------------------------
 data <- data %>%
-  select(survey, region, region_short, source, timestamp, haul_id, country,
+  select(survey, region_full, region_short, source, timestamp, haul_id, country,
          sub_area, continent, stat_rec, year, month, day, quarter, latitude,
          longitude, haul_dur, area_swept, gear, sbt, sst, depth, accepted_name,
          wgt_cpua, wgt)
@@ -131,7 +126,7 @@ data <- data %>%
 #For each region, make sure every haul has a row for every species, even if it wasn’t caught, set its weight per unit area to zero if missing, fill in any other missing info, and keep only data from 1994 onward
 
 metadata_cols <- c(
-  "survey", "region", "region_short", "source", "timestamp", "country",
+  "survey", "region_full", "region_short", "source", "timestamp", "country",
   "sub_area", "continent", "stat_rec", "year", "month", "day",
   "quarter", "latitude", "longitude", "haul_dur", "area_swept",
   "gear", "sbt", "sst", "depth"
@@ -142,25 +137,26 @@ haul_info <- data %>%
   distinct(haul_id, .keep_all = TRUE) # ensures one row per haul
 
 expand_data <- data %>%
-  select(region, haul_id, accepted_name, wgt_cpua) %>%
-  group_by(region) %>%
+  select(region_short, haul_id, accepted_name, wgt_cpua) %>%
+  group_by(region_short) %>%
   complete(haul_id, accepted_name, fill = list(wgt_cpua = 0)) %>%
   ungroup() # get haul_id - species combinations and add 0 wgt_cpua for missing combos
 
 data_complete <- expand_data %>%
-  left_join(haul_info, by = c("region", "haul_id")) %>%  filter(year >= 1994) # takes a while!
+  left_join(haul_info, by = c("region_short", "haul_id")) %>%  filter(year >= 1994) # takes a while!
 
 # retain only common species -----------------------------------------------
 
 # set thresholds
 min_freq_threshold <- 15 # minimum % frequency of occurrence in a region
 cumulative_biomass_threshold <- 0.99  # 99% of biomass per region
+min_yearly_obs <- 2 # at least observed twice in every year
 
 selected_species <- data_complete %>%
   # Add presence flag
   mutate(present = as.integer(wgt_cpua > 0)) %>%
   # Species metrics
-  group_by(region, accepted_name) %>%
+  group_by(region_short, accepted_name) %>%
   summarise(
     years_present  = n_distinct(year[present == 1]),              # distinct years present
     positive_hauls = sum(present),                                # # of positive hauls
@@ -169,9 +165,8 @@ selected_species <- data_complete %>%
     total_hauls_region = n_distinct(haul_id),                      # total hauls in this region
     .groups = "drop_last"
   ) %>%
-  
   # Apply cumulative biomass and frequency filters
-  arrange(region, desc(total_biomass)) %>%
+  arrange(region_short, desc(total_biomass)) %>%
   mutate(
     cumulative_biomass = cumsum(total_biomass) / sum(total_biomass),
     freq_occurrence = 100 * positive_hauls / total_hauls_region
@@ -183,13 +178,33 @@ selected_species <- data_complete %>%
   ungroup() %>%
   # Remove genus-only taxa
   filter(str_detect(accepted_name, "\\s")) %>%
-  select(region, accepted_name) %>%
+  select(region_short, accepted_name) %>%
   # Filter data_complete to only selected species
-  semi_join(data_complete, by = c("region", "accepted_name"))
+  semi_join(data_complete, by = c("region_short", "accepted_name"))
+
+# add minimum yearly observation filter
+species_yearly <- data_complete %>%
+  mutate(present = as.integer(wgt_cpua > 0)) %>%
+  group_by(region_short, accepted_name, year) %>%
+  summarise(
+    n_obs = sum(present, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  group_by(region_short, accepted_name) %>%
+  summarise(
+    meets_yearly_threshold = all(n_obs >= min_yearly_obs),
+    .groups = "drop"
+  ) %>%
+  filter(meets_yearly_threshold)
+
+# final selection
+selected_species <- selected_species %>%
+  inner_join(species_yearly, by = c("region_short", "accepted_name")) %>%
+  select(region_short, accepted_name)
 
 # filter dataset
 filtered_data <- data_complete %>%
-  semi_join(selected_species, by = c("region", "accepted_name"))
+  semi_join(selected_species, by = c("region_short", "accepted_name"))
 
 rm(list = setdiff(ls(), "filtered_data"))
 
@@ -212,32 +227,32 @@ rm(list = setdiff(ls(), "filtered_data"))
 # match temperature, this is needed only for the thermal envelope models -------------------------------------------------------
 
 # need to add minimun month of the survey for matching temperature
-filtered_data = filtered_data |> group_by(region) |> mutate(min_month = min(month,na.rm = TRUE)) |> ungroup() |> mutate(
+filtered_data = filtered_data |> group_by(region_short) |> mutate(min_month = min(month,na.rm = TRUE)) |> ungroup() |> mutate(
   month_year_date = as.Date(paste0(year, "-", sprintf("%02d", min_month), "-01"))
 )
 
 # load temperature nc file ------------------------------------------------
 
-hauls = filtered_data |> distinct(region,haul_id,longitude,latitude,year,month_year_date) # simplifies extraction
+hauls = filtered_data |> distinct(region_short,haul_id,longitude,latitude,year,month_year_date) # simplifies extraction
 
-nc_path <- here('data/environmental/temperature/cmems_mod_glo_phy_my_0.083deg_P1M-m_bottomT_180.00W-179.92E_20.00N-87.00N_1993-01-01-2021-06-01.nc')
+nc_path <- here('R/data/environmental/temperature/cmems_mod_glo_phy_my_0.083deg_P1M-m_bottomT_180.00W-179.92E_20.00N-87.00N_1993-01-01-2024-01-01.nc')
 
 # source time to date function for .nc files
-source(here('utils/nc_time_to_date.R'))
+source(here('R/utils/nc_time_to_date.R'))
 
-# Extract time dimension
+# extract time dimension
 nc_temp <- nc_open(nc_path)
 dates <- nc_time_to_date(nc_temp$dim$time$vals, nc_temp$dim$time$units)
 nc_close(nc_temp)
 
-# Load rasters
+# load rasters
 temp_rast <- rast(nc_path)
 
 names(temp_rast) <- as.character(dates)
 
 temp_rast <- terra::focal(
   temp_rast,
-  w = 7,                 # 5x5 neighborhood
+  w = 7,                 # 7x7 neighborhood
   fun = mean,             # average nearby cell values
   na.rm = TRUE,
   na.policy = "only"      # ONLY fill NA cells
@@ -299,16 +314,64 @@ hauls_temp <- bind_rows(temp_list)
 #hauls_temp <- hauls_temp %>% filter(!is.na(mean_temp)) # it's not needed 
 
 # rejoin tempearture to the main dataset
-data <- filtered_data %>% left_join(hauls_temp %>% select(haul_id, region, mean_temp, coldest_temp, warmest_temp), by = c('haul_id','region')) #%>% filter(!is.na(mean_temp))
+data <- filtered_data %>% left_join(hauls_temp %>% select(haul_id, region_short, mean_temp, coldest_temp, warmest_temp), by = c('haul_id','region_short')) #%>% filter(!is.na(mean_temp))
 
 filtered_data %>%
-  anti_join(hauls_temp, by = c("haul_id", "region")) # get unmatched data
+  anti_join(hauls_temp, by = c("haul_id", "region_short")) # get unmatched data
 
-# final selection and save -----------------------------------------------
+# final selection, last andjustments and save -----------------------------------------------
+
+# add quarter, month_f (factor), and survey (factor) columns
 data <- data %>%
-  select(survey, region, region_short, haul_id, country, continent,
-         year, quarter, month, day, min_month, month_year_date, latitude, longitude, haul_dur,
-         area_swept, gear, mean_temp, coldest_temp, warmest_temp, sbt, sst, depth, accepted_name, wgt_cpua)
+  mutate(
+    month = as.numeric(month),
+    quarter = case_when(
+      month %in% 1:3 ~ 'Q1',
+      month %in% 4:6 ~ 'Q2',
+      month %in% 7:9 ~ 'Q3',
+      month %in% 10:12 ~ 'Q4'
+    ),
+    month_f = as.factor(month),
+    survey = as.factor(survey),
+    # Merge quarters based on region rules
+    quarter = case_when(
+      # BAL: merge Q3 and Q4
+      region_short == "BAL" & quarter %in% c("Q3", "Q4") ~ "Q3_Q4",
+      # BC and BS: merge Q3 and Q4
+      region_short %in% c("BC", "BS") &
+        quarter %in% c("Q3", "Q4") ~ "Q3_Q4",
+      # CBS: Q1 and Q3_Q4
+      region_short == "CBS" & quarter %in% c("Q3", "Q4") ~ "Q3_Q4",
+      # COW: Q2 and Q3_Q4
+      region_short == "USWC" & quarter %in% c("Q3", "Q4") ~ "Q3_Q4",
+      # NS: merge Q2 and Q3
+      region_short == "NS" & quarter %in% c("Q2", "Q3") ~ "Q2_Q3",
+      # Default: keep original quarter
+      TRUE ~ quarter
+    )
+  ) %>% rename(species = accepted_name, kg_km2 = wgt_cpua)
 
-write_rds(data, here("data/processed/fishglob_clean.rds"))
+data <- data %>%
+  select(
+    region_full,
+    region_short,
+    survey,
+    haul_id,
+    year,
+    quarter,
+    month,
+    day,
+    month_year_date,
+    min_month,
+    latitude,
+    longitude,
+    depth,
+    mean_temp,
+    coldest_temp,
+    warmest_temp,
+    species,
+    kg_km2
+  )
+
+write_rds(data, here("R/data/processed/fishglob_clean.rds"))
 

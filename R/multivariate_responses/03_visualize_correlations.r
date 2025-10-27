@@ -6,7 +6,6 @@ library(brms)
 m <- read_rds(here('R/bayesian_trends/fitted/m_stud.rds'))
 summary(m)
 
-
 rho <-
   posterior_summary(m) %>% 
   data.frame() %>% 
@@ -73,7 +72,6 @@ rho <- rho %>%
     right_label = factor(right_label, levels = rev(nice_labels))
   )
 
-
 rho %>%
   full_join(rho,
             by = c("left_label", "right_label", "Estimate", "Est.Error", "Q2.5", "Q97.5", "label", "region", 'region_full')) %>%
@@ -104,4 +102,42 @@ ggsave(
   dpi = 600,
   units = "mm"
 )
+
+
+# save rho values ---------------------------------------------------------
+
+# rounding helper
+mround <- function(x, digits) sprintf(paste0("%.", digits, "f"), round(x, digits))
+
+# LaTeX macro writer
+write_tex <- function(x, macro, append = TRUE) {
+  paste0("\\newcommand{\\", macro, "}{", x, "}") |>
+    write_lines("output/values/rho_values.tex", append = append)
+}
+
+# clean file before writing
+unlink("output/values/rho_values.tex")
+
+# loop through each row of rho table
+for (i in seq_len(nrow(rho))) {
+  
+  left_var   <- rho$left[i]
+  right_var  <- rho$right[i]
+  region     <- rho$region_short[i]
+  
+  est        <- mround(rho$Estimate[i], 2)
+  lower      <- mround(rho$Q2.5[i], 2)
+  upper      <- mround(rho$Q97.5[i], 2)
+  
+  # value string
+  value_str <- paste0(est, " (95\\% CI: ", lower, "--", upper, ")")
+  
+  # macro names (both directions)
+  macro1 <- paste0("rho_", left_var, "_", right_var, "_", region)
+  macro2 <- paste0("rho_", right_var, "_", left_var, "_", region)
+  
+  # write both macros with identical content
+  write_tex(value_str, macro1)
+  write_tex(value_str, macro2)
+}
 

@@ -15,21 +15,21 @@ set.seed(123)
 
 # load slopes -----------------------------------------------------------
 
-slopes <- read_rds(here('data/processed/bayesian_species_trends.rds'))
+slopes <- read_rds(here('R/data/processed/bayesian_species_trends.rds'))
 
 # prepare data for PCA -----------------------------------------------------------------
 
 pca_input <- slopes %>%
   mutate(
     pretty_outcome = case_when(
-      outcome == "cogyc"         ~ "Poleward shift",
-      outcome == "cogxc"         ~ "Eastward shift",
-      outcome == "depthnichec"   ~ "Deepening",
-      outcome == "thermalnichec" ~ "Warming niche"
+      outcome == "lat_shift"         ~ "Poleward shift",
+      outcome == "lon_shift"         ~ "Eastward shift",
+      outcome == "depth_shift"   ~ "Deepening",
+      outcome == "thermal_shift" ~ "Warming niche"
     )
   ) %>%
-  select(region, species, outcome, mean_slope) %>%
-  pivot_wider(names_from = outcome, values_from = mean_slope) %>%
+  select(region, species, outcome, median_slope) %>%
+  pivot_wider(names_from = outcome, values_from = median_slope) %>%
   drop_na()
 
 
@@ -85,120 +85,225 @@ scores_all <- bind_rows(pca_by_region$scores, .id = "region_id") %>%
   select(-region_id)
 
 # save it 
-write_rds(scores_all, here('data/processed/pca_scores.rds'))
+write_rds(scores_all, here('R/data/processed/pca_scores.rds'))
 
 loadings_all <- bind_rows(pca_by_region$loadings, .id = "region_id") %>%
   mutate(
     region = pca_by_region$region[as.integer(region_id)],
     pretty_outcome = case_when(
-      outcome == "cogyc"         ~ "Poleward shift",
-      outcome == "cogxc"         ~ "Eastward shift",
-      outcome == "depthnichec"   ~ "Deepening",
-      outcome == "thermalnichec" ~ "Warming niche"
+      outcome == "lat_shift"         ~ "Poleward shift",
+      outcome == "lon_shift"         ~ "Eastward shift",
+      outcome == "depth_shift"   ~ "Deepening",
+      outcome == "thermal_shift" ~ "Warming niche"
     )
   ) %>%
   select(-region_id)
 
-loadings_all <-  loadings_all %>% select(outcome, Dim.1, region, pretty_outcome)
+loadings_all <-  loadings_all %>% select(outcome, Dim.1,Dim.2, region, pretty_outcome)
 
-ggplot(loadings_all, aes(x = Dim.1, y = pretty_outcome, fill = pretty_outcome)) +
+loadings_all <- loadings_all %>%
+  mutate(color_fill = case_when(
+    pretty_outcome == "Poleward shift" & Dim.1 < 0        ~ "#762A83",
+    pretty_outcome == "Poleward shift" & Dim.1 >= 0       ~ "#1B7837",
+    pretty_outcome == "Eastward shift" & Dim.1 < 0        ~ "#543005",
+    pretty_outcome == "Eastward shift" & Dim.1 >= 0       ~ "#003C30",
+    pretty_outcome == "Deepening" & Dim.1 < 0  ~ "#8C510A",
+    pretty_outcome == "Deepening" & Dim.1 >= 0 ~ "#01665E",
+    pretty_outcome == "Warming niche" & Dim.1 < 0 ~ "#2166AC",
+    pretty_outcome == "Warming niche" & Dim.1 >= 0 ~ "#B2182B",
+    TRUE ~ "#DDDDDD"  
+  )) # colors
+
+# use pretty region names
+loadings_all <- loadings_all %>% mutate(
+
+  region_full = case_when(
+    region == "GOA"      ~ "Gulf of Alaska (GOA)",
+    region == "BC"       ~ "British Columbia (BC)",
+    region == "COW"     ~ "U.S. West Coast (USWC)",
+    region == "BAL"      ~ "Baltic Sea (BAL)",
+    region == "NS"       ~ "North Sea (NS)",
+    region == "BS"       ~ "Barents Sea (BS)",
+    region == "EBS"      ~ "East Bering Sea (EBS)",
+    region == "GMX"      ~ "Gulf of Mexico (GOM)",
+    region == "CBS"      ~ "Celtic–Biscay Shelf (CBS)",
+    region == "NIC"      ~ "North Iberian Coast (NIC)",
+    region == "NEUS"  ~ "NE U.S. & Scotian Shelf (NEUS–SS)",
+    TRUE ~ region
+  ),
+  region_full = factor(
+    region_full,
+    levels = c(
+      "East Bering Sea (EBS)",
+      "Gulf of Alaska (GOA)",
+      "British Columbia (BC)",
+      "U.S. West Coast (USWC)",
+      "NE U.S. & Scotian Shelf (NEUS–SS)",
+      "Gulf of Mexico (GOM)",
+      "Barents Sea (BS)",
+      "North Sea (NS)",
+      "Baltic Sea (BAL)",
+      "Celtic–Biscay Shelf (CBS)",
+      "North Iberian Coast (NIC)"
+    )))
+
+
+ggplot(loadings_all, aes(x = Dim.1, y = pretty_outcome, fill = color_fill)) +
   geom_col(width = 0.7) +
   geom_text(aes(label = round(Dim.1, 2)),
             hjust = ifelse(loadings_all$Dim.1 >= 0, -0.1, 1.1),
-            size = 3) +
-  facet_wrap(~region, ncol = 1, scales = "free_y") +
+            size = 2) +
+  facet_wrap(~region_full, ncol = 1, scales = "free_y") +
   labs(x = "PC1 Loading", y = NULL) +
-  theme_minimal(base_size = 12) +
+  scale_fill_identity() +
+  theme_minimal(base_size = 8) +
   theme(
-    axis.text.y = element_text(size = 10),
-    axis.text.x = element_text(size = 10),
+    #axis.text.y = element_text(size = 10),
+    #axis.text.x = element_text(size = 10),
     panel.grid.major.y = element_blank(),
     panel.grid.minor = element_blank(),
-    legend.position = "none"
+    legend.position = "none",
+    strip.text = element_text(face = "bold", size = 8)
   )
 
-ggsave(here('multivariate_responses/figures/loadings.png'),bg = 'white', width = 8, height = 12, dpi = 600)
+ggsave(
+  here('output/figures/supp/pca_loadings_supp.png'),
+  width = 180,
+  height = 190,
+  dpi = 600,
+  units = "mm"
+)
 
-write_csv(loadings_all, here('data/processed/pca_loadings.csv'))
 
-# Correlation and dominant strategies -------------------------------------
+#write_csv(loadings_all, here('data/processed/pca_loadings.csv'))
 
-wide_df <- slopes %>%
-  select(species, region, outcome, mean_slope) %>%
-  pivot_wider(names_from = outcome, values_from = mean_slope)
 
-cor_by_region <- wide_df %>%
+# plot pca ----------------------------------------------------------------
+
+# get posterior correlaitons
+
+m <- read_rds(here('R/bayesian_trends/fitted/m_stud.rds'))
+
+rho <-
+  posterior_summary(m) %>% 
+  data.frame() %>% 
+  rownames_to_column("param") %>% 
+  filter(str_detect(param, "^cor_")) %>% 
+  mutate(param = str_remove(param, "^cor_region:species__")) %>% 
+  separate(param, into = c("left", "right"), sep = "__") %>% 
+  mutate(
+    region = str_extract(left, "region[A-Z]+"),
+    left   = str_remove(left, "_?region[A-Z]+"),
+    right  = str_remove(right, "_?region[A-Z]+"), 
+    region_short = str_remove(region, "region"),  # e.g. regionBAL → BAL
+    region_full = case_when(
+      region_short == "GOA"      ~ "Gulf of Alaska (GOA)",
+      region_short == "BC"       ~ "British Columbia (BC)",
+      region_short == "COW"     ~ "U.S. West Coast (USWC)",
+      region_short == "BAL"      ~ "Baltic Sea (BAL)",
+      region_short == "NS"       ~ "North Sea (NS)",
+      region_short == "BS"       ~ "Barents Sea (BS)",
+      region_short == "EBS"      ~ "East Bering Sea (EBS)",
+      region_short == "GMX"      ~ "Gulf of Mexico (GOM)",
+      region_short == "CBS"      ~ "Celtic–Biscay Shelf (CBS)",
+      region_short == "NIC"      ~ "North Iberian Coast (NIC)",
+      region_short == "NEUS"  ~ "NE U.S. & Scotian Shelf (NEUS–SS)",
+      TRUE ~ region_short
+    ),
+    region_full = factor(
+      region_full,
+      levels = c(
+        "East Bering Sea (EBS)",
+        "Gulf of Alaska (GOA)",
+        "British Columbia (BC)",
+        "U.S. West Coast (USWC)",
+        "NE U.S. & Scotian Shelf (NEUS–SS)",
+        "Gulf of Mexico (GOM)",
+        "Barents Sea (BS)",
+        "North Sea (NS)",
+        "Baltic Sea (BAL)",
+        "Celtic–Biscay Shelf (CBS)",
+        "North Iberian Coast (NIC)"
+      ))
+  )
+
+rho <- rho %>% 
+  mutate(
+    left = str_remove(left, "_year_c:"),
+    right = str_remove(right, "_year_c:")
+  )
+
+# ok now from here we can get the correlations we need for thermal avoiding strategies
+lowest_corr <- rho %>%
+  filter(left == "thermalnichec" | right == "thermalnichec") %>%
   group_by(region) %>%
-  summarise(
-    cor_lat = cor(cogyc, thermalnichec, use = "complete.obs"),
-    cor_lon = cor(cogxc, thermalnichec, use = "complete.obs"),
-    cor_depth = cor(depthnichec, thermalnichec, use = "complete.obs")
-  ) # get correlation with thermal niche by region and outcome
+  slice_min(order_by = Estimate, n = 1) %>%
+  ungroup() %>% mutate(region=region_short)
 
-# NEUS correlation
-neus_corr <- wide_df %>% filter(region == 'NEUS') %>% group_by(region) |> 
-  summarise(
-    cor_lat_lon = cor(cogyc, cogxc, use = "complete.obs")
-  )
-
-# NS correlation
-ns_corr <- wide_df %>% filter(region == 'NS') %>% group_by(region) |> 
-  summarise(
-    cor_lat_depth = cor(cogyc, depthnichec, use = "complete.obs")
-  )
-
-# BAL correlation
-bal_corr <- wide_df %>% filter(region == 'BAL') %>% group_by(region) |>
-  summarise(cor_lat_depth = cor(cogxc, depthnichec, use = "complete.obs"))
-
-# get the dominant strategy for warming less
-dominant_strategy <- cor_by_region %>%
-  pivot_longer(cols = starts_with("cor_"),
-               names_to = "strategy",
-               values_to = "correlation") %>%
-  mutate(strategy = recode(strategy,
-                           cor_lat = "Poleward shift",
-                           cor_lon = "Eastward shift",
-                           cor_depth = "Deepening")) %>%
-  group_by(region) %>%
-  slice_min(order_by = correlation, n = 1, with_ties = FALSE) %>%
-  ungroup()
-
+# merge with pca
 loadings_all <- loadings_all %>%
-  left_join(dominant_strategy, by = "region")
+  left_join(lowest_corr, by = c("region","region_full"))
 
-# Plot ---------------------------------------------------------------------
+loadings_all <- loadings_all %>% mutate(var = case_when(
+  left == 'cogyc'~"lat_shift",
+  left == 'cogxc'~"lon_shift",
+  left == "depthnichec"~"depth_shift",
+  left == 'thermalnichec'~"thermal_shift"
+))
+
+#  now plot ---------------------------------------------------------------
+
+base_colors <- paletteer_d("tidyquant::tq_dark", n = 12) |> as.character()
+
+# assign them explicitly to regions
+region_colors <- c(
+  "GOA"     = base_colors[1],  # Gulf of Alaska
+  "BC"      = base_colors[2],  # British Columbia
+  "COW"    = base_colors[3],  # U.S. West Coast
+  "BAL"     = base_colors[4],  # Baltic Sea
+  "NS"      = base_colors[5],  # North Sea
+  "BS"      = base_colors[6],  # Barents Sea
+  "EBS"     = base_colors[7],  # East Bering Sea
+  "GMX"     = base_colors[8],  # Gulf of Mexico
+  "CBS"     = base_colors[9],  # Celtic-Biscay Shelf
+  "NIC"     = base_colors[10], # North Iberian Coast
+  "NEUS" = base_colors[11]  # Northeast U.S. & Scotian Shelf
+)
 
 ggplot(scores_all, aes(x = Dim.1, y = Dim.2)) +
   geom_segment(
-    data = loadings_all |> filter(pretty_outcome != strategy),
+    data = loadings_all |> filter(var != outcome),
     aes(x = 0, y = 0, xend = Dim.1 * 4, yend = Dim.2 * 4),
     arrow = arrow(length = unit(0.15, "cm")),
     color = "grey80",
     inherit.aes = FALSE
   ) +
   geom_segment(
-    data = loadings_all |> filter(pretty_outcome == strategy),
-    aes(x = 0, y = 0, xend = Dim.1 * 4, yend = Dim.2 * 4, color = correlation),
+    data = loadings_all |> filter(var == outcome),
+    aes(x = 0, y = 0, xend = Dim.1 * 4, yend = Dim.2 * 4, color = Estimate),
     arrow = arrow(length = unit(0.15, "cm")),
     inherit.aes = FALSE,
     size = 1
   ) +
-  geom_point(aes(fill = region), size = 1.8, alpha = .8, color='black', shape = 21) +
-  geom_text(
+  geom_point(aes(fill = region), size = 1.8, alpha = .4, shape = 21) +
+  geom_text_repel(
     data = loadings_all,
-    aes(x = Dim.1 * 5, y = Dim.2 * 5, label = pretty_outcome),
-    size = 3, fontface = "bold"
+    aes(x = Dim.1 * 5.2, y = Dim.2 * 5.2, label = pretty_outcome),
+    size = 2.5,
+    fontface = "bold",
+    box.padding = 0.4,
+    point.padding = 0.4,
+    segment.color = "grey60"
   ) +
   scale_color_gradient(
-    low = "#08306b",    
-    high = "#d0e6fa", 
-    name =  expression(rho ~ "with warming niche")
+    low = "#08306b",
+    high = "#d0e6fa",
+    name = expression(rho ~ "with warming niche")
   ) +
   guides(fill = "none") +
   scale_x_continuous(expand = expansion(mult = 0.4)) +
   facet_wrap(~region, scales = "free", ncol = 3) +
-  scale_fill_paletteer_d("yarrr::basel") +
+  scale_fill_manual(values = region_colors) +
   labs(x = x_lab, y = y_lab) +
   theme_bw(base_size = 12) +
   theme(
@@ -208,10 +313,21 @@ ggplot(scores_all, aes(x = Dim.1, y = Dim.2)) +
     panel.background = element_rect(fill = "white", color = NA),
     plot.background = element_rect(fill = "white", color = NA),
     panel.grid = element_blank(),
-    legend.position = "right"
+    legend.position = c(0.95, -0.01),  # x, y in normalized coordinates (0 = left/bottom, 1 = top/right)
+    legend.justification = c("right", "bottom"),
+    #legend.background = element_rect(fill = "white", color = "grey80"),
+    #legend.box.background = element_rect(fill = "white", color = NA)
   )
 
-ggsave(here('multivariate_responses/figures/pca.png'), width = 12, height = 9, dpi = 600)
+ggsave(
+  filename = "output/figures/main/pca.png",
+  width = 180,
+  height = 190,
+  dpi = 600,
+  units = "mm"
+)
+
+
 
 
 # #  correlation for text ---------------------------------------------------

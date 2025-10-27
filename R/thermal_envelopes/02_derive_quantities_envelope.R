@@ -4,17 +4,15 @@ library(here)
 library(sdmTMB)
 library(furrr)
 
-
 # define paths ------------------------------------------------------------
-models_folder <- here("climate_velocity/fitted")
+models_folder <- here("R/thermal_envelopes/fitted")
 model_files <- list.files(models_folder, pattern = "\\.rds$", full.names = TRUE)
 
 # define helper function --------------------------------------------------
 process_model_file <- function(model_file) {
   
   # load spatial grid -----------------------------------------------------
-  grid <- readRDS(here("data/processed/prediction_grid.rds")) %>%
-    mutate(month_f = as.factor(min_month)) %>%
+  grid <- readRDS(here("R/data/processed/prediction_grid.rds")) %>%
     droplevels()
   
   # parse model metadata --------------------------------------------------
@@ -39,10 +37,7 @@ process_model_file <- function(model_file) {
   
   region_grid <- grid %>%
     filter(region_short == this_region, year %in% years) %>%
-    mutate( # standatdize variables
-      #logdepth = (log(depth) - mean(log(model$data$depth), na.rm = TRUE)) / 
-      #  sd(log(model$data$depth), na.rm = TRUE), 
-      #logdepth2 = logdepth^2,
+    mutate( # standardize variables
       mean_temp_std = (mean_temp - mean(model$data$mean_temp, na.rm = TRUE)) / 
         sd(model$data$mean_temp, na.rm = TRUE),
       warmest_temp_std = (warmest_temp - mean(model$data$warmest_temp, na.rm = TRUE)) /
@@ -50,7 +45,6 @@ process_model_file <- function(model_file) {
       survey = main_survey,
       area = 16
     ) %>%
-    filter(!is.na(month_f)) %>%
     na.omit() %>%
     droplevels()
   
@@ -59,10 +53,6 @@ process_model_file <- function(model_file) {
             " — no grid data for years: ", paste(years, collapse = ", "))
     return(NULL)
   }
-  
-  # set model month -------------------------------------------------------
-  min_model_month <- min(as.numeric(as.character(model$data$month_f)), na.rm = TRUE)
-  region_grid$month_f <- factor(min_model_month)
   
   gc()
   
@@ -74,9 +64,6 @@ process_model_file <- function(model_file) {
   index <- get_index(pred, area = 16, bias_correct = TRUE) %>%
     transmute(year, index = log_est, index_se = se)
   
-  eao <- get_eao(pred, area = 16) %>%
-    transmute(year, eao = log_est, eao_se = se)
-  
   cog <- get_cog(pred, area = 16, format = "wide") %>%
     transmute(
       year,
@@ -86,25 +73,18 @@ process_model_file <- function(model_file) {
       cog_x_se = se_x
     )
   
+  depth_niche <- get_weighted_average(pred, vector = pred$data$depth, area = 16) %>%
+    transmute(year, depth_niche = est, depth_niche_se = se)
+  
+  thermal_niche <- get_weighted_average(pred, vector = pred$data$mean_temp, area = 16) %>%
+    transmute(year, thermal_niche = est, thermal_niche_se = se)
+  
   # combine results -------------------------------------------------------
   out <- index %>%
-    inner_join(cog, by = "year") %>%
-    inner_join(eao, by = "year")
+    inner_join(cog, by = "year") %>% inner_join(depth_niche, by = "year") %>%
+    inner_join(thermal_niche, by = "year")
   
-  niche <- pred$data %>% mutate(biomass = exp(est + log(pred$data$area))) |> # area expansion
-    group_by(year) %>%
-    summarise(
-      depth_niche = sum(depth * biomass) / sum(biomass),
-      thermal_niche = sum(mean_temp * biomass) / sum(biomass),
-      #thermal_niche_min = sum(coldest_temp * biomass) / sum(biomass),
-      #thermal_niche_max = sum(warmest_temp * biomass) / sum(biomass),
-      #upr90_thermal = Hmisc::wtd.quantile(mean_temp, weights = biomass, probs = 0.9), # remember to reduce dependencies
-      #lwr10_thermal = Hmisc::wtd.quantile(mean_temp, weights = biomass, probs = 0.1),
-      #upr90_depth = Hmisc::wtd.quantile(depth, weights = biomass, probs = 0.9),
-      #lwr10_depth = Hmisc::wtd.quantile(depth, weights = biomass, probs = 0.1),
-    ) 
-  
-  out <- out |> left_join(niche) |> mutate(species = this_species, region = this_region)
+  out <- out |> mutate(species = this_species, region = this_region)
   
   
   return(out)
@@ -125,4 +105,4 @@ data <- future_map(model_files, process_model_file, .progress = TRUE)
 # Combine all results into a single data frame
 data <- bind_rows(data)
 
-saveRDS(data,here('data/processed/derived_quantities_envelope.rds')) 
+saveRDS(data,here('R/data/processed/derived_quantities_te.rds')) 

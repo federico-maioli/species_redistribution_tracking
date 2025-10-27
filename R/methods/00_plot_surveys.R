@@ -22,7 +22,7 @@ data <- read_rds(here('R/data/processed/fishglob_clean.rds'))
 
 # get unique hauls
 unique_hauls <-  data %>%
-  select(survey,region,region_short,year,latitude,longitude,haul_id) %>%
+  select(survey,region_full,region_short,year,latitude,longitude,haul_id) %>%
   distinct() %>% filter(!(survey == "SCS" & latitude < 38))
 
 unique_hauls_sf <- st_as_sf(unique_hauls, coords = c("longitude", "latitude"), crs = 4326)
@@ -32,7 +32,7 @@ region_colors <- paletteer_d("tidyquant::tq_dark", n = 12) |> as.character()
 # create survey hull
 survey_hulls <- unique_hauls_sf |>
   st_cast("POINT") |>   # ensure geometries are POINTS
-  group_by(survey,region) |>
+  group_by(survey,region_full) |>
   summarise(geometry = st_union(geometry), .groups = "drop") |>
   mutate(geometry = st_concave_hull(geometry, ratio = 0.1)) |>  # ratio ∈ [0,1], lower = more concave
   st_make_valid()
@@ -41,7 +41,7 @@ survey_hulls <- unique_hauls_sf |>
 lcc_crs <- "+proj=lcc +lat_1=30 +lat_2=60 +lat_0=40 +lon_0=-60 +datum=WGS84 +units=km"
 
 map_plot <-  ggplot() +
-  geom_sf(data = survey_hulls, aes(fill = region), alpha = 0.5) +
+  geom_sf(data = survey_hulls, aes(fill = region_full), alpha = 0.5) +
   geom_sf(data = world, color = 'grey20', fill = 'antiquewhite', size = .1) +
   geom_text_repel(data = survey_hulls, 
                   aes(label = survey, geometry = geometry),

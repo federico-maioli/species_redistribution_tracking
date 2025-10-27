@@ -1,4 +1,4 @@
-# libraries ---------------------------------------------------------------
+# libraries --------------------------------------------------------------
 library(here)
 library(tidyverse)
 library(sdmTMB)
@@ -11,6 +11,7 @@ library(purrr)
 data <- read_rds(here('R/data/processed/fishglob_clean.rds'))
 
 options(future.globals.maxSize = 1024 * 1024^2)  # 1 GB
+
 # set up parallel processing with 2 workers
 plan(multisession, workers = 2)
 
@@ -33,12 +34,12 @@ process_species_region <- function(i) {
     # Skip if no data available
     if (nrow(sub) == 0) return(NULL)
     
-    # Create transformed depth variables for modeling
+    # scale
     sub <- sub %>%
-      mutate(
-        logdepth = scale(log(depth))[, 1],
-        logdepth2 = logdepth^2
-      )
+     mutate(
+       warmest_temp_std = scale(warmest_temp)[, 1],
+       mean_temp_std = scale(mean_temp)[,1]
+     )
     
     # Add UTM coordinates (assuming add_utm_columns() is defined elsewhere)
     sub <- add_utm_columns(sub, ll_names = c("longitude", "latitude"), units = "km")
@@ -60,9 +61,6 @@ process_species_region <- function(i) {
     # Create SPDE mesh for spatial modeling
     spde <- make_mesh(sub, c("X", "Y"), mesh = inla_mesh)
     
-    # Choose spatiotemporal model based on region
-    st_type <- ifelse(this_region == "BC", "rw", "iid")
-    
     # Check if multiple surveys and sufficient months are available
     multi_survey_regions <- c("CBS",'NEUS-SS')
     multi_season_regions <- c("BAL", "NS", "NEUS-SS", "CBS", "GOM") # Identify whether the current region should use quarter
@@ -70,7 +68,7 @@ process_species_region <- function(i) {
     use_survey <- this_region %in% multi_survey_regions
     
     # Define base formula
-    formula <- kg_km2 ~ 0 + as.factor(year) + logdepth + logdepth2
+    formula <- kg_km2 ~ 0 + as.factor(year) + s(mean_temp_std, k=3) + s(warmest_temp_std, k=3)
     
     # Add random effects to formula based on data structure
     if (use_survey && use_quarter) {
@@ -81,6 +79,7 @@ process_species_region <- function(i) {
       formula <- update(formula, . ~ . + as.factor(quarter))
     }
     
+    
     # Fit the spatial-temporal model using sdmTMB
     fit <- sdmTMB(
       formula = formula,
@@ -88,9 +87,8 @@ process_species_region <- function(i) {
       time = "year",
       family = tweedie(link = "log"),
       data = sub,
-      share_range = TRUE,
       spatial = "on",
-      spatiotemporal = st_type
+      spatiotemporal = 'off'
     )
     
     # Run extra optimization if gradient is large
@@ -106,7 +104,7 @@ process_species_region <- function(i) {
     }
     
     # Save the fitted model object
-    saveRDS(fit, file = here("R/sdm_modeling/fitted", paste0(this_region, "_", this_species, "_sdm.rds")))
+    saveRDS(fit, file = here("R/thermal_envelopes/fitted", paste0(this_region, "_", this_species, "_te.rds")))
     
     message("Completed: ", this_species, " - ", this_region)
     return(NULL)
@@ -120,5 +118,4 @@ process_species_region <- function(i) {
 # Run the process in parallel over all species-region combos with progress bar
 future_map(1:nrow(species_region_table), process_species_region, .progress = TRUE)
 
-
-#process_species_region(2) # for testing a single run
+#process_species_region(2)

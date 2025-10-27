@@ -3,10 +3,9 @@ library(tidyverse)
 library(here)
 library(sdmTMB)
 library(sf)
-library(rnaturalearth)
-library(rnaturalearthdata)
 library(terra)
 library(ncdf4)
+library(utils)
 
 # load function and data -------------------------------------------------
 
@@ -15,8 +14,8 @@ data <- readRDS(here('R/data/processed/fishglob_clean.rds'))
 
 # prepare survey spatial grid ----------------------------------------------
 
-unique_locations <- data |> distinct(region_short, depth, latitude, longitude)
-#unique_locations <- data |> distinct(region_short, depth, latitude, longitude, year)
+unique_locations <- data %>%  distinct(region_short, depth, latitude, longitude)
+#unique_locations <- data %>%  distinct(region_short, depth, latitude, longitude, year)
 split_data <- split(unique_locations, unique_locations$region_short)
 
 # grid settings
@@ -25,11 +24,29 @@ cell_width <- 4  # grid resolution (4 km)
 
 round_down_even <- function(x, base = 1000) base * floor(x / base)
 
-# load coast and depth data
-coastline <- rnaturalearth::ne_countries(scale = 10, returnclass = "sf") |> 
-  st_transform(crs = 4326) |> 
-  st_make_valid()
 
+## coastline ---------------------------------------------------------------
+# not on cran so need manual download :(
+# URL for the Natural Earth 1:10m countries shapefile
+url <- "https://naciscdn.org/naturalearth/10m/cultural/ne_10m_admin_0_countries.zip"
+# Temporary paths
+temp <- tempfile(fileext = ".zip")
+unzip_dir <- tempdir()
+# Download
+download.file(url, temp, mode = "wb")
+# Unzip *all* files, not just the .shp
+unzip(temp, exdir = unzip_dir)
+# Find the shapefile (the .shp file inside the extracted folder)
+shp_path <- list.files(unzip_dir, pattern = "\\.shp$", full.names = TRUE)
+
+# Read and transform
+coastline <- st_read(shp_path) |>
+  st_transform(crs = 4326) |>
+  st_make_valid()
+ 
+
+## depth -------------------------------------------------------------------
+# get it from GEBCO https://www.gebco.net/data-products/gridded-bathymetry-data
 depth_raster <- terra::rast(here('R/data/environmental/depth/GEBCO_2023_sub_ice_topo.nc'))
 
 depth_raster[depth_raster > 0] <- NA # remove positive values
@@ -40,9 +57,9 @@ depth_raster <- terra::focal(
   fun = mean,             # average nearby cell values
   na.rm = TRUE,
   na.policy = "only"      # ONLY fill NA cells
-)
+) # takes quite a while!!
 
-names(depth_raster) <- 'elevation' # focal changes name
+names(depth_raster) <- 'elevation' # focal changes name for some reasons
 
 # process regions ----------------------------------------------------------
 
@@ -111,7 +128,7 @@ grid <- replicate_df(grid, time_name = "year", time_values = 1994:2021) %>%
 
 # match temperature data --------------------------------------------------
 
-nc_path <- here('R/data/environmental/temperature/cmems_mod_glo_phy_my_0.083deg_P1M-m_bottomT_180.00W-179.92E_20.00N-87.00N_1993-01-01-2021-06-01.nc')
+nc_path <- here('R/data/environmental/temperature/cmems_mod_glo_phy_my_0.083deg_P1M-m_bottomT_180.00W-179.92E_20.00N-87.00N_1993-01-01-2024-01-01.nc')
 
 # source time to date function for .nc files
 source(here('R/utils/nc_time_to_date.R'))
@@ -128,7 +145,7 @@ names(temp_rast) <- as.character(dates)
 
 temp_rast <- terra::focal(
   temp_rast,
-  w = 7,                 # 5x5 neighborhood
+  w = 7,                 # 7x7 neighborhood
   fun = mean,             # average nearby cell values
   na.rm = TRUE,
   na.policy = "only"      # ONLY fill NA cells
@@ -141,50 +158,90 @@ unique_dates <- sort(unique(grid$month_year_date))
 for (i in seq_along(unique_dates)) {
   
   this_date <- unique_dates[i]
+  this_year <- year(this_date)
   
   data_date <- filter(grid, month_year_date == this_date)
   
-  past_12_months <- seq(from = this_date %m-% months(12), to = this_date %m-% months(1), by = "1 month")
+  # past 12 months
+  past_12_months <- seq(from = this_date %m-% months(12),
+                        to   = this_date %m-% months(1),
+                        by   = "1 month")
   past_12_months_str <- as.character(past_12_months)
   
-  selected_rasters <- temp_rast[[which(names(temp_rast) %in% past_12_months_str)]]
+  selected_rasters_past <- temp_rast[[which(names(temp_rast) %in% past_12_months_str)]]
   
-  if (is.null(selected_rasters) || nlyr(selected_rasters) == 0) {
+  if (is.null(selected_rasters_past) || nlyr(selected_rasters_past) == 0) {
     warning(paste("No raster data available for region", this_region, "and date", this_date))
     next
   }
   
-  extracted_values <- terra::extract(
-    selected_rasters,
-    data_date %>% select(longitude, latitude), method = 'simple'
+  extracted_values_past <- terra::extract(
+    selected_rasters_past,
+    data_date %>% select(longitude, latitude),
+    method = 'simple'
   )
   
-  if (nrow(extracted_values) == 0 || ncol(extracted_values) <= 1) {
-    warning(paste("No extracted data for region", this_region, "and date", this_date))
-    next
-  }
+  extracted_matrix_past <- as.matrix(extracted_values_past[, -1])
+  mean_temp <- rowMeans(extracted_matrix_past, na.rm = TRUE)
   
-  extracted_matrix <- as.matrix(extracted_values[, -1])
-  mean_temp <- colMeans(extracted_matrix, na.rm = TRUE) # get the mean per month slice in the previous 12 months
+  monthly_means_past <- colMeans(extracted_matrix_past, na.rm = TRUE)
+  coldest_month_idx <- which.min(monthly_means_past)
+  warmest_month_idx <- which.max(monthly_means_past)
   
-  coldest_month_idx <- which.min(mean_temp) # get the month with the coldest temp in the previous 12 months
-  warmest_month_idx <- which.max(mean_temp) # get the month with the warmest temp in the previous 12 months
+  coldest_monthT <- extracted_matrix_past[, coldest_month_idx]
+  warmest_monthT <- extracted_matrix_past[, warmest_month_idx]
   
-  coldest_monthT <- extracted_matrix[, coldest_month_idx]
-  warmest_monthT <- extracted_matrix[, warmest_month_idx]
+  # calendar year months
+  this_year_months <- seq(from = as.Date(paste0(this_year, "-01-01")),
+                          to   = as.Date(paste0(this_year, "-12-01")),
+                          by   = "1 month")
+  this_year_months_str <- as.character(this_year_months)
   
+  selected_rasters_year <- temp_rast[[which(names(temp_rast) %in% this_year_months_str)]]
+  
+  mean_year_temp <- NA  # default
+  
+  extracted_values_year <- terra::extract(
+    selected_rasters_year,
+    data_date %>% select(longitude, latitude),
+    method = 'simple'
+  )
+  extracted_matrix_year <- as.matrix(extracted_values_year[, -1])
+  
+  # compute the mean across all 12 months of that year
+  mean_year_temp <- rowMeans(extracted_matrix_year, na.rm = TRUE)
+  
+  # combine everything
   data_date <- data_date %>%
     mutate(
-      mean_temp = rowMeans(extracted_matrix, na.rm = TRUE),
-      #sd_temp = apply(extracted_matrix, 1, sd, na.rm = TRUE),
-      coldest_temp = coldest_monthT,
-      warmest_temp = warmest_monthT
+      mean_temp       = mean_temp,        # past 12-month mean
+      coldest_temp    = coldest_monthT,
+      warmest_temp    = warmest_monthT,
+      mean_year_temp  = mean_year_temp    # mean of 12 months in same calendar year
     )
   
   temp_list[[this_date]] <- data_date
 }
 
-grid <- bind_rows(temp_list) %>% filter(!is.na(mean_temp)) # remove if NA values, just to be safe
+grid <- bind_rows(temp_list) %>% filter(!is.na(mean_temp))
+
+# add quarter and survey info
+survey_map <- data %>%
+  group_by(region_short, survey) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(region_short) %>%
+  slice_max(n, with_ties = FALSE) %>%
+  select(region_short, survey)
+
+quarter_map <- data %>%
+  filter(month == min_month) %>%
+  distinct(region_short, min_month = month, quarter) %>% select(region_short,quarter)
+
+# join back to the grid
+grid <- grid %>%
+  left_join(survey_map, by = "region_short") %>%
+  # Join on both region and month for quarter info
+  left_join(quarter_map, by = "region_short")
 
 saveRDS(grid, here("R/data/processed/prediction_grid.rds"))
 
