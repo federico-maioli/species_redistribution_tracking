@@ -133,7 +133,7 @@ for (i in seq_along(outcomes)) {
   p <- region_slopes_long %>%
     filter(outcome == outcome_name) %>%
     group_by(region) %>% mutate(median_slope = median(slope)) %>% ungroup() %>%
-    mutate(region = factor(region, levels = rev(c('EBS','GOA','BC','COW','NEUS','GMX','BS','NS','CBS', 'BAL', 'NIC')))) %>%
+    mutate(region = factor(region, levels = rev(c('EBS','GOA','BC','USWC','NEUS-SS','GOM','BS','NS','CBS', 'BAL', 'NIC')))) %>%
     ggplot(aes(x = slope, y = region, fill = slope)) +
     ggstats::geom_stripped_rows(aes(y = region), odd = "white", even = "grey90", alpha = 0.2) +
     geom_vline(xintercept = 0, linetype = "dashed", color = "grey40", size = 0.4) +
@@ -176,7 +176,7 @@ species_slopes_long <- species_slopes %>%
     slope_thermalnichec = b_thermalnichec_year_c + r_region__thermalnichec + `r_region:species__thermalnichec`
   ) %>%
   pivot_longer(cols = starts_with("slope_"), names_to = "outcome", names_prefix = "slope_", values_to = "full_slope") %>%
-  mutate(region = factor(region, levels = c('EBS','GOA','BC','COW','NEUS','GMX','BS','NS','CBS', 'BAL', 'NIC'))) %>%
+  mutate(region = factor(region, levels = c('EBS','GOA','BC','USWC','NEUS-SS','GOM','BS','NS','CBS', 'BAL', 'NIC'))) %>%
   group_by(region, region_species) %>% mutate(sp_id = cur_group_id()) %>% ungroup() %>%
   mutate(sp_id = factor(sp_id, levels = sort(unique(sp_id), decreasing = TRUE)),
          outcome = factor(outcome, levels = outcomes))
