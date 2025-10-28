@@ -329,6 +329,31 @@ Element 4  & 500 A & 961  & $922\pm10$  & 900 A & 1268 & $1092\pm40$\\
 \footnotetext[2]{Example for a second table footnote.}
 \end{table}
 
+\begin{sidewaystable}
+\caption{Summary of annual spatial and thermal metrics used to quantify species’ distributional and thermal responses to ocean warming}
+\label{table:derived_quantities}
+\centering
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{@{}p{3.2cm}p{3.5cm}p{5cm}p{4.3cm}@{}}
+\toprule
+Name & Metric & Definition / Formula & Interpretation \\
+\midrule
+Range centroid (UTM northing) & Density-weighted northing &
+$\bar{y} = \frac{\sum y_i D_i}{\sum D_i}$, where $y_i$ is the UTM northing of grid cell $i$, and $D_i$ is predicted density. &
+Tracks north–south distributional shifts. \\
+Range centroid (UTM easting) & Density-weighted easting &
+$\bar{x} = \frac{\sum x_i D_i}{\sum D_i}$, where $x_i$ is the UTM easting of grid cell $i$. &
+Tracks east–west distributional shifts. \\
+Depth niche & Density-weighted depth &
+$\bar{z} = \frac{\sum z_i D_i}{\sum D_i}$, where $z_i$ is depth in grid cell $i$. &
+Captures changes in vertical habitat use. \\
+Thermal niche & Density-weighted temperature &
+$\bar{T} = \frac{\sum T_i D_i}{\sum D_i}$, where $T_i$ is bottom temperature in grid cell $i$. &
+Reflects thermal conditions in occupied habitat. \\
+\botrule
+\end{tabular}
+\end{sidewaystable}
+
 In case of double column layout, tables which do not fit in single column width should be set to full text width. For this, you need to use \verb+\begin{table*}+ \verb+...+ \verb+\end{table*}+ instead of \verb+\begin{table}+ \verb+...+ \verb+\end{table}+ environment. Lengthy tables which do not fit in textwidth should be set as rotated table. For this, you need to use \verb+\begin{sidewaystable}+ \verb+...+ \verb+\end{sidewaystable}+ instead of \verb+\begin{table*}+ \verb+...+ \verb+\end{table*}+ environment. This environment puts tables rotated to single column width. For tables rotated to double column width, use \verb+\begin{sidewaystable*}+ \verb+...+ \verb+\end{sidewaystable*}+.
 
 \begin{sidewaystable}
@@ -514,61 +539,7 @@ For theorem like environments, we require \verb+amsthm+ package. There are three
 %% \bigskip command. Please ignore this.       %%
 %%=============================================%%
 
-For mathematics journals, theorem styles can be included as shown in the following examples:
 
-\begin{theorem}[Theorem subhead]\label{thm1}
-Example theorem text. Example theorem text. Example theorem text. Example theorem text. Example theorem text. 
-Example theorem text. Example theorem text. Example theorem text. Example theorem text. Example theorem text. 
-Example theorem text. 
-\end{theorem}
-
-Sample body text. Sample body text. Sample body text. Sample body text. Sample body text. Sample body text. Sample body text. Sample body text.
-
-\begin{proposition}
-Example proposition text. Example proposition text. Example proposition text. Example proposition text. Example proposition text. 
-Example proposition text. Example proposition text. Example proposition text. Example proposition text. Example proposition text. 
-\end{proposition}
-
-Sample body text. Sample body text. Sample body text. Sample body text. Sample body text. Sample body text. Sample body text. Sample body text.
-
-\begin{example}
-Phasellus adipiscing semper elit. Proin fermentum massa
-ac quam. Sed diam turpis, molestie vitae, placerat a, molestie nec, leo. Maecenas lacinia. Nam ipsum ligula, eleifend
-at, accumsan nec, suscipit a, ipsum. Morbi blandit ligula feugiat magna. Nunc eleifend consequat lorem. 
-\end{example}
-
-Sample body text. Sample body text. Sample body text. Sample body text. Sample body text. Sample body text. Sample body text. Sample body text.
-
-\begin{remark}
-Phasellus adipiscing semper elit. Proin fermentum massa
-ac quam. Sed diam turpis, molestie vitae, placerat a, molestie nec, leo. Maecenas lacinia. Nam ipsum ligula, eleifend
-at, accumsan nec, suscipit a, ipsum. Morbi blandit ligula feugiat magna. Nunc eleifend consequat lorem. 
-\end{remark}
-
-Sample body text. Sample body text. Sample body text. Sample body text. Sample body text. Sample body text. Sample body text. Sample body text.
-
-\begin{definition}[Definition sub head]
-Example definition text. Example definition text. Example definition text. Example definition text. Example definition text. Example definition text. Example definition text. Example definition text. 
-\end{definition}
-
-Additionally a predefined ``proof'' environment is available: \verb+\begin{proof}+ \verb+...+ \verb+\end{proof}+. This prints a ``Proof'' head in italic font style and the ``body text'' in roman font style with an open square at the end of each proof environment. 
-
-\begin{proof}
-Example for proof text. Example for proof text. Example for proof text. Example for proof text. Example for proof text. Example for proof text. Example for proof text. Example for proof text. Example for proof text. Example for proof text. 
-\end{proof}
-
-Sample body text. Sample body text. Sample body text. Sample body text. Sample body text. Sample body text. Sample body text. Sample body text.
-
-\begin{proof}[Proof of Theorem~{\upshape\ref{thm1}}]
-Example for proof text. Example for proof text. Example for proof text. Example for proof text. Example for proof text. Example for proof text. Example for proof text. Example for proof text. Example for proof text. Example for proof text. 
-\end{proof}
-
-\noindent
-For a quote environment, use \verb+\begin{quote}...\end{quote}+
-\begin{quote}
-Quoted text example. Aliquam porttitor quam a lacus. Praesent vel arcu ut tortor cursus volutpat. In vitae pede quis diam bibendum placerat. Fusce elementum
-convallis neque. Sed dolor orci, scelerisque ac, dapibus nec, ultricies ut, mi. Duis nec dui quis leo sagittis commodo.
-\end{quote}
 
 Sample body text. Sample body text. Sample body text. Sample body text. Sample body text (refer Figure~\ref{fig1}). Sample body text. Sample body text. Sample body text (refer Table~\ref{tab3}). 
 
@@ -576,13 +547,38 @@ Sample body text. Sample body text. Sample body text. Sample body text. Sample b
 
 \subsection{Data sources}
 
-\subsubsection{Fish observations}
-Fish density data (kg/km\textsuperscript{2}) were obtained from 
-a large-scale compilation of standardized, fishery-independent bottom-trawl surveys \citep{maureaud_fishglob_data_2024}. Each trawl deployment (haul) records the catch by species, with biomass standardized by the sampled (``swept'') area, alongside the haul’s location, depth, and time. We selected surveys with a consistent sampling protocol and temporal coverage of at least 15 years \citep{maureaud_fishglob_data_2024}, resulting in 17 surveys across 11 regions (Fig \ref{fig:map}).
+\textbf{Fish observations.} We compiled fish biomass densities data (kg km\textsuperscript{-2}) from 
+a large-scale collection of standardized, fishery-independent bottom-trawl surveys \citep{maureaud_fishglob_data_2024}. Each trawl deployment (haul) recorded the catch by species, with biomass standardized by the sampled (``swept'') area, alongside the haul’s location, depth, and time. We selected surveys with a consistent sampling protocol and at least 15 years of coverage, resulting in 17 surveys across 11 regions in the North Atlantic and Northeast Pacific (Fig \ref{fig:map}).
+To ensure robust estimates of species’ spatial and temporal dynamics, we kept only taxa that (i) made up 99\% of the cumulative regional biomass, (ii) occurred in at least 15\% of hauls in that region, and (iii) were sampled in at least two hauls per year. These criteria yielded 237 fish populations (species–region combinations) across all regions (FIG S).
 
-\subsubsection{Temperature data}
-Since most observations lack in situ measurements of bottom temperature, we used monthly bottom temperature data derived from the Copernicus Global Ocean Physics Reanalysis \citep{european_union-copernicus_marine_service_global_2018}, which provides values on a regular grid with a spatial resolution of 1/12$^{\circ}$ (approximately 7 km at the study latitudes).
+\textbf{Environmental data.} We obtained bottom temperature data from the Copernicus Global Ocean Physics Reanalysis \citep{european_union-copernicus_marine_service_global_2018}, which provides monthly estimates at 1/12$^{\circ}$ ($\approx$7 km) resolution. While in situ measurements exist for some surveys in certain years, we used this modeled product to obtain temporally averaged and spatially consistent time series. Bathymetric data were derived from the GEBCO 2023 dataset \citep{gebco_bathymetric_compilation_group_2023_gebco_2023_2023}, which provides global seafloor depth at 0.00417° ($\approx$400 m) resolution.
 
+
+
+\subsection{Spatiotemporal modeling}\label{sec:Species spatiotemporal modeling}
+
+\textbf{Model structure.} We modeled species distributions and their temporal dynamics using spatiotemporal generalized linear mixed-effects models (GLMMs), a flexible approach widely used in fisheries science \citep{thorson_geostatistical_2015, thorson_model-based_2016}. For each species (S1 Table), biomass density was modeled with a Tweedie distribution, using year (as a factor) and log-transformed depth (modeled as a second-order polynomial) as predictors. Survey identity and quarter were included as fixed effects to account for differences in sampling and seasonal variation when appropriate. Spatial and spatiotemporal variation was captured through random fields, approximated via the stochastic partial differential equation (SPDE) method with Gaussian Markov random fields \citep{lindgren_explicit_2011}. Models were implemented in R with the \texttt{sdmTMB} package \citep{anderson_sdmtmb_2024}, which integrates finite-element meshes constructed with \texttt{fmesher} \citep{lindgren_fmesher_2025} into Template Model Builder (TMB) \citep{kristensen_tmb_2016}. Full details on model structure, parameterization, and fitting procedures are provided in Appendix \ref{Appendix A}.
+
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=1\textwidth]{output/figures/main/map.png}
+\caption{Overview of survey coverage and bottom temperature trends.
+The central map shows the regions included in the analysis, with colored polygons indicating survey extents. The tile plot summarizes the number of hauls per region by year. Surrounding panels display regional trends in mean bottom temperature over time; bold values indicate the estimated decadal rate of temperature change.}\label{fig:map}
+\end{figure}
+
+\textbf{Prediction grid and environmental matching.} 
+After model fitting and validation we predicted species-specific densities on a 4 × 4 km spatial
+grid (in local UTM coordinates) covering each region for all years with available data. For each grid cell, we assigned bathymetry and the average bottom temperature over the 12 months preceding the earliest survey month in a region. This procedure generated a consistent spatiotemporal dataset of predicted biomass, depth, and temperature for downstream analyses.
+
+\textbf{Derivation of multi-dimensional distributional metrics and abundance.} To assess species responses to ocean warming, we computed annual metrics that characterize both spatial redistribution and thermal exposure, specifically range centroids (UTM northing and easting), realized depth niche, and realized thermal niche. Horizontal shifts in distribution were quantified using range centroids rather than range edges, as centroids are less susceptible to noise and provide a clearer signal of overall distributional movement, thus offering a more stable and representative measure of geographic displacement \citep{shoo_detecting_2006}. Range centroids were calculated as the biomass-weighted mean UTM northing and easting (center of gravity) across grid cells. The realized depth and thermal niches were computed as biomass-weighted averages of depth and bottom temperature, respectively, summarizing the environmental conditions most intensely occupied by each species (Table~\ref{table:derived_quantities}). All these metrics were derived from biomass density predictions across the spatial grid generated by the fitted spatiotemporal models.
+
+To estimate the annual abundance of each fish population, we calculated an area-weighted relative abundance index by multiplying predicted biomass density by grid cell area, summing these values across all grid cells, and applying a standard bias correction \citep{thorson_geostatistical_2015, thorsonImplementingGeneric2016}.
+
+\textbf{Comparing realized shifts with thermal envelopes shifts.}
+To estimate population-specific shifts under climate-driven thermal change, we fitted species distribution models using temperature predictors. These models followed the structure described in \textit{\nameref{sec:Species spatiotemporal modeling}}, but excluded spatiotemporal random fields to focus on direct temperature effects. As predictors, we used (i) the average bottom temperature over the 12 months preceding the earliest survey month in a region, and (ii) the maximum bottom temperature of the previous year. The latter was included to reflect the hypothesis that temperature extremes, rather than means, are more likely to limit species’ ranges \citep{sunday_thermal_2019}. We then derived spatial metrics (range centroid and depth niche) as in \textit{\nameref{sec:Derivation of multi-dimensional distributional metrics and abundance.}}.These temperature-only models provide climate envelope-based expectations under thermal forcing.
+
+\subsection{Bayesian trend analysis}\label{sec:Bayesian trend analysis}
 
 \section{Discussion}\label{sec12}
 
@@ -610,23 +606,7 @@ Acknowledgements are not compulsory. Where included they should be brief. Grant 
 
 Please refer to Journal-level guidance for any specific requirements.
 
-\section*{Declarations}
 
-Some journals require declarations to be submitted in a standardised format. Please check the Instructions for Authors of the journal to which you are submitting to see if you need to complete this section. If yes, your manuscript must contain the following sections under the heading `Declarations':
-
-\begin{itemize}
-\item Funding
-\item Conflict of interest/Competing interests (check journal-specific guidelines for which heading to use)
-\item Ethics approval and consent to participate
-\item Consent for publication
-\item Data availability 
-\item Materials availability
-\item Code availability 
-\item Author contribution
-\end{itemize}
-
-\noindent
-If any of the sections are not relevant to your manuscript, please include the heading and write `Not applicable' for that section. 
 
 %%===================================================%%
 %% For presentation purpose, we have included        %%
@@ -651,7 +631,7 @@ BMC journals: \url{https://www.biomedcentral.com/getpublished/editorial-policies
 
 \begin{appendices}
 
-\section{Section title of first appendix}\label{secA1}
+\section{Section title of first appendix}\label{Appendix A}
 
 An appendix contains supplementary information that is not an essential part of the text itself but which may be helpful in providing a more comprehensive understanding of the research problem or it is information that is too cumbersome to be included in the body of the paper.
 
