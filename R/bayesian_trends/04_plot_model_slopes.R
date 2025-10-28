@@ -422,11 +422,11 @@ summary_data = summary_data |> mutate(
     "BC" = 'British Columbia',
     "BS" = 'Barents Sea',
     "CBS" = 'Celtic-Biscay Shelf',
-    "COW" = "U.S. West Coast", 
+    "USWC" = "U.S. West Coast", 
     "EBS" = 'Eastern Bering Sea',
-    "GMX" = 'Gulf of Mexico',
+    "GOM" = 'Gulf of Mexico',
     "GOA" = 'Gulf of Alaska',
-    "NEUS" = 'NE US & Scotian Shelf',
+    "NEUS-SS" = 'NE US & Scotian Shelf',
     "NIC" = 'Northern Iberian Coast',
     "NS" = 'North Sea'
   )
