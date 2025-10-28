@@ -122,7 +122,7 @@ p1 = ggplot(priors_df, aes(
 
 # get data
 
-data <- readRDS(here("R/data/processed/derived_quantities.rds"))
+data <- readRDS(here("R/data/processed/derived_quantities_sdm.rds"))
 
 
 data <- data |> mutate(
@@ -136,8 +136,7 @@ data <- data |> group_by(region) |> mutate(
 )  |> ungroup() |> 
   group_by(sp_region) |> # std index of abundance, and calculate species-specific anomalies
   mutate(
-    index_std = scale(index)[, 1],
-    eao_std = scale(eao)[, 1]) |> 
+    index_std = scale(index)[, 1]) |> 
   mutate(across(
     c(cog_y, cog_x, depth_niche, thermal_niche),
     ~ .x - mean(.x, na.rm = TRUE),

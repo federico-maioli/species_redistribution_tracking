@@ -68,7 +68,7 @@ for (i in seq_along(outcomes)) {
     filter(outcome == outcome_name) %>%
     ggplot(aes(x = slope, y = 1)) +
     geom_vline(xintercept = 0, linetype = "dashed", size = 0.4, color ='grey40') +
-    stat_halfeye(
+    tidybayes::stat_halfeye(
       aes(fill = after_stat(x)),
       .width = 0.95,
       normalize = 'all',
