@@ -52,7 +52,7 @@ for (i in seq_len(nrow(global))) {
   # write the CI-only macro in parentheses
   write_tex(
     paste0(
-      " (95\\% CI: ",
+      "(95\\% CI: ",
       mround(global$lower_95[i], 2), "--",
       mround(global$upper_95[i], 2), ")"
     ),
@@ -169,7 +169,7 @@ for (i in seq_len(nrow(extremes))) {
   # CI only
   write_tex(
     paste0(
-      " (95\\% CI: ",
+      "(95\\% CI: ",
       mround(extremes$max_lower_95[i], 2), "--",
       mround(extremes$max_upper_95[i], 2), ")"
     ),
