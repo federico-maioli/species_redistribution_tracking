@@ -30,7 +30,7 @@ for (i in seq_len(nrow(global))) {
   # write the median slope
   write_tex(
     mround(global$median_slope[i], 2),
-    paste0(oc, "_median")
+    paste0(oc, "Median")
   )
   
   # write the 95% CI as a formatted string
@@ -41,7 +41,7 @@ for (i in seq_len(nrow(global))) {
       mround(global$lower_95[i], 2), "--", 
       mround(global$upper_95[i], 2), ")"
     ),
-    paste0(oc, "_value")
+    paste0(oc, "Value")
   )
 }
 
@@ -59,9 +59,6 @@ for (i in seq_len(nrow(region))) {
   oc <- tolower(region$outcome[i])
   re <- tolower(region$region[i])
   
-  # build macro name as outcome_region_value
-  macro_name <- paste(oc, re, "value", sep = "_")
-  
   # write the 95% CI as a formatted string
   write_tex(
     paste0(
@@ -70,7 +67,7 @@ for (i in seq_len(nrow(region))) {
       mround(region$lower_95[i], 2), "--", 
       mround(region$upper_95[i], 2), ")"
     ),
-    macro_name
+    paste0(oc,re, "Value")
   )
 }
 
@@ -122,26 +119,26 @@ for (i in seq_len(nrow(extremes))) {
   oc <- extremes$outcome[i]
   
   # max macros
-  write_tex(extremes$max_species_tex[i], paste0("max", oc, "_species"))
-  write_tex(extremes$max_region[i], paste0("max", oc, "_region"))
+  write_tex(extremes$max_species_tex[i], paste0("max", oc, "Species"))
+  write_tex(extremes$max_region[i], paste0("max", oc, "Region"))
   write_tex(
     paste0(
       mround(extremes$max_median[i], 2),
       " (95\\% CI: ",
       mround(extremes$max_lower_95[i], 2), "--", mround(extremes$max_upper_95[i], 2), ")"
     ),
-    paste0("max_", oc, "_value")
+    paste0("max", oc, "Value")
   )
   
   # min macros
-  write_tex(extremes$min_species_tex[i], paste0("min_", oc, "_species"))
-  write_tex(extremes$min_region[i], paste0("min_", oc, "_region"))
+  write_tex(extremes$min_species_tex[i], paste0("min", oc, "Species"))
+  write_tex(extremes$min_region[i], paste0("min", oc, "Region"))
   write_tex(
     paste0(
       mround(extremes$min_median[i], 2),
       " (95\\% CI: ",
       mround(extremes$min_lower_95[i], 2), "--", mround(extremes$min_upper_95[i], 2), ")"
     ),
-    paste0("min_", oc, "_value")
+    paste0("min", oc, "Value")
   )
 }
