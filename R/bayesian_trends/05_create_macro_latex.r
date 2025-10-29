@@ -115,7 +115,7 @@ max_df <- species %>%
     max_upper_95 = upper_95
   )
 
-min_df <- data %>%
+min_df <- species %>%
   group_by(outcome) %>%
   slice_min(order_by = median_slope, n = 1, with_ties = FALSE) %>%
   ungroup() %>%
