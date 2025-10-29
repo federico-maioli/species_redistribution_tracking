@@ -98,6 +98,17 @@ p_global <- wrap_plots(global_plot_list, nrow = 1) +
   theme(panel.border = element_blank(), panel.background = element_rect(fill = "white", colour = NA),
         plot.background = element_rect(fill = "white", colour = NA))
 
+summary_global_slopes <- global_slopes_long  %>%  group_by(outcome) %>% # Group by outcome and region_species
+  summarise(
+    median_slope = median(slope, na.rm = TRUE), # median
+    mean_slope = mean(slope, na.rm = TRUE), # mean
+    lower_95 = quantile(slope, 0.025, na.rm = TRUE), # 2.5% quantile
+    upper_95 = quantile(slope, 0.975, na.rm = TRUE), # 97.5% quantile
+    .groups = "drop"
+  )
+
+write_rds(summary_global_slopes, here('R/data/processed/bayesian_global_trends.rds'))
+
 # region slopes -----------------------------
 
 region_slopes <- m %>%
@@ -155,6 +166,17 @@ p_region <- wrap_plots(region_plot_list, nrow = 1) +
   theme(panel.border = element_blank(), panel.background = element_rect(fill = "white", colour = NA),
         plot.background  = element_rect(fill = "white", colour = NA))
 
+# export slopes 
+summary_region_slopes <- region_slopes_long  %>%  group_by(outcome,region) %>% # Group by outcome and region_species
+  summarise(
+    median_slope = median(slope, na.rm = TRUE), # median
+    mean_slope = mean(slope, na.rm = TRUE), # mean
+    lower_95 = quantile(slope, 0.025, na.rm = TRUE), # 2.5% quantile
+    upper_95 = quantile(slope, 0.975, na.rm = TRUE), # 97.5% quantile
+    .groups = "drop"
+  )
+
+write_rds(summary_region_slopes, here('R/data/processed/bayesian_region_trends.rds'))
 
 # species slopes ----------------------------------------------------------
 
@@ -415,7 +437,7 @@ direction_map <- list(
   "Thermal niche shift"      = c("Warming", "Not significant", "Cooling")
 )
 
-summary_data = summary_data |> mutate(
+summary_data = summary_data |> mutate(region = factor(region, levels = c('EBS','GOA','BC','USWC','NEUS-SS','GOM','BS','NS','CBS', 'BAL', 'NIC')),
   region = recode(
     region,
     "BAL" = "Baltic Sea",
@@ -431,6 +453,7 @@ summary_data = summary_data |> mutate(
     "NS" = 'North Sea'
   )
 )
+
 
 summary_data <- summary_data %>%
   mutate(
@@ -540,305 +563,3 @@ write_rds(species_summary, here('R/data/processed/bayesian_species_trends.rds'))
 write_csv(species_summary, here('output/supp_data/bayesian_species_trends.csv'))
 
 
-
-
-
-
-
-
-
-# from here ---------------------------------------------------------------
-
-
-
-
-
-
-species_slopes_summary <- species_slopes_long %>%
-  group_by(region, region_species, sp_id, outcome) %>%
-  summarise(
-    mean_slope = mean(full_slope),
-    median_slope = median(full_slope),
-    lower_95 = quantile(full_slope, 0.025),
-    upper_95 = quantile(full_slope, 0.975),
-    .groups = "drop"
-  ) %>%
-  mutate(
-    significant = if_else(lower_95 > 0 | upper_95 < 0, "Yes", "No"),
-    direction = case_when(
-      significant == "Yes" & mean_slope > 0 ~ "Positive",
-      significant == "Yes" & mean_slope < 0 ~ "Negative",
-      TRUE ~ "Not significant"
-    )
-  ) %>%
-  group_by(outcome) %>%
-  summarize(
-    # Species with min and max slope
-    most_negative_species = region_species[which.min(mean_slope)],
-    most_negative_value   = min(mean_slope),
-    most_positive_species = region_species[which.max(mean_slope)],
-    most_positive_value   = max(mean_slope),
-    
-    # Proportions
-    n_species = n(),
-    n_positive = sum(direction == "Positive"),
-    n_negative = sum(direction == "Negative"),
-    prop_positive = n_positive / n_species,
-    prop_negative = n_negative / n_species,
-    total_prop_significant = (n_positive + n_negative) / n_species,
-    
-    .groups = "drop"
-  )
-
-
-
-
-
-
-
-
-
-
-
-
-
-# summarise slopes for results --------------------------------------------
-
-#global
-global_slopes_summary <- global_slopes_long %>%
-  group_by(outcome, parameter) %>%
-  summarise(
-    mean_slope = mean(slope),
-    lower_95 = quantile(slope, 0.025),
-    upper_95 = quantile(slope, 0.975),
-    .groups = "drop"
-  )
-
-#region
-region_slopes_summary <- region_slopes_long %>%
-  group_by(region, outcome) %>%
-  summarise(
-    mean_slope = mean(slope),
-    lower_95 = quantile(slope, 0.025),
-    upper_95 = quantile(slope, 0.975),
-    .groups = "drop"
-  ) %>%
-  mutate(
-    significant = if_else(lower_95 > 0 | upper_95 < 0, "Yes", "No")
-    )
-
-
-prop_significant_region <- species_slopes_long %>%
-  group_by(region, region_species, outcome) %>%
-  summarise(
-    mean_slope = mean(full_slope),
-    lower_95 = quantile(full_slope, 0.025),
-    upper_95 = quantile(full_slope, 0.975),
-    .groups = "drop"
-  ) %>%
-  mutate(
-    significant = if_else(lower_95 > 0 | upper_95 < 0, "Yes", "No"),
-    direction = case_when(
-      significant == "Yes" & mean_slope > 0 ~ "Positive",
-      significant == "Yes" & mean_slope < 0 ~ "Negative",
-      TRUE ~ "Not significant"
-    )
-  ) %>%
-  group_by(outcome,region) %>%
-  summarize(
-    # Proportions
-    n_species = n(),
-    n_positive = sum(direction == "Positive"),
-    n_negative = sum(direction == "Negative"),
-    prop_positive = n_positive / n_species,
-    prop_negative = n_negative / n_species,
-    total_prop_significant = (n_positive + n_negative) / n_species,
-    .groups = "drop"
-  )
-
-write_csv(prop_significant_region, here('bayesian_trends/tables/prop_by_region.csv'))
-
-species_slopes_summary <- species_slopes_long %>%
-  group_by(region, region_species, outcome) %>%
-  summarise(
-    mean_slope = mean(full_slope),
-    lower_95 = quantile(full_slope, 0.025),
-    upper_95 = quantile(full_slope, 0.975),
-    .groups = "drop"
-  ) %>%
-  mutate(
-    significant = if_else(lower_95 > 0 | upper_95 < 0, "Yes", "No"),
-    direction = case_when(
-      significant == "Yes" & mean_slope > 0 ~ "Positive",
-      significant == "Yes" & mean_slope < 0 ~ "Negative",
-      TRUE ~ "Not significant"
-    )
-  ) %>%
-  group_by(outcome) %>%
-  summarize(
-    # Species with min and max slope
-    most_negative_species = region_species[which.min(mean_slope)],
-    most_negative_value   = min(mean_slope),
-    most_positive_species = region_species[which.max(mean_slope)],
-    most_positive_value   = max(mean_slope),
-    
-    # Proportions
-    n_species = n(),
-    n_positive = sum(direction == "Positive"),
-    n_negative = sum(direction == "Negative"),
-    prop_positive = n_positive / n_species,
-    prop_negative = n_negative / n_species,
-    total_prop_significant = (n_positive + n_negative) / n_species,
-    
-    .groups = "drop"
-  )
-
-
-write_csv(species_slopes_summary, here('bayesian_trends/tables/species_slopes_summary.csv'))
-
-
-# export slopes for processing --------------------------------------------
-
-bayesian_species_trends <- species_slopes_long %>%
-  group_by(region, region_species, outcome) %>%
-  summarise(
-    mean_slope = mean(full_slope),
-    lower_95 = quantile(full_slope, 0.025),
-    upper_95 = quantile(full_slope, 0.975),
-    .groups = "drop"
-  ) %>%
-  mutate(
-    significant = if_else(lower_95 > 0 | upper_95 < 0, "Yes", "No"),
-    direction = case_when(
-      significant == "Yes" & mean_slope > 0 ~ "Positive",
-      significant == "Yes" & mean_slope < 0 ~ "Negative",
-      TRUE ~ "Not significant"
-    )
-  ) %>%
-  separate(
-    region_species,
-    into = c("region", "species"),
-    sep = "_",
-    extra = "merge",
-    remove = FALSE
-  )
-
-write_rds(bayesian_species_trends, here('data/processed/bayesian_species_trends.rds'))
-
-
-# export species-region slopes ---------------------------------------------
-bayesian_species_trends <- species_slopes_long %>%
-  group_by(region, region_species, outcome) %>%
-  summarise(
-    mean_slope = mean(full_slope),
-    lower_95 = quantile(full_slope, 0.025),
-    upper_95 = quantile(full_slope, 0.975),
-    .groups = "drop"
-  ) %>%
-  mutate(
-    significant = if_else(lower_95 > 0 | upper_95 < 0, "Yes", "No"),
-    direction = case_when(
-      significant == "Yes" & mean_slope > 0 ~ "Positive",
-      significant == "Yes" & mean_slope < 0 ~ "Negative",
-      TRUE ~ "Not significant"
-    )
-  ) %>%
-  separate(
-    region_species,
-    into = c("region", "species"),
-    sep = "_",
-    extra = "merge"
-  ) %>%
-  mutate(
-    # Clean species names and format for LaTeX
-    species = str_replace_all(species, "_", " "),
-    species = str_to_title(species),
-    Species = paste0("\\textit{", species, "}"),
-    
-    # Replace outcome codes with descriptive labels
-    outcome = recode(
-      outcome,
-      cogyc = "Latitudinal shift",
-      cogxc = "Longitudinal shift",
-      depthnichec = "Depth shift",
-      thermalnichec = "Thermal niche shift"
-    ),
-    
-    # Round numeric columns to 2 decimals
-    mean_slope = round(mean_slope, 2),
-    lower_95 = round(lower_95, 2),
-    upper_95 = round(upper_95, 2)
-  ) %>%
-  # Rename columns for LaTeX-friendly table
-  rename(
-    Region = region,
-    `Type of shift` = outcome,
-    Estimate = mean_slope,
-    `Lower 95 % CI` = lower_95,
-    `Upper 95 % CI` = upper_95,
-    Significant = significant,
-    Direction = direction
-  ) %>%
-  select(Region, Species, `Type of shift`, Estimate, `Lower 95 % CI`, `Upper 95 % CI`, Significant, Direction)
-
-write_csv(bayesian_species_trends, here('data/processed/bayesian_species_trends.rds'))
-
-# Export LaTeX table
-kable(bayesian_species_trends,
-      format = "latex",
-      booktabs = TRUE,
-      longtable = TRUE,
-      caption = "Posterior estimates of species-level shifts. For each species, the table shows the estimated rate of change (Estimate) with 95% credible intervals (CI), whether the shift was statistically significant, and the direction of change. Outcomes include latitudinal, longitudinal, depth, and thermal niche shifts."
-) %>%
-  kable_styling(latex_options = c("repeat_header")) %>%
-  cat(file = here('bayesian_trends/tables/bayesian_species_trends.tex'))
-
-
-
-
-
-
-# export species-specific slopes ------------------------------------------
-library(knitr)
-library(kableExtra)
-
-species_slopes_summary <- species_slopes_long %>%
-  group_by(region, region_species, outcome, sp_id) %>%
-  summarise(
-    mean_slope = mean(full_slope),
-    lower_95 = quantile(full_slope, 0.025),
-    upper_95 = quantile(full_slope, 0.975),
-    .groups = "drop"
-  ) %>%   mutate(outcome = recode(outcome,
-                          cogyc = "Latitudinal shift",
-                          cogxc = "Longitudinal shift",
-                          depthnichec = "Depth shift",
-                          thermalnichec = "Thermal niche shift"
-  )) %>%
-  # format mean ± CI
-  mutate(value = paste0(round(mean_slope, 2), 
-                        " [", round(lower_95, 2), "–", round(upper_95, 2), "]")) %>%
-  # keep only species name (after first "_")
-  mutate(species = str_remove(region_species, "^[^_]+_")) %>%
-  # pivot outcomes to wide format
-  select(region, species, sp_id, outcome, value) %>%
-  pivot_wider(names_from = outcome, values_from = value) %>% rename(
-    Region = region,
-    Species = species,
-    `Species ID` = sp_id
-  ) %>%
-  # replace underscores with spaces in species names
-  mutate(Species = gsub("_", " ", Species))
-
-# Create LaTeX table
-# Create LaTeX table for multi-page
-latex_table <- species_slopes_summary %>%
-  kable(format = "latex",
-        booktabs = TRUE,
-        longtable = TRUE,          # enables multi-page
-        caption = "Species Slopes Summary",
-        escape = FALSE) %>%
-  kable_styling(latex_options = c("repeat_header", "scale_down"))
-
-# Export to .tex
-cat(latex_table, file = here("bayesian_trends/tables/species_slopes_summary.tex"))
