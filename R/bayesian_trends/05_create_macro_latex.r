@@ -3,8 +3,24 @@ library(tidyverse)
 library(readr)
 
 # Read in the trend data
-global <- readRDS(here('R/data/processed/bayesian_global_trends.rds'))
-region <- readRDS(here('R/data/processed/bayesian_region_trends.rds'))
+global <- readRDS(here('R/data/processed/bayesian_global_trends.rds')) %>%  mutate(
+  outcome = case_when(
+    outcome == "cogyc" ~ "lat",
+    outcome == "cogxc" ~ "lon",
+    outcome == "depthnichec" ~ "depth",
+    outcome == "thermalnichec" ~ "thermal",
+    TRUE ~ as.character(outcome)
+  )
+)
+region <- readRDS(here('R/data/processed/bayesian_region_trends.rds')) %>%  mutate(
+  outcome = case_when(
+    outcome == "cogyc" ~ "lat",
+    outcome == "cogxc" ~ "lon",
+    outcome == "depthnichec" ~ "depth",
+    outcome == "thermalnichec" ~ "thermal",
+    TRUE ~ as.character(outcome)
+  )
+)
 species <- readRDS(here('R/data/processed/bayesian_species_trends.rds'))
 
 
@@ -25,23 +41,22 @@ write_tex <- function(x, macro, append = TRUE) {
 unlink("output/values/bayesian_trend_analysis/global_slopes.tex")
 
 for (i in seq_len(nrow(global))) {
-  oc <- global$outcome[i]
+  oc <- tools::toTitleCase(tolower(global$outcome[i])) 
   
-  # write the median slope
+  # write the median slope macro
   write_tex(
     mround(global$median_slope[i], 2),
     paste0(oc, "Median")
   )
   
-  # write the 95% CI as a formatted string
+  # write the CI-only macro in parentheses
   write_tex(
     paste0(
-      mround(global$median_slope[i], 2),
       " (95\\% CI: ",
-      mround(global$lower_95[i], 2), "--", 
+      mround(global$lower_95[i], 2), "--",
       mround(global$upper_95[i], 2), ")"
     ),
-    paste0(oc, "Value")
+    paste0(oc, "CI")
   )
 }
 
@@ -53,32 +68,36 @@ write_tex <- function(x, macro, append = TRUE) {
   paste0("\\newcommand{\\", macro, "}{", x, "}") |>
     readr::write_lines("output/values/bayesian_trend_analysis/region_slopes.tex", append = append)
 }
+
+# remove existing file
 unlink("output/values/bayesian_trend_analysis/region_slopes.tex")
 
+# loop through rows
 for (i in seq_len(nrow(region))) {
-  oc <- tolower(region$outcome[i])
-  re <- tolower(region$region[i])
+  oc <- tools::toTitleCase(tolower(region$outcome[i])) 
+  re <- region$region[i]
   
-  # write the 95% CI as a formatted string
+  # combine without underscore
+  macro_base <- paste0(oc, re)
+  
+  # median macro 
+  write_tex(
+    mround(region$median_slope[i], 2),
+    paste0(macro_base, "Median")
+  )
+  
+  # CI-only macro in parentheses 
   write_tex(
     paste0(
-      mround(region$median_slope[i], 2),
-      " (95\\% CI: ",
+      "(95\\% CI: ",
       mround(region$lower_95[i], 2), "--", 
       mround(region$upper_95[i], 2), ")"
     ),
-    paste0(oc,re, "Value")
+    paste0(macro_base, "CI")
   )
 }
 
 # species slopes, just min and max ----------------------------------------------------------
-
-# LaTeX macro writer
-write_tex <- function(x, macro, append = TRUE) {
-  paste0("\\newcommand{\\", macro, "}{", x, "}") |>
-    readr::write_lines("output/values/bayesian_trend_analysis/species_slopes.tex", append = append)
-}
-unlink("output/values/bayesian_trend_analysis/species_slopes.tex")
 
 # prepare species names in LaTeX italics
 # get one-row tables for max and min per outcome
@@ -113,32 +132,69 @@ min_df <- data %>%
 # join by outcome (now tidy: one row per outcome, clear column names)
 extremes <- left_join(max_df, min_df, by = "outcome")
 
+extremes <- extremes %>% mutate(
+  outcome = case_when(
+    outcome == "lat_shift" ~ "lat",
+    outcome == "lon_shift" ~ "lon",
+    outcome == "depth_shift" ~ "depth",
+    outcome == "thermal_shift" ~ "thermal",
+    TRUE ~ as.character(outcome)
+  )
+)
 
-# write macros (one set per outcome)
+# remove existing file
+unlink("output/values/bayesian_trend_analysis/species_slopes.tex")
+# LaTeX macro writer
+write_tex <- function(x, macro, append = TRUE) {
+  paste0("\\newcommand{\\", macro, "}{", x, "}") |>
+    readr::write_lines("output/values/bayesian_trend_analysis/species_slopes.tex", append = append)
+}
+
+# loop through each outcome
 for (i in seq_len(nrow(extremes))) {
-  oc <- extremes$outcome[i]
+  oc <- tools::toTitleCase(tolower(extremes$outcome[i]))  # Capitalized outcome
   
-  # max macros
-  write_tex(extremes$max_species_tex[i], paste0("max", oc, "Species"))
-  write_tex(extremes$max_region[i], paste0("max", oc, "Region"))
+  ## ----- MAX macros -----
+  
+  # species and region
+  write_tex(extremes$max_species_tex[i], paste0("Max", oc, "Species"))
+  write_tex(extremes$max_region[i], paste0("Max", oc, "Region"))
+  
+  # median
   write_tex(
-    paste0(
-      mround(extremes$max_median[i], 2),
-      " (95\\% CI: ",
-      mround(extremes$max_lower_95[i], 2), "--", mround(extremes$max_upper_95[i], 2), ")"
-    ),
-    paste0("max", oc, "Value")
+    mround(extremes$max_median[i], 2),
+    paste0("Max", oc, "Median")
   )
   
-  # min macros
-  write_tex(extremes$min_species_tex[i], paste0("min", oc, "Species"))
-  write_tex(extremes$min_region[i], paste0("min", oc, "Region"))
+  # CI only
   write_tex(
     paste0(
-      mround(extremes$min_median[i], 2),
       " (95\\% CI: ",
-      mround(extremes$min_lower_95[i], 2), "--", mround(extremes$min_upper_95[i], 2), ")"
+      mround(extremes$max_lower_95[i], 2), "--",
+      mround(extremes$max_upper_95[i], 2), ")"
     ),
-    paste0("min", oc, "Value")
+    paste0("Max", oc, "CI")
+  )
+  
+  ## ----- MIN macros -----
+  
+  # species and region
+  write_tex(extremes$min_species_tex[i], paste0("Min", oc, "Species"))
+  write_tex(extremes$min_region[i], paste0("Min", oc, "Region"))
+  
+  # median
+  write_tex(
+    mround(extremes$min_median[i], 2),
+    paste0("Min", oc, "Median")
+  )
+  
+  # CI only
+  write_tex(
+    paste0(
+      "(95\\% CI: ",
+      mround(extremes$min_lower_95[i], 2), "--",
+      mround(extremes$min_upper_95[i], 2), ")"
+    ),
+    paste0("Min", oc, "CI")
   )
 }
