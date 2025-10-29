@@ -254,7 +254,7 @@ Next, we compared two alternative random-effects structures using LOO cross-vali
 An alternative would have been to fit separate models for each species and outcome. But this ignores information shared across taxa, regions, and outcomes. Instead, a hierarchical specification applies partial pooling: estimates draw strength from the broader dataset while still allowing region- and species-specific deviations. This shrinkage produces estimates that are more stable than those from independent fits (Supplementary Fig.~\ref{fig:shrinkage}; \citealt{mcelreath_statistical_2018}).
 
 
-To improve interpretability and aid in model convergence, we normalized both the response variables and the time predictor within each species–region combination so that their mean is zero. As a result, the intercept can be omitted. We then rescaled time to decades, so that the slope can be interpreted directly as the rate of change per decade.
+To improve interpretability and aid in model convergence, we mean-centered both the response variables and the time predictor within each species–region combination so that their mean is zero. As a result, the intercept can be omitted. We then rescaled time to decades, so that the slope can be interpreted directly as the rate of change per decade.
 Thus the model can be written as:
 
 \begin{align}
