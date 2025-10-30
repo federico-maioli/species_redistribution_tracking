@@ -19,6 +19,9 @@ region <- readRDS(here('R/data/processed/bayesian_region_trends.rds')) %>%  muta
     outcome == "depthnichec" ~ "depth",
     outcome == "thermalnichec" ~ "thermal",
     TRUE ~ as.character(outcome)
+  ), region = case_when(
+    region == "NEUS-SS" ~ "NEUS",
+    TRUE ~ as.character(region)
   )
 )
 species <- readRDS(here('R/data/processed/bayesian_species_trends.rds'))
@@ -198,3 +201,32 @@ for (i in seq_len(nrow(extremes))) {
     paste0("Min", oc, "CI")
   )
 }
+
+
+# thermal niche warming in pace with local warming ------------------------
+
+# get regional slopes
+
+grid <- read_rds(here('R/data/processed/prediction_grid.rds'))
+
+# summarize mean temperature per year-region
+temp_summary <- grid %>%
+  group_by(year, region_short) %>%
+  summarise(mean_temp = mean(mean_year_temp, na.rm = TRUE), .groups = "drop") 
+
+# compute slopes per region
+slopes <- temp_summary %>%
+  group_by(region_short) %>%
+  summarise(
+    slope_decade = coef(lm(mean_temp ~ year))[2] * 10,
+    .groups = "drop"
+  ) 
+
+
+region_termal_niche_slope <- region %>% filter(outcome == 'thermal') %>% select(region,median_slope)
+
+comb <- slopes %>% left_join(region_termal_niche_slope, by = c('region_short'='region'))
+
+# calculate corr
+test_result <- cor.test(comb$slope_decade, comb$median_slope, use = "complete.obs", method = "pearson")
+
