@@ -168,18 +168,16 @@ We use spatiotemporal and Bayesian mixed-effects models to quantify long-term tr
 
 \section{Results}\label{Results}
 
-\include{output/values/bayesian_trend_analysis/global_slopes}
-
+\input{output/values/bayesian_trend_analysis/global_slopes}
 
 \subsection{No net spatial shifts, but widespread niche warming across species and regions}
-NEUS\text{-}SS
-Overall, we found no consistent directional shifts across species and regions in either latitude or longitude over time, as indicated by 95\% Credible Intervals (CIs) overlapping zero. In our Bayesian regression model, the posterior median global slope ($\beta_{\text{decade}}$) for latitudinal shift was \LatMedian km decade$^{-1}$ \LatCI, and for longitudinal shift was \LonMedian km decade$^{-1}$ \LonCI (Fig. \ref{fig:effsize}). In contrast, we observed modest support for cross-regional trends in species deepening and strong support for thermal niche warming. The global slope for depth shift was \DepthMedian m decade$^{-1}$ \DepthCI, whereas for thermal niche shift it was 0.18 $^{\circ}$C decade$^{-1}$ [95\% CI: 0.07, 0.29] (Fig. \ref{fig:effsize}a).
+
+Overall, we detected no consistent directional shifts in either latitude or longitude across species and regions, as 95\% credible intervals (CIs) greatly overlapped zero (Fig. \ref{fig:posterior_slopes}a). The posterior median global slope ($\beta_{\text{decade}}$) for latitudinal change was \LatMedian{} km decade$^{-1}$ \LatCI{}, and for longitudinal change \LonMedian{} km decade$^{-1}$ \LonCI{}. Depth exhibited a slightly stronger, though still uncertain, tendency toward deepening (\DepthMedian{} m decade$^{-1}$ \DepthCI{}), while thermal niche temperatures increased consistently across species and regions (\ThermalMedian{} °C decade$^{-1}$ \ThermalCI{}).
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=1\textwidth]{output/figures/main/posterior_slopes.png}
-\label{fig:posterior_slopes}
-\caption{Trends in distributional shifts of demersal fish species over time, from left to right: latitudinal, longitudinal, depth, and thermal niche shifts. Points and horizontal lines indicate posterior medians and 95\% Bayesian credible intervals.  
+\caption{\label{fig:posterior_slopes}Trends in distributional shifts of demersal fish species over time, from left to right: latitudinal, longitudinal, depth, and thermal niche shifts. Points and horizontal lines indicate posterior medians and 95\% Bayesian credible intervals.  
 (a) Global posterior slopes ($\beta_{year}$),  
 (b) Region-specific trends,  
 (c) Species-specific trends (rows represent species within regions; see Supplementary XX).  
@@ -187,6 +185,30 @@ Density intervals in (a-b) use a continuous gradient reflecting x-values; in (c)
 Marine regions: COW = California-Oregon-Washington, NEUS = Northeast U.S. and Scotian Shelf, BS = Barents Sea, NS = North Sea, BC = British Columbia, GOA = Gulf of Alaska, GMX = Gulf of Mexico, NIC = Northern Iberian Coast, EBS = Eastern Bering Sea, CBS = Celtic-Biscay Shelf, BAL = Baltic Sea.}
 \end{figure}
 
+\subsection{Regional variation in shifts}
+
+\input{output/values/bayesian_trend_analysis/region_slopes}
+
+At the regional scale, estimated spatial shift slopes typically overlapped zero, indicating limited evidence for consistent directional changes in mean latitude, longitude, or depth across species within most regions (Fig.\ref{fig:posterior_slopes}b). Exceptions were observed for depth, with moderately stronger deepening trends along the U.S. West Coast (USWC;\DepthUSWCMedian{} m decade$^{-1}$ \DepthUSWCMCI{}) and the Northeast U.S.–Scotian Shelf (NEUS–SS;\DepthNEUSMedian{} m decade$^{-1}$ \DepthNEUSCI{}).
+
+
+
+However, some indications of coherence where evident when looking at the proportion of species in a region showing support for something. for instance, In the eastern Bering Sea (EBS), 64\% of species swhowed support for shifted northward, and a similar proportion did so in the North Sea (NS; 60\%), whereas 75\% of species in the Baltic Sea (BS) shifted southward. Longitudinal responses were weaker and more variable, with around half of the species shifting westward in EBS and NS, and 41\% shifting eastward in British Columbia (BC). whilst 
+
+were small in magnitude and directionally inconsistent among regions. In contrast, thermal niche temperatures increased in nearly all regions, generally tracking local rates of ocean warming (\textit{$\rho$} = 0.79, \textit{n} = 11, \textit{p} = 0.0036).
+
+
+Region-wide community trends revealed that horizontal shifts were generally weak and inconsistent, whereas vertical and thermal niche shifts were more frequent and pronounced (Fig. \ref{fig:posterior_slopes}b). 
+
+Latitudinal shifts varied among regions, with the highest proportion of species demonstrating significant changes (i.e., 95\% CIs excluding zero) in the North Sea (NS; 73\%) and Celtic-Biscay Shelf (CBS; 64\%), and fewer in the Gulf of Mexico (GMX; 15\%) and Gulf of Alaska (GOA; 14\%) and none in the Northern Iberian Coast (NIC; Supplementary Fig. \ref{fig:prop_sign}). Interestingly, both northward and southward responses were roughly balanced across most regions, although NS showed more northward movements (53\%) and the Baltic Sea (BAL) more southward (63\%). The only region with a clearly significant mean latitudinal shift was British Columbia (BC), showing a southward change of $-16.74$ km decade$^{-1}$ [95\% CI: $-30.44$, $-2.93$].
+
+Longitudinal shifts  were generally weaker, with the highest proportion of species showing significant changes found in NS (80\%) and GMX (51\%), while only few species were found in CBS (10\%) and in the California–Oregon–Washington region (COW; 3\%). Eastward and westward movements were both observed, with NS showing predominantly westward shifts (53\%).
+
+Depth-related shifts were most pronounced in BC (66\%) and NS (60\%), with species mainly moving to deeper waters in the northeast U.S. and Scotian Shelf (NEUS; 52\%) and BC (45\%) (Supplementary Fig. \ref{fig:prop_sign}). Significant shifts towards greater depths were found in BC ($1.97$ m decade$^{-1}$ [95\% CI: $0.40$, $3.80$]) and NEUS ($1.84$ m decade$^{-1}$ [95\% CI: $0.32$, $3.50$]), while BAL and Barents Sea (BS) showed lower proportions of significant changes in depth distribution (0–31\%).
+
+In contrast to the spatial shifts above, thermal niche shifts were widespread and consistent across most regions (Supplementary Fig. \ref{fig:prop_sign}. More specifically, nearly all species in BC, CBS, COW, GMX, GOA, NEUS, and NS exhibited significant warming responses, with rates ranging from $0.13^{\circ}$C decade$^{-1}$ (CBS, COW) to $0.53^{\circ}$C decade$^{-1}$ in NEUS. Only NIC, EBS, and BS lacked significant thermal shifts.
+
+\subsection{High interspecific variability underlying weak aggregate trends}
 
 \section{This is an example for first level head---section head}\label{sec3}
 
@@ -366,11 +388,6 @@ As per the \LaTeX\ standards you need to use eps images for \LaTeX\ compilation 
 %% \bigskip command. Please ignore this.       %%
 %%=============================================%%
 
-\begin{figure}[h]
-\centering
-\includegraphics[width=0.9\textwidth]{fig.eps}
-\caption{This is a widefig. This is an example of long caption this is an example of long caption  this is an example of long caption this is an example of long caption}\label{fig1}
-\end{figure}
 
 In case of double column layout, the above format puts figure captions/images to single column width. To get spanned images, we need to provide \verb+\begin{figure*}+ \verb+...+ \verb+\end{figure*}+.
 
