@@ -55,9 +55,9 @@ for (i in seq_len(nrow(global))) {
   # write the CI-only macro in parentheses
   write_tex(
     paste0(
-      "(95\\% CI: ",
-      mround(global$lower_95[i], 2), "--",
-      mround(global$upper_95[i], 2), ")"
+      "[95\\% CI: ",
+      mround(global$lower_95[i], 2), ", ",
+      mround(global$upper_95[i], 2), "]"
     ),
     paste0(oc, "CI")
   )
@@ -92,9 +92,9 @@ for (i in seq_len(nrow(region))) {
   # CI-only macro in parentheses 
   write_tex(
     paste0(
-      "(95\\% CI: ",
-      mround(region$lower_95[i], 2), "--", 
-      mround(region$upper_95[i], 2), ")"
+      "[95\\% CI: ",
+      mround(region$lower_95[i], 2), ", ", 
+      mround(region$upper_95[i], 2), "]"
     ),
     paste0(macro_base, "CI")
   )
