@@ -189,10 +189,18 @@ Marine regions: COW = California-Oregon-Washington, NEUS = Northeast U.S. and Sc
 
 \input{output/values/bayesian_trend_analysis/region_slopes}
 
-At the regional scale, estimated spatial shift slopes typically overlapped zero, indicating limited evidence for consistent directional changes in mean latitude, longitude, or depth across species within most regions (Fig.\ref{fig:posterior_slopes}b). Depth showed the clearest—though still weak and uncertain—signals, with modest tendencies toward deepening along the U.S. West Coast (USWC; \DepthUSWCMedian{} m decade$^{-1}$, \DepthUSWCCI{}) and the Northeast U.S. \& Scotian Shelf (NEUS–SS; \DepthNEUSMedian{} m decade$^{-1}$, \DepthNEUSCI{}).
+At the regional scale, estimated spatial shift slopes typically overlapped zero, indicating limited evidence for consistent directional changes in mean latitude, longitude, or depth across species within most regions (Fig.\ref{fig:posterior_slopes}b).
 
-While regional trends were generally weak, patterns became more apparent when considering the proportion of species exhibiting significant shifts, regardless of magnitude. In the eastern Bering Sea (EBS), 64\% of species shifted northward, and a similar proportion did so in the North Sea (NS; 60\%), whereas 75\% of species in the Baltic Sea (BS) shifted southward. Longitudinal responses were weaker and more variable, with around half of the species shifting westward in EBS and NS, and 41\% shifting eastward in British Columbia (BC). 
+Although regional slopes were generally weak, a few coherent tendencies emerged. In the eastern Bering Sea (EBS), 64\% of species showed support for northward shifts, and a similar proportion did so in the North Sea (NS; 60\%), whereas 75\% of species in the Baltic Sea (BS) shifted southward (Fig. \ref{fig:prop_significant_supp}). Longitudinal responses were weaker and more variable, with around half of the species shifting westward in EBS and NS, and 41\% shifting eastward in British Columbia (BC). 
+Depth showed the clearest—though still weak and uncertain—signals, with modest tendencies toward deepening along the U.S. West Coast (USWC; \DepthUSWCMedian{} m decade$^{-1}$, \DepthUSWCCI{}) and the Northeast U.S. \& Scotian Shelf (NEUS–SS; \DepthNEUSMedian{} m decade$^{-1}$, \DepthNEUSCI{}). 66\% species shifted shouth in BC  and 60\% in NS, with species mainly moving to deeper waters in the northeast U.S. and Scotian Shelf (NEUS; 52\%) and BC (45\%) (Supplementary Fig. \ref{fig:prop_sign}).
 
+
+
+
+
+
+
+While regional trends were generally weak, patterns became more apparent when considering the proportion of species exhibiting significant shifts, regardless of magnitude. 
 
 However, some indications of coherence where evident when looking at the proportion of species in a region showing support for something. for instance, In the eastern Bering Sea (EBS), 64\% of species swhowed support for shifted northward, and a similar proportion did so in the North Sea (NS; 60\%), whereas 75\% of species in the Baltic Sea (BS) shifted southward. Longitudinal responses were weaker and more variable, with around half of the species shifting westward in EBS and NS, and 41\% shifting eastward in British Columbia (BC). whilst 
 
@@ -205,7 +213,7 @@ Latitudinal shifts varied among regions, with the highest proportion of species 
 
 Longitudinal shifts  were generally weaker, with the highest proportion of species showing significant changes found in NS (80\%) and GMX (51\%), while only few species were found in CBS (10\%) and in the California–Oregon–Washington region (COW; 3\%). Eastward and westward movements were both observed, with NS showing predominantly westward shifts (53\%).
 
-Depth-related shifts were most pronounced in BC (66\%) and NS (60\%), with species mainly moving to deeper waters in the northeast U.S. and Scotian Shelf (NEUS; 52\%) and BC (45\%) (Supplementary Fig. \ref{fig:prop_sign}). Significant shifts towards greater depths were found in BC ($1.97$ m decade$^{-1}$ [95\% CI: $0.40$, $3.80$]) and NEUS ($1.84$ m decade$^{-1}$ [95\% CI: $0.32$, $3.50$]), while BAL and Barents Sea (BS) showed lower proportions of significant changes in depth distribution (0–31\%).
+. Significant shifts towards greater depths were found in BC ($1.97$ m decade$^{-1}$ [95\% CI: $0.40$, $3.80$]) and NEUS ($1.84$ m decade$^{-1}$ [95\% CI: $0.32$, $3.50$]), while BAL and Barents Sea (BS) showed lower proportions of significant changes in depth distribution (0–31\%).
 
 In contrast to the spatial shifts above, thermal niche shifts were widespread and consistent across most regions (Supplementary Fig. \ref{fig:prop_sign}. More specifically, nearly all species in BC, CBS, COW, GMX, GOA, NEUS, and NS exhibited significant warming responses, with rates ranging from $0.13^{\circ}$C decade$^{-1}$ (CBS, COW) to $0.53^{\circ}$C decade$^{-1}$ in NEUS. Only NIC, EBS, and BS lacked significant thermal shifts.
 
@@ -213,23 +221,11 @@ In contrast to the spatial shifts above, thermal niche shifts were widespread an
 
 \input{output/values/bayesian_trend_analysis/species_slopes}
 \input{output/values/bayesian_trend_analysis/prop_signif}
-\inpu
+\input{output/values/bayesian_trend_analysis/prop_signif_by_dir}
 
-At the species level, responses were highly variable in both direction and magnitude (Fig.~\ref{fig:posterior_slopes}c). Approximately \LatPerc of the 226 populations assessed showed directional shifts in latitude, with northward and southward movements occurring at comparable frequencies (20\% and 18\%, respectively). The strongest northward shift was observed in \MaxLatSpecies in \MaxLatRegion with \MaxLatMedian \MaxLatCI, while \MinLatSpecies exhibited the most pronounced southward movement in \MinLatRegion \MinLatMedian \MinLatCI.
+At the species level, spatial responses were highly variable in both direction and magnitude (Fig.~\ref{fig:posterior_slopes}c). Approximately \LatPerc{} of the 226 populations shifted in latitude, with northward and southward movements occurring in similar proportions (\LatNorthingPerc{} and \LatSouthingPerc{}, respectively). The most extreme northward shift was seen in \MaxLatSpecies{} in \MaxLatRegion{} (\MaxLatMedian{} \MaxLatCI{}), and the largest southward in \MinLatSpecies{} in \MinLatRegion{} (\MinLatMedian{} \MinLatCI{}). Longitudinal shifts occurred in 40\% of species, with \LonWestingPerc{} moving westward and \LonEastingPerc{} eastward. The strongest eastward and westward shifts were in \MaxLonSpecies{} in \MaxLonRegion{} (\MaxLonMedian{} \MaxLonCI{}) and \MinLonSpecies{} in \MinLonRegion{} (\MinLonMedian{} \MinLonCI{}), respectively. Depth changes were observed in \DepthDeepeningPerc{} of species deepening and \DepthShallowingPerc{} shallowing. The largest shifts were \MaxDepthSpecies{} in \MaxDepthRegion{} (\MaxDepthMedian{} \MaxDepthCI{}) deeper and \MinDepthSpecies{} in \MinDepthRegion{} (\MinDepthMedian{} \MinDepthCI{}) shallower. In contrast, thermal niches warmed consistently: \ThermalPerc{} of species experienced increasing temperatures, with no species cooling. The fastest warming occurred in \MaxThermalSpecies{} in \MaxThermalRegion{} (\MaxThermalMedian{} \MaxThermalCI{}).
 
-Longitudinal shifts were detected in roughly one-third of species, again without a consistent direction. About 21\% shifted westward and 14\% eastward, led by \MaxLonSpecies in \MaxLonRegion eastward with \MaxLonMedian \MaxLonCI, while \MinLonSpecies exhibited the most pronounced westward movement in \MinLonRegion \MinLonMedian \MinLonCI.
 
-Depth changes were similarly balanced, with around one-fifth of species moving deeper and a similar proportion shallower. The largest deepening occurred in \MaxDepthSpecies in \MaxDepthRegion  with \MaxDepthMedian \MaxDepthCI, while \MinDepthSpecies exhibited the most pronounced shallowing in \MinDepthRegion \MinDepthMedian \MinDepthCI.
-
-In contrast to these spatial responses, thermal niches warmed consistently across species: \ThermalPerc{} showed positive trends in experienced temperature, with no evidence of cooling. The steepest warming occurred in Urophycis tenuis in the Northeast U.S. \& Scotian Shelf (0.56 °C decade$^{-1}$).
-
-\section{This is an example for first level head---section head}\label{sec3}
-
-\subsection{This is an example for second level head---subsection head}\label{subsec2}
-
-\subsubsection{This is an example for third level head---subsubsection head}\label{subsubsec2}
-
-Sample body text. Sample body text. Sample body text. Sample body text. Sample body text. Sample body text. Sample body text. Sample body text. 
 
 \section{Equations}\label{sec4}
 
