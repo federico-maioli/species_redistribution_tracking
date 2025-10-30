@@ -240,6 +240,53 @@ for (i in seq_len(nrow(prop_by_outcome))) {
 
 # proportion by direction -------------------------------------------------
 
+prop_by_outcome_dir <- species %>%
+  filter(direction_label != "Not significant") %>%  # keep only meaningful directions
+  group_by(outcome, direction_label) %>%
+  summarise(
+    n_sig = sum(significant == "yes", na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  # get total rows per outcome
+  left_join(
+    species %>% group_by(outcome) %>% summarise(n_total = n(), .groups = "drop"),
+    by = "outcome"
+  ) %>%
+  mutate(
+    prop_sig = 100 * n_sig / n_total,
+    outcome_short = case_when(
+      outcome == "lat_shift" ~ "lat",
+      outcome == "lon_shift" ~ "lon",
+      outcome == "depth_shift" ~ "depth",
+      outcome == "thermal_shift" ~ "thermal",
+      TRUE ~ as.character(outcome)
+    ),
+    direction_clean = gsub(" ", "", direction_label)
+  )
+# View
+prop_by_outcome_dir
+
+out_file <- "output/values/bayesian_trend_analysis/prop_signif_by_dir.tex"
+unlink(out_file)
+
+write_tex <- function(x, macro, append = TRUE) {
+  paste0("\\newcommand{\\", macro, "}{", x, "}") |>
+    write_lines(out_file, append = append)
+}
+
+for (i in seq_len(nrow(prop_by_outcome_dir))) {
+  row <- prop_by_outcome_dir[i, ]
+  
+  # e.g., \LatNorthingPerc
+  macro_name <- paste0(
+    tools::toTitleCase(row$outcome_short),
+    tools::toTitleCase(row$direction_clean),
+    "Perc"
+  )
+  
+  write_tex(paste0(mround(row$prop_sig,0), "\\%"), macro_name)
+}
+
 # thermal niche warming in pace with local warming ------------------------
 
 # get regional slopes
