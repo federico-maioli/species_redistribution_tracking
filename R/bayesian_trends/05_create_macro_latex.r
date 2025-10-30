@@ -203,6 +203,43 @@ for (i in seq_len(nrow(extremes))) {
 }
 
 
+# proportion ----------------------------------------------------
+
+prop_by_outcome <- species %>%
+  group_by(outcome) %>%
+  summarise(
+    n = n(),
+    n_sig = sum(significant == "yes", na.rm = TRUE),
+    prop_sig = (n_sig / n) * 100
+  )  %>% mutate(outcome = case_when(
+    outcome == "lat_shift" ~ "lat",
+    outcome == "lon_shift" ~ "lon",
+    outcome == "depth_shift" ~ "depth",
+    outcome == "thermal_shift" ~ "thermal",
+    TRUE ~ as.character(outcome)
+  ))
+
+# Define LaTeX macro writer
+write_tex <- function(x, macro, append = TRUE) {
+  paste0("\\newcommand{\\", macro, "}{", x, "}") |>
+    write_lines("output/values/bayesian_trend_analysis/prop_signif.tex", append = append)
+}
+
+# Remove old output file
+unlink("output/values/bayesian_trend_analysis/prop_signif.tex")
+
+
+for (i in seq_len(nrow(prop_by_outcome))) {
+  oc <- tools::toTitleCase(tolower(prop_by_outcome$outcome[i]))
+  write_tex(
+    paste0(mround(prop_by_outcome$prop_sig[i],0), "\\%"),
+    paste0(oc, "Perc")
+  )
+}
+
+
+# proportion by direction -------------------------------------------------
+
 # thermal niche warming in pace with local warming ------------------------
 
 # get regional slopes
