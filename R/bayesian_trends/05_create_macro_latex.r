@@ -172,9 +172,9 @@ for (i in seq_len(nrow(extremes))) {
   # CI only
   write_tex(
     paste0(
-      "(95\\% CI: ",
-      mround(extremes$max_lower_95[i], 2), "--",
-      mround(extremes$max_upper_95[i], 2), ")"
+      "[95\\% CI: ",
+      mround(extremes$max_lower_95[i], 2), ", ",
+      mround(extremes$max_upper_95[i], 2), "]"
     ),
     paste0("Max", oc, "CI")
   )
@@ -194,9 +194,9 @@ for (i in seq_len(nrow(extremes))) {
   # CI only
   write_tex(
     paste0(
-      "(95\\% CI: ",
-      mround(extremes$min_lower_95[i], 2), "--",
-      mround(extremes$min_upper_95[i], 2), ")"
+      "[95\\% CI: ",
+      mround(extremes$min_lower_95[i], 2), ", ",
+      mround(extremes$min_upper_95[i], 2), "]"
     ),
     paste0("Min", oc, "CI")
   )
