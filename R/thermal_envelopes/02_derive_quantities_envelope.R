@@ -100,7 +100,7 @@ options(future.seed = TRUE)
 set.seed(123)
 
 # Process models in parallel
-data <- future_map(model_files, process_model_file, .progress = TRUE)
+data <- future_map(model_files, process_model_file, .progress = TRUE,.options = furrr_options(seed = TRUE))
 
 # Combine all results into a single data frame
 data <- bind_rows(data)

@@ -64,30 +64,69 @@ region_colors <- c(
 
 # create big map ----------------------------------------------------------
 
-world <- ne_countries(scale = "medium", returnclass = "sf")
+world <- ne_countries(scale = "medium", returnclass = "sf") %>%
+  st_union() %>%              # merge all countries into one geometry
+  st_sf(geometry = .)  
+
+# manually set labels 
+axis_labels <- rbind(
+  data.frame(
+    lon   = rep(-60, 3),
+    lat   = c(40, 60, 70),
+    label = paste0(c(40, 60, 70), "\u00B0N")
+  ),
+  data.frame(
+    lon = c(-120, -60, 0),
+    lat = rep(85, 3),
+    label = c(
+      paste0(abs(-120), "\u00B0W"),
+      paste0(abs(-60), "\u00B0W"),
+      "0\u00B0"  # no E/W for 0
+    )
+  )
+)
+
+# Convert to sf and project
+axis_labels_sf <- st_as_sf(axis_labels, coords = c("lon","lat"), crs = 4326) |>
+  st_transform(lcc_crs)
 
 map <- ggplot() +
   geom_sf(data = survey_regions, aes(fill = region_short), alpha = 0.5) +
-  geom_sf(data = world, color = 'grey20', fill = 'antiquewhite', size = .1) +
+  geom_sf(data = world, color = 'black', fill = 'grey80', size = 0.1) +
+  
+  # Region labels
   geom_text_repel(
     data = survey_regions,
     aes(label = region_short, geometry = geometry),
-    size = 2,
+    size = 2.8,
     stat = "sf_coordinates",
     min.segment.length = 0.5,
     seed = 1,
     box.padding = 0.3,
     color = "black",
     bg.color = "white",
-    bg.r = 0.15
+    bg.r = 0.2
   ) +
+  geom_sf_text(
+    data = axis_labels_sf,
+    aes(label = label),
+    size = 1.5,
+    color = "grey60"
+  ) +
+  
   scale_fill_manual(values = region_colors, name = "Region") +
-  coord_sf(crs = lcc_crs, xlim = c(-5000, 5000), ylim = c(-500, 6000)) +
-  theme_light(base_size = 10) +
-  theme(legend.position = 'none', plot.margin = margin(0, 0, 0, 0)) +
+  coord_sf(crs = lcc_crs, xlim = c(-5100, 5100), ylim = c(-600, 6100)) +
+  theme_bw(base_size = 10) +
+  theme(
+    legend.position = 'none',
+    plot.margin = margin(0, 0, 0, 0),
+    axis.text = element_blank(),
+    axis.ticks = element_blank(),
+    axis.title = element_blank(),
+  ) +
   labs(x = NULL, y = NULL)
 
-
+map
 # prepare temperature trend data -----------------------------------------
 
 grid <- read_rds(here('R/data/processed/prediction_grid.rds'))
@@ -140,7 +179,7 @@ region_plots <- map(regions, function(r) {
   y_breaks <- scales::breaks_extended(n = 5)(range(data_r$mean_temp, na.rm = TRUE))
   
   ggplot(data_r, aes(x = year, y = mean_temp)) +
-    geom_line(color = region_colors[r], alpha = .4, linewidth = .3) +
+    geom_line(color = region_colors[r], alpha = .8, linewidth = .2) +
     geom_textsmooth(
       aes(label = slope_expr),
       method = "lm",
@@ -157,10 +196,10 @@ region_plots <- map(regions, function(r) {
       breaks = y_breaks,
       labels = sapply(y_breaks, function(y) as.expression(bquote(.(y)*degree*C)))
     ) +
-    theme_light(base_size = 5) +
+    theme_bw(base_size = 5) +
     labs(
       title = unique(data_r$region_full),
-      x = "Year",
+      x = NULL,
       y = NULL
     ) +
     theme(
@@ -169,7 +208,10 @@ region_plots <- map(regions, function(r) {
       axis.ticks.length = unit(2, "pt"),
       axis.text = element_text(size = 6),
       panel.grid.major = element_blank(),
-      panel.grid.minor = element_blank()
+      panel.grid.minor = element_blank(),
+      axis.text.x  = element_text(angle = 45, hjust = 1),
+     # theme(aspect.ratio = 0.4) 
+     plot.margin = margin(7,2,7,2)
     )
 })
 
@@ -195,7 +237,7 @@ haul_plot <- ggplot(haul_counts, aes(x = year, y = region_short, fill = n_hauls)
                          barwidth = 15,
                          barheight = 0.3
                        )) +
-  labs(x = "Year", y = NULL) +
+  labs(x = NULL, y = NULL) +
   scale_x_continuous(expand = c(0, 0)) +
   theme_minimal(base_size = 7) +
   theme(
@@ -205,8 +247,8 @@ haul_plot <- ggplot(haul_counts, aes(x = year, y = region_short, fill = n_hauls)
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
     legend.box.margin = margin(-5, 0, 0, 0),
-    legend.margin = margin(0, 0, 0, 0),
-    plot.margin = margin(0, 5, 0, 5)
+    legend.margin = margin(2, 0, 0, 0),
+    plot.margin = margin(2, 5, 2, 5)
   )
 
 # assemble final plot ----------------------------------------------------
@@ -218,12 +260,30 @@ IIGGGGGGLL
 MMNNNNNNOO
 "
 
+
 final_plot <- (
-  region_plots[['EBS']] + region_plots[['NEUS-SS']] + region_plots[['GOM']] + region_plots[['BS']] + region_plots[['NS']] +
-    region_plots[['GOA']] + map + region_plots[['BAL']] + region_plots[['BC']] + region_plots[['CBS']] +
-    region_plots[['USWC']] +
-    haul_plot + region_plots[['NIC']]
+  free(region_plots[['EBS']]) + 
+    free(region_plots[['NEUS-SS']]) + 
+    free(region_plots[['GOM']]) + 
+    free(region_plots[['BS']]) + 
+    free(region_plots[['NS']]) +
+    free(region_plots[['GOA']]) + 
+    free(map) + 
+    free(region_plots[['BAL']]) + 
+    free(region_plots[['BC']]) + 
+    free(region_plots[['CBS']]) +
+    free(region_plots[['USWC']]) +
+    free(haul_plot) + 
+    free(region_plots[['NIC']])
 ) + plot_layout(design = layout)
+
+# 
+# final_plot <- (
+#   region_plots[['EBS']] + region_plots[['NEUS-SS']] + region_plots[['GOM']] + region_plots[['BS']] + region_plots[['NS']] +
+#     region_plots[['GOA']] + map + region_plots[['BAL']] + region_plots[['BC']] + region_plots[['CBS']] +
+#     region_plots[['USWC']] +
+#     haul_plot + region_plots[['NIC']]
+# ) + plot_layout(design = layout) 
 
 final_plot
 
@@ -231,9 +291,8 @@ final_plot
 ggsave(
   filename = "output/figures/main/map.png",
   width = 180,
-  height = 150,
+  height = 130,
   dpi = 600,
   units = "mm"
 )
-
 

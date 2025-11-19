@@ -68,7 +68,7 @@ process_species_region <- function(i) {
     use_survey <- this_region %in% multi_survey_regions
     
     # Define base formula
-    formula <- kg_km2 ~ 0 + as.factor(year) + s(mean_temp_std, k=3) + s(warmest_temp_std, k=3)
+    formula <- kg_km2 ~ 0 + as.factor(year) + s(mean_temp_std, k=3)
     
     # Add random effects to formula based on data structure
     if (use_survey && use_quarter) {
@@ -87,7 +87,7 @@ process_species_region <- function(i) {
       time = "year",
       family = tweedie(link = "log"),
       data = sub,
-      spatial = "on",
+      spatial = "off",
       spatiotemporal = 'off'
     )
     
@@ -116,6 +116,6 @@ process_species_region <- function(i) {
 }
 
 # Run the process in parallel over all species-region combos with progress bar
-future_map(1:nrow(species_region_table), process_species_region, .progress = TRUE)
+future_map(1:nrow(species_region_table), process_species_region, .progress = TRUE,.options = furrr_options(seed = TRUE))
 
 #process_species_region(2)

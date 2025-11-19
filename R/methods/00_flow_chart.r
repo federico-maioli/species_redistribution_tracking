@@ -1,10 +1,6 @@
 library(DiagrammeR)
 
 
-
-
-
-
 grViz("
 digraph pipeline {
 

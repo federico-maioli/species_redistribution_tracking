@@ -58,7 +58,8 @@ table_priors <- kable(
   label = "priors",
   booktabs = TRUE,
   escape = FALSE,
-  caption = "Prior distributions for model parameters. Fixed effects ($\\beta$), group-level and residual standard deviations ($\\sigma$), degrees of freedom ($\\nu$) for the Student-t distribution, and the correlation matrix of group-level effects parameterized via its Cholesky factor ($L$). The source column indicates whether the prior was changed from the default."
+  caption = "Prior distributions for model parameters. Fixed effects ($\\beta$), group-level and residual standard deviations ($\\sigma$), degrees of freedom ($\\nu$) for the Student-t distribution, and the correlation matrix of group-level effects parameterized via its Cholesky factor ($L$). The source column indicates whether the prior was changed from the default.",
+  linesep = "" 
 )
 
 writeLines(table_priors, here('output/tables/supp/table_priors.tex'))
