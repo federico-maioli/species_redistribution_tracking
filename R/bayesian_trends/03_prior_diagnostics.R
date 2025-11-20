@@ -4,7 +4,7 @@ library(here)
 library(broom)
 library(ggdist)
 library(patchwork)
-library(cowplot)
+#library(cowplot)
 library(knitr)
 
 # print priors  ----------------------------------------------------------
@@ -28,7 +28,7 @@ clean_priors <- prior_summary(fit) %>% as.data.frame() %>%
       class == "sd" ~ "$\\sigma$",
       class == "sigma" ~ "$\\sigma$",
       class == "nu" ~ "$\\nu$",
-      class == "L" ~ "$\\mathbf{L}$",
+      class == "L" ~ "$\\L$",
       TRUE ~ class
     ),
     # replace coef variable names
@@ -58,11 +58,11 @@ table_priors <- kable(
   label = "priors",
   booktabs = TRUE,
   escape = FALSE,
-  caption = "Prior distributions for model parameters. Fixed effects ($\\beta$), group-level and residual standard deviations ($\\sigma$), degrees of freedom ($\\nu$) for the Student-t distribution, and the correlation matrix of group-level effects parameterized via its Cholesky factor ($L$). The source column indicates whether the prior was changed from the default.",
+  # caption = "Prior distributions for model parameters. Fixed effects ($\\beta$), group-level and residual standard deviations ($\\sigma$), degrees of freedom ($\\nu$) for the Student-t distribution, and the correlation matrix of group-level effects parameterized via its Cholesky factor ($L$). The source column indicates whether the prior was changed from the default.",
   linesep = "" 
 )
 
-writeLines(table_priors, here('output/tables/supp/table_priors.tex'))
+writeLines(table_priors, here('output/tables/supp/table_priors_supp.tex'))
 
 # prior validation -----------------------------------------------------------
 
@@ -107,17 +107,23 @@ p1 = ggplot(priors_df, aes(
   y = resp_label,
   xdist = .dist_obj
 )) +
-  stat_halfeye(normalize = "xy", color = "steelblue4", fill = "steelblue1") +
+  stat_halfeye(normalize = "xy", color = "steelblue4", fill = "steelblue1",alpha=.7) +
   geom_vline(aes(xintercept = vline), colour = "black", linetype = "dashed", size = .6) +
-  geom_text(aes(x = vline, y = 0.2, label = paper),
+  geom_text(aes(x = vline, y = 0.25, label = paper),
             color = "black", angle = 90, vjust = -0.6, hjust = 0, size = 3) +
   facet_wrap(~prior, scales = "free") + scale_y_discrete(labels = function(x) parse(text = x)) +
   labs(
     x = NULL,
     y = NULL
+  ) + theme_bw() + theme(
+    strip.background = element_rect(fill = "white", color = NA),
+    panel.background = element_rect(fill = "white", color = NA),
+    plot.background = element_rect(fill = "white", color = NA),
+    panel.grid = element_blank(),
+    strip.text = element_text(face = "bold")
   ) 
 
-
+p1
 
 #  for region -------------------------------------------------------------
 
@@ -228,17 +234,23 @@ p2 = ggplot(priors_df, aes(
   y = resp_label,
   xdist = .dist_obj
 )) +
-  stat_halfeye(normalize = "xy", color = "steelblue4", fill = "steelblue1", p_limits = c(0, 0.99)) +
+  stat_halfeye(normalize = "xy", color = "steelblue4", fill = "steelblue1", p_limits = c(0, 0.99),alpha = .7) +
   geom_vline(aes(xintercept = vline), colour = "orange", linetype = "dashed",size = .6) +
   facet_wrap(
     ~facet_id,
     labeller = labeller(facet_id = facet_labels),
     scales = "free"
-  ) + scale_y_discrete(labels = function(x) parse(text = x)) +
+  ) + scale_y_discrete(labels = function(x) parse(text = x)) + scale_x_continuous(expand = c(0,0)) +
   labs(
     x = NULL,
     y = NULL
-  )
+  )  + theme_bw() + theme(
+    strip.background = element_rect(fill = "white", color = NA),
+    panel.background = element_rect(fill = "white", color = NA),
+    plot.background = element_rect(fill = "white", color = NA),
+    panel.grid = element_blank(),
+    strip.text = element_text(face = "bold")
+  ) 
 
 # species in region -------------------------------------------------------
 
@@ -320,23 +332,26 @@ p3 = ggplot(priors_df, aes(
   y = resp_label,
   xdist = .dist_obj
 )) +
-  stat_halfeye(normalize = "xy", color = "steelblue4", fill = "steelblue1", p_limits = c(0, 0.99)) +
+  stat_halfeye(normalize = "xy", color = "steelblue4", fill = "steelblue1", p_limits = c(0, 0.99),alpha =.7) +
   geom_vline(aes(xintercept = vline), colour = "orange", linetype = "dashed",size = .6) +
   facet_wrap(
     ~facet_id,
     scales = "free",
     labeller = labeller(facet_id = setNames(priors_df$facet_label, priors_df$facet_id))
-  ) + scale_y_discrete(labels = function(x) parse(text = x)) +
+  ) + scale_y_discrete(labels = function(x) parse(text = x)) + scale_x_continuous(expand = c(0,0)) +
   labs(
     x = NULL,
     y = NULL
+  ) + theme_bw() + theme(
+    strip.background = element_rect(fill = "white", color = NA),
+    panel.background = element_rect(fill = "white", color = NA),
+    plot.background = element_rect(fill = "white", color = NA),
+    panel.grid = element_blank(),
+    strip.text = element_text(face = "bold")
   ) 
 
-combined <- plot_grid(
-  p1, p2, p3,
-  ncol = 1, align = "v", axis = "lr",
-  labels = c("a)", "b)", "c)"), label_size = 10
-)
+combined <- (p1 / p2 /p3) & plot_annotation(tag_levels = 'a') &
+  theme(plot.tag = element_text(size = 12, face='bold'))
 
 #ggdraw(combined) +
 #  draw_line(x = c(0, 1), y = c(0.67, 0.67), color = "gray90", size = 0.5) +
@@ -345,10 +360,10 @@ combined <- plot_grid(
 combined
 
 ggsave(
-  here('output/figures/supp/priors.png'),
+  here('output/figures/supp/priors_supp.png'),
   #plot = pp_plot,  
   width = 180,  
-  height = 190,
+  height = 170,
   dpi = 600,
   units = "mm"
 )

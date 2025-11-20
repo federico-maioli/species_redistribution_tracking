@@ -4,7 +4,7 @@ library(broom)
 library(purrr)
 library(tidyverse)
 
-data <- readRDS(here("R/data/processed/derived_quantities.rds"))
+data <- readRDS(here("R/data/processed/derived_quantities_sdm.rds"))
 
 
 data <- data |> mutate(species = str_replace_all(species, " ", "_"), # clean species names 
@@ -17,9 +17,6 @@ data <- data |> group_by(region) |> mutate(
   year_c = (year - mean(year, na.rm = TRUE))/10 # center year
 )  |> ungroup() |> 
   group_by(sp_region) |> # std index of abundance, and calculate species-specific anomalies
-  mutate(
-    index_std = scale(index)[, 1],
-    eao_std = scale(eao)[, 1]) |> 
   mutate(across(
     c(cog_y, cog_x, depth_niche, thermal_niche),
     ~ .x - mean(.x, na.rm = TRUE),

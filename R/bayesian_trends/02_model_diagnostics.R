@@ -52,9 +52,8 @@ table_elpd <- kable(
   format = "latex", 
   label = "elpd",
   booktabs = TRUE,
-  escape = FALSE,
-  caption = "Model comparison based on leave-one-out cross-validation (LOO).  MVN denotes a multivariate normal distribution, while Student-t $+$ MVN specifies a univariate Student-t distribution for each response combined with multivariate normal random effects.
-  The expected log predictive density (ELPD) reflects out-of-sample predictive accuracy, with higher values indicating better performance. ELPD differences are shown relative to the best-fitting model, so negative values indicate worse fit. The standard error (SE) of the difference reflects uncertainty; differences large relative to SE suggest meaningful performance gaps."
+  escape = FALSE
+  #caption = "Model comparison based on leave-one-out cross-validation (LOO).  MVN denotes a multivariate normal distribution, while Student-t $+$ MVN specifies a univariate Student-t distribution for each response combined with multivariate normal random effects. The expected log predictive density (ELPD) reflects out-of-sample predictive accuracy, with higher values indicating better performance. ELPD differences are shown relative to the best-fitting model, so negative values indicate worse fit. The standard error (SE) of the difference reflects uncertainty; differences large relative to SE suggest meaningful performance gaps."
 )
 
 writeLines(table_elpd, here('output/tables/supp/table_elpd.tex'))
@@ -80,7 +79,7 @@ plot_layout(guides = 'collect') & theme(legend.position = 'bottom')
 pp_plot
 
 ggsave(
-  here('output/figures/supp/pp.png'),
+  here('output/figures/supp/pp_supp.png'),
   #plot = pp_plot,  
   width = 180,  
   height = 140,
@@ -105,8 +104,7 @@ p_rhat <- ggplot(summary_df, aes(y = reorder(variable, rhat), x = rhat)) +
     x = NULL,
     y = 'Parameter',
     title = "**R-hat**"
-  ) +  
-  theme_manuscript(title=12) +
+  ) +
   theme(
     axis.text.x = element_blank(),
     axis.ticks.x = element_blank()
@@ -123,7 +121,7 @@ p_bulk <- ggplot(summary_df, aes(y = reorder(variable, -ess_bulk), x = ess_bulk)
     y = "Parameter",
     title = "**Bulk ESS**"
   ) +
-  theme_manuscript(title=12) +
+  #theme_manuscript(title=12) +
   theme(
     axis.text.x = element_blank(),
     axis.ticks.x = element_blank()
@@ -140,7 +138,6 @@ p_tail <- ggplot(summary_df, aes(y = reorder(variable, -ess_tail), x = ess_tail)
     y = "Parameter",
     title = "**Tail ESS**"
   ) + 
-  theme_manuscript(title=12) +
   theme(
     axis.text.x = element_blank(),
     axis.ticks.x = element_blank()
@@ -151,7 +148,7 @@ p_diag <- p_rhat / p_bulk / p_tail + plot_layout(axes = "collect")
 p_diag 
 
 ggsave(
-  here('output/figures/supp/rhat.png'),
+  here('output/figures/supp/rhat_supp.png'),
   #plot = pp_plot,  
   width = 180,  
   height = 190,
@@ -159,27 +156,27 @@ ggsave(
   units = "mm"
 )
 
-problem_params <- summary_df %>%
-  filter(rhat > 1.01 | ess_bulk < 400 | ess_tail < 400) %>%
-  pull(variable)
-
-pretty_names <- c(
-  "sd_region__cogyc_year_c" = "sigma[region]^'lat centroid'",
-  "r_region__cogyc[CBS,year_c]" = "beta['region[CBS]']^'lat centroid'"
-)
-
-# slighlty bad param
-mcmc_plot(m_stud, variable = problem_params, type = "trace") +
-  facet_wrap(.~parameter, labeller = as_labeller(pretty_names, label_parsed), scales = 'free') # oh they look good, come on!
-
-ggsave(
-  here('output/figures/supp/bad_param.png'),
-  #plot = pp_plot,  
-  width = 180,  
-  height = 80,
-  dpi = 600,
-  units = "mm"
-)
+# problem_params <- summary_df %>%
+#   filter(rhat > 1.01 | ess_bulk < 400 | ess_tail < 400) %>%
+#   pull(variable)
+# 
+# pretty_names <- c(
+#   "sd_region__cogyc_year_c" = "sigma[region]^'lat centroid'",
+#   "r_region__cogyc[CBS,year_c]" = "beta['region[CBS]']^'lat centroid'"
+# )
+# 
+# # slighlty bad param
+# mcmc_plot(m_stud, variable = problem_params, type = "trace") + xlab()
+#   facet_wrap(.~parameter, labeller = as_labeller(pretty_names, label_parsed), scales = 'free') # oh they look good, come on!
+# 
+# ggsave(
+#   here('output/figures/supp/bad_param_supp.png'),
+#   #plot = pp_plot,  
+#   width = 180,  
+#   height = 80,
+#   dpi = 600,
+#   units = "mm"
+# )
 
 
 
