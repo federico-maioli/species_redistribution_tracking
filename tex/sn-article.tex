@@ -258,7 +258,7 @@ We estimated trends in the set of spatial and thermal metrics described above us
 
 Next, we compared two alternative random-effects structures using LOO cross-validation: (i) random slopes varying by species–region combinations, and (ii) a hierarchicalstructure with species nested within regions. The nested specification was better supported and was therefore adopted for all subsequent analyses (Supplementary Table~\ref{tab:elpd}). This hierarchical framework improved model fit and, importantly, allowed us to estimate global, regional, and species-level trends within a single unified model.
 
-An alternative would have been to fit separate models for each species and outcome. But this ignores information shared across taxa, regions, and outcomes. Instead, a hierarchical specification applies partial pooling: estimates draw strength from the broader dataset while still allowing region- and species-specific deviations. This shrinkage produces estimates that are more stable than those from independent fits (Supplementary Fig.~\ref{fig:shrinkage}; \citealt{mcelre}).
+
 
 
 To improve interpretability and aid in model convergence, we mean-centered both the response variables and the time predictor within each species–region combination so that their mean is zero. As a result, the intercept can be omitted. We then rescaled time to decades, so that the slope can be interpreted directly as the rate of change per decade.
@@ -305,7 +305,7 @@ Many global syntheses have reported net poleward migration---typically on the or
 
 The absence of coherent shifts does not imply a lack of biological response. Rather, it reflects how physical and biological processes jointly shape redistribution pathways. At broad scales, temperature declines predictably with latitude and depth, but local climate velocities, bathymetric barriers, currents, hypoxia, and habitat structure generate complex mosaics of thermal opportunity (e.g., \citep{pinsky_marine_2013, garcia_molinos_climate_2016}). Species traits, dispersal limits, habitat dependence, and non-thermal factors---such as fishing, oxygen or prey availability---further modulate responses, often decoupling movement from simple thermal tracking \citep{sunday_species_2015,deutsch_climate_2015,wisz_role_2013,van_der_putten_predicting_2010}. These interacting constraints produce heterogeneous, sometimes opposing, shifts---even among co-occurring species.
 
-These physical and biological constraints help explain why redistributions only weakly tracked expected thermal-envelope shifts. Roughly half of populations moved in the direction predicted by local warming, while the remainder shifted oppositely or exhibited little movement. In many cases, the magnitude of observed shifts exceeded that of thermal gradients, suggesting that dispersal ability is not the key limiting factor. Yet despite these shifts, most populations continued to warm roughly in step with regional warming trends. The resulting mismatch between redistribution and thermal niche change indicates that redistribution rarely provides full thermal compensation. Marine species appear to occupy dynamic thermal niches to some extent, rather than simply tracking static isotherms \citep{fredston_range_2021, ward_win_2024}. This partial compensation suggests that behavioral or distributional responses may not be sufficient to buffer many populations from continued warming, potentially increasing their exposure to thermal stress. % some citation about lagging I guess
+These physical and biological constraints help explain why redistributions only weakly tracked expected thermal-envelope shifts. Roughly half of populations moved in the direction predicted by local warming, while the remainder shifted oppositely or exhibited little movement. In many cases, the magnitude of observed shifts exceeded that of thermal gradients, suggesting that dispersal ability is not the key limiting factor. Yet despite these shifts, most populations continued to warm roughly in step with regional warming trends. The resulting mismatch between redistribution and thermal niche change indicates that redistribution rarely provides full thermal compensation. Marine species appear to occupy dynamic thermal niches to some extent, rather than simply tracking static isotherms \citep{fredston_range_2021, ward_win_2024}. This partial compensation suggests that behavioral or distributional responses may not be sufficient to buffer many populations from continued warming, potentially increasing their exposure to thermal stress. % some citation about lagging behind I guess
 
 Not all regions or species deviate from expected redistribution patterns. In the Eastern Bering Sea, for example, 88\% of species shifted in the thermally predicted latitudinal direction, with three times more species moving north than south. On the U.S. West Coast and in British Columbia, vertical movements dominated, consistent with depth-temperature gradients. The North Sea stands out as a case of highly coherent adjustment \cite{perry_climate_2005}: more than 60\% of species shifted in predicted directions along latitude, depth, and longitude, with correlations exceeding $\rho > 0.8$. At the species level, North Sea cod (\textit{Gadus morhua})---a well studied example \citep{perry_climate_2005, engelhard_climate_2014}---shifted simultaneously northward and deeper, effectively tracking its thermal niche. These cases illustrate that coherent thermal tracking can occur, but it is not the norm across marine systems.
 
@@ -432,13 +432,13 @@ M.L. was supported by a research grant from the Swedish Research Council Formas 
 
 \include{output/tables/supp/table_exp_obs_region}
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[width=1\textwidth]{output/figures/supp/posterior_slopes_supp}
 \caption{This is a widefig. This is an example of long caption this is an example of long caption  this is an example of long caption this is an example of long caption}\label{fig:posterior_slopes_supp}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[width=1\textwidth]{output/figures/supp/prop_significant_supp.png}
 \caption{This is a widefig. This is an example of long caption this is an example of long caption  this is an example of long caption this is an example of long caption}\label{fig:prop_significant_supp}
@@ -456,6 +456,8 @@ M.L. was supported by a research grant from the Swedish Research Council Formas 
 \caption{This is a widefig. This is an example of long caption this is an example of long caption  this is an example of long caption this is an example of long caption}\label{fig:corr_supp}
 \end{figure}
 
+\clearpage
+
 \section{Additional information on spatiotemporal models}\label{Appendix B}
     
 The general form of the spatiotemporal GLMM can be represented as:
@@ -468,22 +470,68 @@ The general form of the spatiotemporal GLMM can be represented as:
 where \( y_{\mathbf{s},t} \) represents fish density (kg/km\(^2\)) at spatial location \( \mathbf{s} \) and time \( t \), \( \mu \) is the expected mean CPUE, and \( p \) and \( \phi \) are the power and dispersion parameters of the Tweedie distribution, respectively. \( \mathbf{X}_{\mathbf{s},t} \) is the design matrix of covariates including year (as a categorical variable) and a second-degree polynomial of log(depth), consisting of both linear and quadratic terms. The vector \( \bm{\beta} \) contains the corresponding fixed-effect coefficients.
 We included log-transformed depth as a second-order polynomial to help constrain predictions to plausible magnitudes across the depth gradient.
 
-Because fish species are not constrained by survey boundaries, and some surveys cover only a small part of the distribution range of species we aggregated multiple surveys into broader regions for modeling when appropriate. Surveys with extensive and clearly defined coverage (e.g., the North Sea IBTS) were modeled independently, while those with contiguous spatial domains and partial overlap in time and space (e.g., surveys conducted in British Columbia) were combined (Fig \ref{fig:map}). When multiple surveys were present within a region, we included survey identity as a fixed effect to account for potential differences in sampling. To capture intra-annual variability, we also included a month-specific random intercept for surveys spanning more than three months: $\alpha_m \sim \mathcal{N}(0, \sigma_{\alpha_m}^{2})$, where \textit{m} indexes the sampled months.
+Because fish species are not constrained by survey boundaries, and some surveys cover only a small part of the distribution range of species we aggregated multiple surveys into broader regions for modeling when appropriate. Surveys with extensive and clearly defined coverage (e.g., the North Sea IBTS) were modeled independently, while those with contiguous spatial domains and partial overlap in time and space (i.e., surveys conducted in British Columbia, Northeast U.S \& Scotian Shelf and Celtic-Biscay shelf) were combined (Fig \ref{fig:survey}). For regions with multiple surveys, we included survey identity as a fixed effect to control for methodological differences. We did not apply this correction in British Columbia because surveys there follow harmonized field protocols and are typically analysed jointly \citep[e.g.,][]{Anderson2019BCGroundfish,ward_win_2024}. In regions where surveys occur multiple times per year (BAL, NS, NEUS-SS, CBS, GOM), we included quarter as a fixed effect to account for within-year variation in sampling. In cases where a designated sampling period extended across multiple quarters, we used combined categories (e.g., Q2–Q3 or Q3-Q4).
 
 The parameters \( \omega_{\mathbf{s}} \) and \( \epsilon_{\mathbf{s},t} \) (Equations \ref{eq:3}--\ref{eq:4}) represent spatial and spatiotemporal random effects, respectively, both modeled as Gaussian Markov random fields \citep{lindgren_explicit_2011}. The spatial random field is shared across years, and represents static spatial effects such as habitat that are not accounted for by the fixed effects, while the spatiotemporal fields represent interannual spatial variation. We assumed spatiotemporal random fields to be independent across years to capture annual variation in spatial structure. While a first-order autoregressive (AR1) process could have been used to model temporal dependence, we opted for the independent formulation to strike a balance between computational efficiency and model flexibility. This approach allows spatial patterns to vary freely from year to year, accommodating potential non-stationary dynamics in species distributions without imposing strict temporal correlation structures.
 
 For British Columbia surveys, which have a biennial sampling structure, we modeled spatiotemporal variation as a random walk process. This modifies Equation \ref{eq:4} into $\epsilon_{\boldsymbol{s},t} \sim  \operatorname{MVN}(\epsilon_{t-1},\Sigma_{\epsilon})$ to allow for flexibility in estimating the spatial and temporal processes in years without data \citep{ward_win_2024}.
 
-Latent spatial and spatiotemporal random fields were approximated using a triangulated mesh with a minimum spacing (cutoff) of 20 km constructed with the \texttt{fmesher} R package \citep{lindgren_fmesher_2025}. This cutoff distance represents the smallest allowed distance between two mesh vertices. We assumed a shared range parameter between the spatial and spatiotemporal fields, while allowing each field to have its own variance.
+Latent spatial and spatiotemporal random fields were approximated using a triangulated mesh with a minimum spacing (cutoff) of 20 km constructed with the \texttt{fmesher} R package \citep{lindgren_fmesher_2025}. This cutoff distance represents the smallest allowed distance between two mesh vertices. We assumed a shared range parameter (distance at which points are effectively independent \citep{lindgren_explicit_2011}) between the spatial and spatiotemporal fields, while allowing each field to have its own variance.
 
-The maximum marginal log-likelihood was estimated using Template Model Builder \citep[TMB;][]{kristensen_tmb_2016}, which applies the Laplace approximation to integrate out random effects. Models were fit in R 4.1.0 \citep{r_core_team_r_2021} using the \texttt{sdmTMB} package \citep{anderson_sdmtmb_2024}, which interfaces TMB with INLA-based spatial methods \citep{rue_approximate_2009}. Only models with a positive-definite Hessian and a maximum absolute log-likelihood gradient $< 0.001$ were considered successfully converged and used for inference \citep{anderson_sdmtmb_2024}
+The maximum marginal log-likelihood was estimated using Template Model Builder \citep[TMB;][]{kristensen_tmb_2016}, which applies the Laplace approximation to integrate out random effects. Models were fit in R 4.1.0 \citep{r_core_team_r_2021} using the \texttt{sdmTMB} package \citep{anderson_sdmtmb_2024}, which interfaces TMB with INLA-based spatial methods \citep{rue_approximate_2009}. Only models with a positive-definite Hessian and a maximum absolute log-likelihood gradient $< 0.001$ were considered successfully converged and used for inference \citep{anderson_sdmtmb_2024}.
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{output/figures/supp/surveys_supp.png}
+    \caption{(a) Regions where multiple surveys were combined. (b) Overlap in survey months within each region.}
+    \label{fig:survey}
+\end{figure}
+
+\clearpage
 
 \section{Additional information on Bayesian trend analysis}\label{Appendix C}
 
-%Throughout the following, Normal$(\mu,\sigma)$ and Student-t$(\nu,\mu,\sigma)$ denote distributions with mean $\mu$ and standard deviation $\sigma$.
+For computing trends in latitudinal and longitudinal centroid, depht niche, and thermal niche we initially modelled the outcomes using a multivariate normal (MVN) distribution, but posterior predictive checks revealed heavier tails than the MVN could capture, so we refitted the model using univariate Student-t distribution for each response, which are more robust to extreme values \citep[e.g.,][]{anderson_black-swan_2017}. Residual correlations across responses were retained using a multivariate normal correlation structure. This change improved predictive accuracy, as confirmed by higher leave-one-out cross-validation (LOO) scores (\citep{vehtari_practical_2017}; Table~\ref{tab:elpd_supp}).
 
-Priors are reported in \ref{tab:priors}
+An alternative to the hierarchical structure used here would have been to fit separate models for each species and outcome. But this ignores information shared across taxa, regions, and outcomes. Instead, a hierarchical specification applies partial pooling: estimates draw strength from the broader dataset while still allowing region- and species-specific deviations. This shrinkage produces estimates that are more stable than those from independent fits (Supplementary Fig.~\ref{fig:shrinkage}; \citep{mcelreath_statistical_2018}), and, importantly, allowed us to estimate global, regional, and species-level trends within a single unified model.
+
+\noindent
+\textbf{Priors validation}.
+We validated the priors listed in Table~\ref{tab:priors} by comparing them with empirical distributions estimated directly from the data. Specifically, for each outcome (latitude, longitude, depth, and temperature), we computed species-level linear trends and summarized the variation of these slopes across species and regions. As shown in Fig.~\ref{fig:priors_supp}, the chosen priors are consistent with the observed variability in the data.
+
+\noindent
+\textbf{Model diagnostics}.
+Model fit and convergence were assessed using posterior predictive checks (PPCs) and standard MCMC diagnostics. PPCs confirmed that the model captures the central tendency, variability, and distributional shape of the observed data (Fig.~\ref{fig:pp_supp}). Convergence diagnostics indicated $\hat{R} < 1.01$ for all parameters, no divergent transitions, and effective sample sizes $> 400$, confirming reliable posterior sampling (Fig.~\ref{fig:rhat_supp}; \citep{vehtari_rank-normalization_2021}).
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{output/figures/supp/rhat_supp.png}
+    \caption{}
+    \label{fig:rhat}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{output/figures/supp/pp.png}
+    \caption{Posterior predictive checks for the four outcomes. Observed values ($y$) are compared with simulated datasets drawn from the posterior predictive distribution ($y_{rep}$). Close alignment between the two indicates good model fit.}
+    \label{fig:pp}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{output/figures/supp/shrinkage_supp.png}
+    \caption{}
+    \label{fig:shrinkage}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{output/figures/supp/priors.png}
+    \caption{}
+    \label{fig:priors}
+\end{figure}
+
 
 \input{output/tables/supp/table_priors}
 
