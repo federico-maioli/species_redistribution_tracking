@@ -424,7 +424,6 @@ M.L. was supported by a research grant from the Swedish Research Council Formas 
 
 \begin{appendices}
 
-\clearpage
 
 \section{Supplementary figures and tables}\label{Appendix A}
 
@@ -489,11 +488,11 @@ The maximum marginal log-likelihood was estimated using Template Model Builder \
 
 \clearpage
 
-\section{Additional information on Bayesian trend analysis}\label{Appendix C}
+\section{Additional information on Bayesian trend analysis}\label{AppendixC}
 
 For computing trends in latitudinal and longitudinal centroid, depht niche, and thermal niche we initially modelled the outcomes using a multivariate normal (MVN) distribution, but posterior predictive checks revealed heavier tails than the MVN could capture, so we refitted the model using univariate Student-t distribution for each response, which are more robust to extreme values \citep[e.g.,][]{anderson_black-swan_2017}. Residual correlations across responses were retained using a multivariate normal correlation structure. This change improved predictive accuracy, as confirmed by higher leave-one-out cross-validation (LOO) scores (\citep{vehtari_practical_2017}; Table~\ref{tab:elpd_supp}).
 
-An alternative to the hierarchical structure used here would have been to fit separate models for each species and outcome. But this ignores information shared across taxa, regions, and outcomes. Instead, a hierarchical specification applies partial pooling: estimates draw strength from the broader dataset while still allowing region- and species-specific deviations. This shrinkage produces estimates that are more stable than those from independent fits (Supplementary Fig.~\ref{fig:shrinkage}; \citep{mcelreath_statistical_2018}), and, importantly, allowed us to estimate global, regional, and species-level trends within a single unified model.
+An alternative to the hierarchical structure used here would have been to fit separate models for each species and outcome. But this ignores information shared across taxa, regions, and outcomes. Instead, a hierarchical specification applies partial pooling: estimates draw strength from the broader dataset while still allowing region- and species-specific deviations. This shrinkage produces estimates that are more stable than those from independent fits (Supplementary Fig.~\ref{fig:shrinkage_supp}; \citep{mcelreath_statistical_2018}), and, importantly, allowed us to estimate global, regional, and species-level trends within a single unified model.
 
 \noindent
 \textbf{Priors validation}.
@@ -513,7 +512,7 @@ Model fit and convergence were assessed using posterior predictive checks (PPCs)
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1\linewidth]{output/figures/supp/pp.png}
+    \includegraphics[width=1\linewidth]{output/figures/supp/pp_supp.png}
     \caption{Posterior predictive checks for the four outcomes. Observed values ($y$) are compared with simulated datasets drawn from the posterior predictive distribution ($y_{rep}$). Close alignment between the two indicates good model fit.}
     \label{fig:pp}
 \end{figure}
@@ -527,7 +526,7 @@ Model fit and convergence were assessed using posterior predictive checks (PPCs)
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1\linewidth]{output/figures/supp/priors.png}
+    \includegraphics[width=1\linewidth]{output/figures/supp/priors_supp.png}
     \caption{}
     \label{fig:priors}
 \end{figure}
