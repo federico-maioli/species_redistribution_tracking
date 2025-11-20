@@ -73,12 +73,12 @@ axis_labels <- rbind(
     label = paste0(c(40, 60, 70), "\u00B0N")
   ),
   data.frame(
-    lon = c(-120, -60, 0),
-    lat = rep(85, 3),
+    lon = c(-50),
+    lat = c(55),
     label = c(
-      paste0(abs(-120), "\u00B0W"),
-      paste0(abs(-60), "\u00B0W"),
-      "0\u00B0"  # no E/W for 0
+      paste0(abs(-50), "\u00B0W")#,
+      #paste0(abs(-60), "\u00B0W"),
+      #"0\u00B0"  # no E/W for 0
     )
   )
 )
@@ -86,6 +86,10 @@ axis_labels <- rbind(
 # Convert to sf and project
 axis_labels_sf <- st_as_sf(axis_labels, coords = c("lon","lat"), crs = 4326) |>
   st_transform(lcc_crs)
+
+order_regions <- c("British Columbia", "Northeast U.S. & Scotian Shelf", "Celtic-Biscay Shelf")
+
+survey_hulls$region_full <- factor(survey_hulls$region_full, levels = order_regions)
 
 map <- ggplot() +
   geom_sf(data = survey_hulls, aes(fill = region_full), alpha = 0.3) +
@@ -97,7 +101,7 @@ map <- ggplot() +
     aes(label = survey, geometry = geometry),
     size = 2.8,
     stat = "sf_coordinates",
-    min.segment.length = 0.5,
+    min.segment.length = 0.1,
     seed = 1,
     box.padding = 0.9,
     color = "black",
@@ -112,7 +116,7 @@ map <- ggplot() +
   ) +
   
   scale_fill_manual(values = region_colors, name = "Region") +
-  coord_sf(crs = lcc_crs, xlim = c(-5100, 5100), ylim = c(-600, 6100)) +
+  coord_sf(crs = lcc_crs, xlim = c(-5000, 4200), ylim = c(-300, 4000)) +
   theme_bw(base_size = 10) +
   theme(
     legend.position = 'bottom',
@@ -124,7 +128,6 @@ map <- ggplot() +
   labs(x = NULL, y = NULL)
 
 map
-
 
 # create haul counts heatmap ---------------------------------------------
 
@@ -143,6 +146,8 @@ haul_counts2 <- haul_counts |> filter(region_short %in% c('BC','CBS','NEUS-SS'))
   dplyr::group_by(region_full) |>
   dplyr::mutate(survey = droplevels(survey)) |>
   dplyr::ungroup()
+
+haul_counts2$region_full <- factor(haul_counts2$region_full, levels = order_regions)
 
 
 haul_plot <- ggplot(haul_counts2,
@@ -174,54 +179,18 @@ haul_plot <- ggplot(haul_counts2,
    # plot.margin = margin(2, 8, 2, 5)
   )
 
-map / haul_plot & plot_layout(heights = c(3,1)) &
-  plot_annotation(tag_levels = 'a') & theme(plot.tag = element_text(size = 12,face='bold'))
+(map / haul_plot) +
+  plot_layout(heights = c(2.5, 1)) +   # map gets 3× more space
+  plot_annotation(tag_levels = 'a') &
+  theme(plot.tag = element_text(size = 12, face='bold'))
 
-#
+#& plot_layout(heights = c(4,1))
 
 ggsave(
   filename = "output/figures/supp/surveys_supp.png",
   width = 180,
-  height = 140,
+  height = 150,
   dpi = 600,
   units = "mm"
 )
-
-
-# assemble final plot ----------------------------------------------------
-
-haul_counts_complete <- haul_counts2 %>%
-  group_by(region_full, survey) %>%
-  complete(month = 1:12, fill = list(n_hauls = NA)) %>%
-  ungroup()
-
-# plot
-haul_plot <- ggplot(haul_counts_complete,
-                    aes(x = month,
-                        y = survey,
-                        fill = n_hauls)) +
-  geom_tile(color = "black", alpha = 0.8) +
-  scale_x_continuous(breaks = 1:12, expand = c(0, 0)) +
-  scale_y_discrete(expand = c(0, 0)) +
-  scale_fill_viridis_c(option = "mako", direction = -1, name = "Number of hauls",
-                       guide = guide_colorbar(
-                         title.position = "left",
-                         title.vjust = 1,
-                         barwidth = 15,
-                         barheight = 0.3)) +
-  labs(x = "Month", y = "Survey") +
-  facet_wrap(~ region_full, scales = 'free_y', space = "free_y") +
-  theme_bw(base_size = 8) +
-  theme(
-    strip.background = element_blank(),
-    strip.text = element_text(face = "bold"),
-    panel.spacing = unit(0.4, "lines"),
-    legend.position = "bottom",
-    legend.direction = "horizontal",
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank(),
-    legend.box.margin = margin(-5, 0, 0, 0),
-    legend.margin = margin(2, 0, 0, 0),
-    plot.margin = margin(2, 5, 2, 5)
-  )
 
