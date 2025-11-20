@@ -178,6 +178,16 @@ summary_region_slopes <- region_slopes_long  %>%  group_by(outcome,region) %>% #
 
 write_rds(summary_region_slopes, here('R/data/processed/bayesian_region_trends.rds'))
 
+
+# combine -----------------------------------------------------------------
+
+cowplot::plot_grid(
+  p_global, p_region,
+  align = "v", ncol = 1, axis = 'l',
+  rel_heights = c(2, 2.5, 10),
+  labels = c("a", "b", "c"), label_size = 12
+)
+
 # species slopes ----------------------------------------------------------
 
 species_slopes <- m %>%

@@ -6,46 +6,38 @@
 .Ruserdata
 .Renviron
 .Rproj.user/
-
 # Package build and check outputs
 *-Ex.R
 /*.tar.gz
 /*.Rcheck/
-
 # R Markdown and knitr caches
 *_cache/
 /cache/
 *.utf8.md
 *.knit.md
-
 # RStudio and publishing
 rsconnect/
 .httr-oauth
 docs/
 po/*~
-
 # renv
 renv/library/
 renv/cache/
 renv/settings/
-
 # Vignettes
 vignettes/*.html
 vignettes/*.pdf
-
 # OS-specific
 *.DS_Store
 Thumbs.db
-
 # Large data files
 *.nc
 *.rds
 *.csv
 /data/environmental/
 /data/trawl_surveys/fishglob_clean.rds
-
 # Misc
 *.html
-
 # Presentation
 /presentation
+FETCH_HEAD
