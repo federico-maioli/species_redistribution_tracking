@@ -67,7 +67,7 @@ for (i in seq_along(outcomes)) {
   p <- global_slopes_long %>%
     filter(outcome == outcome_name) %>%
     ggplot(aes(x = slope, y = 1)) +
-    geom_vline(xintercept = 0, linetype = "dashed", size = 0.4, color ='grey40') +
+    geom_vline(xintercept = 0, linetype = "22", size = 0.3, alpha = 0.3) +
     tidybayes::stat_halfeye(
       aes(fill = after_stat(x)),
       .width = 0.95,
@@ -79,17 +79,18 @@ for (i in seq_along(outcomes)) {
       interval_size = 1.2
     ) +
     fill_gradients[[outcome_name]] +
-    scale_x_continuous(limits = c(lims$xlim_low, lims$xlim_high), breaks = scales::pretty_breaks(n = 5)) +
-    scale_y_discrete(expand = c(0, 0.05)) +
+    scale_x_continuous(limits = c(lims$xlim_low, lims$xlim_high), breaks = scales::pretty_breaks(n = 4)) +
+    scale_y_discrete(expand = c(0, 0.2)) +
     labs(title = outcome_title, x = NULL, y = NULL) +
-    theme_minimal(base_size = 11) +
+    theme_minimal(base_size = 12) +
     theme(
       legend.position = "none",
       plot.title = ggtext::element_markdown(hjust = 0.5, size = 10),
       panel.grid = element_blank(),
       axis.ticks.x = element_line(color = "black", size = 0.3),
       axis.ticks.length.x = unit(2, "pt"),
-      plot.margin = margin(2, 5, 2, 5)
+      axis.text.y = element_text(face = "bold"), 
+     plot.margin = margin(5, 10, 5, 10)
     )
   global_plot_list[[i]] <- p
 }
@@ -147,17 +148,19 @@ for (i in seq_along(outcomes)) {
     mutate(region = factor(region, levels = rev(c('EBS','GOA','BC','USWC','NEUS-SS','GOM','BS','NS','CBS', 'BAL', 'NIC')))) %>%
     ggplot(aes(x = slope, y = region, fill = slope)) +
     ggstats::geom_stripped_rows(aes(y = region), odd = "white", even = "grey90", alpha = 0.2) +
-    geom_vline(xintercept = 0, linetype = "dashed", color = "grey40", size = 0.4) +
-    stat_pointinterval(aes(color = median_slope), .width = 0.95, point_size = 0.7, interval_size = 0.2, show.legend = FALSE) +
+    geom_vline(xintercept = 0, linetype = "22", size = 0.3, alpha = 0.3) +
+    stat_pointinterval(aes(color = median_slope), .width = 0.95, point_size = 1.6, interval_size = 0.9, show.legend = FALSE) +
     col_gradients[[outcome_name]] +
-    scale_x_continuous(breaks = scales::pretty_breaks(n = 5)) +
+    scale_x_continuous(breaks = scales::pretty_breaks(n = 4)) +
     coord_cartesian(xlim = c(lims$xlim_low, lims$xlim_high)) +
     labs(x = NULL, y = "Region") +
-    theme_minimal(base_size = 11) +
+    theme_bw(base_size = 12) +
     theme(panel.grid = element_blank(), legend.position = "none",
           axis.ticks = element_line(color = "black", size = 0.3),
           axis.ticks.length = unit(2, "pt"),
-          plot.margin = margin(2, 5, 2, 5))
+          #panel.spacing = unit(200, "lines"),
+          plot.margin = margin(5, 10, 5, 10),
+          axis.text.y = element_text(face = "bold") )
   region_plot_list[[outcome_name]] <- p
 }
 
@@ -184,8 +187,17 @@ write_rds(summary_region_slopes, here('R/data/processed/bayesian_region_trends.r
 cowplot::plot_grid(
   p_global, p_region,
   align = "v", ncol = 1, axis = 'l',
-  rel_heights = c(2, 2.5, 10),
-  labels = c("a", "b", "c"), label_size = 12
+  rel_heights = c(1,1.8),
+  labels = c("a", "b"), label_size = 14
+)
+
+ggsave(
+  here('output/figures/main/posterior_slopes.png'),
+  width = 180,
+  height = 120,
+  dpi = 600,
+  units = "mm",
+  bg = "white"
 )
 
 # species slopes ----------------------------------------------------------
