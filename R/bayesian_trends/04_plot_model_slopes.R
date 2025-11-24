@@ -80,7 +80,7 @@ for (i in seq_along(outcomes)) {
     ) +
     fill_gradients[[outcome_name]] +
     scale_x_continuous(limits = c(lims$xlim_low, lims$xlim_high), breaks = scales::pretty_breaks(n = 4)) +
-    scale_y_discrete(expand = c(0, 0.2)) +
+    scale_y_discrete(expand = c(0, 0.05)) +
     labs(title = outcome_title, x = NULL, y = NULL) +
     theme_minimal(base_size = 12) +
     theme(
@@ -89,8 +89,8 @@ for (i in seq_along(outcomes)) {
       panel.grid = element_blank(),
       axis.ticks.x = element_line(color = "black", size = 0.3),
       axis.ticks.length.x = unit(2, "pt"),
-      axis.text.y = element_text(face = "bold"), 
-     plot.margin = margin(5, 10, 5, 10)
+      axis.text.y = element_text(face = "bold"),  axis.text.x = element_text(angle = 45, hjust = 1),
+     plot.margin = margin(5, 9, 5, 9)
     )
   global_plot_list[[i]] <- p
 }
@@ -147,7 +147,7 @@ for (i in seq_along(outcomes)) {
     group_by(region) %>% mutate(median_slope = median(slope)) %>% ungroup() %>%
     mutate(region = factor(region, levels = rev(c('EBS','GOA','BC','USWC','NEUS-SS','GOM','BS','NS','CBS', 'BAL', 'NIC')))) %>%
     ggplot(aes(x = slope, y = region, fill = slope)) +
-    ggstats::geom_stripped_rows(aes(y = region), odd = "white", even = "grey90", alpha = 0.2) +
+    ggstats::geom_stripped_rows(aes(y = region), odd = "grey90", even = 'white' , alpha = 0.2) +
     geom_vline(xintercept = 0, linetype = "22", size = 0.3, alpha = 0.3) +
     stat_pointinterval(aes(color = median_slope), .width = 0.95, point_size = 1.6, interval_size = 0.9, show.legend = FALSE) +
     col_gradients[[outcome_name]] +
@@ -159,7 +159,8 @@ for (i in seq_along(outcomes)) {
           axis.ticks = element_line(color = "black", size = 0.3),
           axis.ticks.length = unit(2, "pt"),
           #panel.spacing = unit(200, "lines"),
-          plot.margin = margin(5, 10, 5, 10),
+          plot.margin = margin(5, 9, 5, 9),
+          axis.text.x = element_text(angle = 45, hjust = 1),
           axis.text.y = element_text(face = "bold") )
   region_plot_list[[outcome_name]] <- p
 }
@@ -187,14 +188,14 @@ write_rds(summary_region_slopes, here('R/data/processed/bayesian_region_trends.r
 cowplot::plot_grid(
   p_global, p_region,
   align = "v", ncol = 1, axis = 'l',
-  rel_heights = c(1,1.8),
+  rel_heights = c(1,2.1),
   labels = c("a", "b"), label_size = 14
 )
 
 ggsave(
   here('output/figures/main/posterior_slopes.png'),
   width = 180,
-  height = 120,
+  height = 140,
   dpi = 600,
   units = "mm",
   bg = "white"
@@ -275,22 +276,22 @@ p_species <- wrap_plots(species_plot_list, nrow = 1) +
 
 # final plot --------------------------------------------------------------
 
-cowplot::plot_grid(
-  p_global, p_region, p_species,
-  align = "v", ncol = 1, axis = 'l',
-  rel_heights = c(2, 2.5, 10),
-  labels = c("a", "b", "c"), label_size = 12
-)
+# cowplot::plot_grid(
+#   p_global, p_region, p_species,
+#   align = "v", ncol = 1, axis = 'l',
+#   rel_heights = c(2, 2.5, 10),
+#   labels = c("a", "b", "c"), label_size = 12
+# )
 
 # save
-ggsave(
-  here('output/figures/main/posterior_slopes.png'),
-  width = 180,
-  height = 250,
-  dpi = 600,
-  units = "mm",
-  bg = "white"
-)
+# ggsave(
+#   here('output/figures/main/posterior_slopes.png'),
+#   width = 180,
+#   height = 250,
+#   dpi = 600,
+#   units = "mm",
+#   bg = "white"
+# )
 
 
 # redo panel C for supp info ---------------------------------------------------
@@ -488,7 +489,7 @@ color_palette <- c(
   "Easting" = "#003C30", "Westing" = "#543005",
   "Deepening" = "#01665E", "Shallowing" = "#8C510A",
   "Warming" = "#B2182B", "Cooling" = "#2166AC",
-  "Not significant" = "grey50"
+  "Not significant" = "grey80"
 )
 
 # base plot
@@ -510,7 +511,7 @@ for (i in seq_along(outcome_order)) {
       data = df_sub,
       aes(x = outcome_label, y = proportion, fill = direction_label),
       stat = "identity",
-      position = "stack", alpha = 0.5
+      position = "stack", alpha = .7
     ) + geom_text(
       data = df_sub,
       aes(
@@ -523,7 +524,8 @@ for (i in seq_along(outcome_order)) {
       position = position_stack(vjust = .5),
       # centers labels in each segment
       size = 2.5,
-      color = "black"
+      color = "black",
+      fontface = "bold"
     ) +
     scale_fill_manual(
       values = valid_colors[direction_map[[oc]]],
@@ -546,17 +548,26 @@ p +
     plot.background = element_rect(fill = "white", color = NA),
     panel.background = element_rect(fill = "white", color = NA),
     panel.grid = element_blank(),  
-    strip.text = element_text(face = "bold"),
-    panel.spacing = unit(.1, "lines"),
-    legend.title = element_text(size = 7) 
+    strip.text = element_text(face = "bold", size = 9),
+    axis.text.y = element_text(face = "bold", size = 8),
+    axis.title = element_text(size = 9),
+    panel.spacing = unit(1, "lines"),
+   # plot.margin = margin(15, 15, 15, 15),
+    legend.position = "right",
+    legend.box = "vertical",
+    legend.title = element_text(face = "bold", size = 8),
+    legend.text = element_text(size = 7),
+    legend.spacing.y = unit(3, "mm"),
+    legend.key.size = unit(4, "mm"),
+    legend.margin = margin(5, 5, 5, 5)
   ) +
   labs(x = "", y = "Species (%) per directional shift") 
 
 # save
 ggsave(
-  here('output/figures/supp/prop_significant_supp.png'),
+  here('output/figures/main/prop_significant.png'),
   width = 180,
-  height = 150,
+  height = 160,
   dpi = 600,
   units = "mm",
   bg = "white"
