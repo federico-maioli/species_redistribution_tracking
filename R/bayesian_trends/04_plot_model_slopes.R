@@ -23,16 +23,18 @@ outcomes_pretty <- c(
 )
 
 # color scales ------------------------------------------------------
+
+
 fill_gradients <- list(
   cogyc = scale_fill_gradient2(low = "#762A83", mid = "#E0E0E0", high = "#1B7837", midpoint = 0),
   cogxc = scale_fill_gradient2(low = "#543005", mid = "#CFCFCF", high = "#003C30", midpoint = 0),
-  depthnichec = scale_fill_gradient2(low = "#8C510A", mid = "#CFCFCF", high = "#01665E", midpoint = 0),
+  depthnichec = scale_fill_gradient2(low = "#A6CEE3", mid = "#CFCFCF", high = "#003C8F", midpoint = 0),
   thermalnichec = scale_fill_gradient2(low = "#2166AC", mid = "#DDDDDD", high = "#B2182B", midpoint = 0)
 )
 col_gradients <- list(
   cogyc = scale_color_gradient2(low = "#762A83", mid = "#E0E0E0", high = "#1B7837", midpoint = 0),
   cogxc = scale_color_gradient2(low = "#543005", mid = "#CFCFCF", high = "#003C30", midpoint = 0),
-  depthnichec = scale_color_gradient2(low = "#8C510A", mid = "#CFCFCF", high = "#01665E", midpoint = 0),
+  depthnichec = scale_color_gradient2(low = "#A6CEE3", mid = "#CFCFCF", high =  "#003C8F", midpoint = 0),
   thermalnichec = scale_color_gradient2(low = "#2166AC", mid = "#DDDDDD", high = "#B2182B", midpoint = 0)
 )
 
@@ -79,7 +81,7 @@ for (i in seq_along(outcomes)) {
       interval_size = 1.2
     ) +
     fill_gradients[[outcome_name]] +
-    scale_x_continuous(limits = c(lims$xlim_low, lims$xlim_high), breaks = scales::pretty_breaks(n = 4)) +
+    scale_x_continuous(limits = c(lims$xlim_low, lims$xlim_high), breaks = scales::pretty_breaks(n = 3)) +
     scale_y_discrete(expand = c(0, 0.05)) +
     labs(title = outcome_title, x = NULL, y = NULL) +
     theme_minimal(base_size = 12) +
@@ -89,7 +91,7 @@ for (i in seq_along(outcomes)) {
       panel.grid = element_blank(),
       axis.ticks.x = element_line(color = "black", size = 0.3),
       axis.ticks.length.x = unit(2, "pt"),
-      axis.text.y = element_text(face = "bold"),  axis.text.x = element_text(angle = 45, hjust = 1),
+      axis.text.y = element_text(face = "bold"),#  axis.text.x = element_text(angle = 45, hjust = 1),
      plot.margin = margin(5, 9, 5, 9)
     )
   global_plot_list[[i]] <- p
@@ -160,7 +162,7 @@ for (i in seq_along(outcomes)) {
           axis.ticks.length = unit(2, "pt"),
           #panel.spacing = unit(200, "lines"),
           plot.margin = margin(5, 9, 5, 9),
-          axis.text.x = element_text(angle = 45, hjust = 1),
+          #axis.text.x = element_text(angle = 45, hjust = 1),
           axis.text.y = element_text(face = "bold") )
   region_plot_list[[outcome_name]] <- p
 }
@@ -188,7 +190,7 @@ write_rds(summary_region_slopes, here('R/data/processed/bayesian_region_trends.r
 cowplot::plot_grid(
   p_global, p_region,
   align = "v", ncol = 1, axis = 'l',
-  rel_heights = c(1,2.1),
+  rel_heights = c(1,2.3),
   labels = c("a", "b"), label_size = 14
 )
 
@@ -226,75 +228,62 @@ species_slopes_long <- species_slopes %>%
   mutate(sp_id = factor(sp_id, levels = sort(unique(sp_id), decreasing = TRUE)),
          outcome = factor(outcome, levels = outcomes))
 
+# xlims_species <- species_slopes_long %>%
+#   group_by(outcome) %>%
+#   summarise(max_abs = max(quantile(abs(full_slope), probs = .999), na.rm = TRUE), .groups = "drop") %>%
+#   mutate(max_abs = ifelse(max_abs == 0, 0.01, max_abs),
+#          xlim_low = -max_abs, xlim_high = max_abs)
+# 
+# every5 <- levels(species_slopes_long$sp_id)[as.integer(levels(species_slopes_long$sp_id)) %% 5 == 0]
+# 
+# species_plot_list <- list()
+# for (i in seq_along(outcomes)) {
+#   outcome_name <- outcomes[i]
+#   lims <- xlims_species %>% filter(outcome == outcome_name)
+#   species_data <- species_slopes_long %>% filter(outcome == outcome_name) %>% group_by(region, region_species) %>% mutate(median_slope = median(full_slope)) %>% ungroup()
+#   
+#   p <- species_data %>%
+#     ggplot(aes(x = full_slope, y = sp_id)) +
+#     ggstats::geom_stripped_rows(aes(y = sp_id), odd = "white", even = "grey90", alpha = 0.2) +
+#     geom_vline(xintercept = 0, linetype = "dashed", color = "grey40", linewidth = 0.3) +
+#     stat_pointinterval(aes(color = median_slope), .width = 0.95, point_size = 0.1, interval_size = 0.1, show.legend = FALSE) +
+#     col_gradients[[outcome_name]] +
+#     scale_y_discrete(breaks = every5, labels = every5) +
+#     scale_x_continuous(breaks = scales::pretty_breaks(n = 5)) +
+#     coord_cartesian(xlim = c(lims$xlim_low, lims$xlim_high)) +
+#     facet_grid(region ~ ., scales = "free", space = "free", switch = "y") +
+#     labs(x = "Posterior estimate", y = "Species ID") +
+#     theme_minimal(base_size = 12) +
+#     theme(strip.placement = "outside",
+#           strip.text.y.left = element_text(angle = 0, size = 8),
+#           axis.text.y = element_text(size = 8),
+#           panel.spacing.y = unit(0.1, "cm"),
+#           strip.background = element_rect(fill = "white", color = NA),
+#           plot.background = element_rect(fill = "white", color = NA),
+#           panel.background = element_rect(fill = "white", color = NA),
+#           panel.grid = element_blank(),
+#           axis.ticks = element_line(color = "black", size = 0.3),
+#           axis.ticks.length = unit(2, "pt"),
+#           plot.margin = margin(2, 5, 2, 5))
+#   
+#   if (i > 1) p <- p + theme(strip.text.y.left = element_blank(), strip.background = element_blank())
+#   species_plot_list[[outcome_name]] <- p
+# }
+# 
+# p_species <- wrap_plots(species_plot_list, nrow = 1) +
+#   plot_layout(axis_titles = "collect", axes = "collect_y") &
+#   theme(panel.border = element_blank(), panel.background = element_rect(fill = "white", colour = NA),
+#         plot.background  = element_rect(fill = "white", colour = NA))
+
+
+
+# species-specfic slopes 4 supp info ---------------------------------------------------
+
 xlims_species <- species_slopes_long %>%
   group_by(outcome) %>%
   summarise(max_abs = max(quantile(abs(full_slope), probs = .999), na.rm = TRUE), .groups = "drop") %>%
   mutate(max_abs = ifelse(max_abs == 0, 0.01, max_abs),
          xlim_low = -max_abs, xlim_high = max_abs)
-
-every5 <- levels(species_slopes_long$sp_id)[as.integer(levels(species_slopes_long$sp_id)) %% 5 == 0]
-
-species_plot_list <- list()
-for (i in seq_along(outcomes)) {
-  outcome_name <- outcomes[i]
-  lims <- xlims_species %>% filter(outcome == outcome_name)
-  species_data <- species_slopes_long %>% filter(outcome == outcome_name) %>% group_by(region, region_species) %>% mutate(median_slope = median(full_slope)) %>% ungroup()
-  
-  p <- species_data %>%
-    ggplot(aes(x = full_slope, y = sp_id)) +
-    ggstats::geom_stripped_rows(aes(y = sp_id), odd = "white", even = "grey90", alpha = 0.2) +
-    geom_vline(xintercept = 0, linetype = "dashed", color = "grey40", linewidth = 0.3) +
-    stat_pointinterval(aes(color = median_slope), .width = 0.95, point_size = 0.1, interval_size = 0.1, show.legend = FALSE) +
-    col_gradients[[outcome_name]] +
-    scale_y_discrete(breaks = every5, labels = every5) +
-    scale_x_continuous(breaks = scales::pretty_breaks(n = 5)) +
-    coord_cartesian(xlim = c(lims$xlim_low, lims$xlim_high)) +
-    facet_grid(region ~ ., scales = "free", space = "free", switch = "y") +
-    labs(x = "Posterior estimate", y = "Species ID") +
-    theme_minimal(base_size = 12) +
-    theme(strip.placement = "outside",
-          strip.text.y.left = element_text(angle = 0, size = 8),
-          axis.text.y = element_text(size = 8),
-          panel.spacing.y = unit(0.1, "cm"),
-          strip.background = element_rect(fill = "white", color = NA),
-          plot.background = element_rect(fill = "white", color = NA),
-          panel.background = element_rect(fill = "white", color = NA),
-          panel.grid = element_blank(),
-          axis.ticks = element_line(color = "black", size = 0.3),
-          axis.ticks.length = unit(2, "pt"),
-          plot.margin = margin(2, 5, 2, 5))
-  
-  if (i > 1) p <- p + theme(strip.text.y.left = element_blank(), strip.background = element_blank())
-  species_plot_list[[outcome_name]] <- p
-}
-
-p_species <- wrap_plots(species_plot_list, nrow = 1) +
-  plot_layout(axis_titles = "collect", axes = "collect_y") &
-  theme(panel.border = element_blank(), panel.background = element_rect(fill = "white", colour = NA),
-        plot.background  = element_rect(fill = "white", colour = NA))
-
-
-# final plot --------------------------------------------------------------
-
-# cowplot::plot_grid(
-#   p_global, p_region, p_species,
-#   align = "v", ncol = 1, axis = 'l',
-#   rel_heights = c(2, 2.5, 10),
-#   labels = c("a", "b", "c"), label_size = 12
-# )
-
-# save
-# ggsave(
-#   here('output/figures/main/posterior_slopes.png'),
-#   width = 180,
-#   height = 250,
-#   dpi = 600,
-#   units = "mm",
-#   bg = "white"
-# )
-
-
-# redo panel C for supp info ---------------------------------------------------
 
 species_plot_list_supp <- list()
 
@@ -311,7 +300,7 @@ for (i in seq_along(outcomes)) {
         str_remove("^[^_]+_") %>%
         str_replace_all("_", " "),
       # create parsed label: number + italic species
-      species_label = paste0(sp_id, "~italic('", species, "')")
+      species_label = paste0("~italic('", species, "')")
     ) %>%
     group_by(region, region_species) %>%
     mutate(median_slope = median(full_slope)) %>%
@@ -460,34 +449,52 @@ direction_map <- list(
   "Thermal niche shift"      = c("Warming", "Not significant", "Cooling")
 )
 
-summary_data = summary_data |> mutate(region = factor(region, levels = c('EBS','GOA','BC','USWC','NEUS-SS','GOM','BS','NS','CBS', 'BAL', 'NIC')),
-  region = recode(
-    region,
-    "BAL" = "Baltic Sea",
-    "BC" = 'British Columbia',
-    "BS" = 'Barents Sea',
-    "CBS" = 'Celtic-Biscay Shelf',
-    "USWC" = "U.S. West Coast", 
-    "EBS" = 'Eastern Bering Sea',
-    "GOM" = 'Gulf of Mexico',
-    "GOA" = 'Gulf of Alaska',
-    "NEUS-SS" = 'NE US & Scotian Shelf',
-    "NIC" = 'Northern Iberian Coast',
-    "NS" = 'North Sea'
-  )
-)
-
+#summary_data = summary_data |> mutate(region = factor(region, levels = c('EBS','GOA','BC','USWC','NEUS-SS','GOM','BS','NS','CBS', 'BAL', 'NIC'))
+  # region = recode(
+  #   region,
+  #   "BAL" = "Baltic Sea",
+  #   "BC" = 'British Columbia',
+  #   "BS" = 'Barents Sea',
+  #   "CBS" = 'Celtic-Biscay Shelf',
+  #   "USWC" = "U.S. West Coast", 
+  #   "EBS" = 'Eastern Bering Sea',
+  #   "GOM" = 'Gulf of Mexico',
+  #   "GOA" = 'Gulf of Alaska',
+  #   "NEUS-SS" = 'NE US & Scotian Shelf',
+  #   "NIC" = 'Northern Iberian Coast',
+  #   "NS" = 'North Sea'
+  # )
+#)
 
 summary_data <- summary_data %>%
   mutate(
     outcome_label = factor(outcome_label, levels = outcome_order)
   )
 
+# get n species per region
+summary_data <- summary_data %>%
+  mutate(
+    region_label = paste0(region, " (n = ", total_species, ")"),
+    region_label = factor(region_label, levels = unique(region_label))
+  )
+
+region_order <- c('EBS','GOA','BC','USWC','NEUS-SS','GOM','BS','NS','CBS','BAL','NIC')
+
+summary_data <- summary_data %>%
+  # Extract region code using regex from region_label
+  mutate(region_code = str_extract(region_label, "^[A-Z-]+")) %>%
+  # Set factor for region_code
+  mutate(region_code = factor(region_code, levels = region_order)) %>%
+  # Set region_label factor, ordered by region_code
+  arrange(region_code) %>%
+  mutate(region_label = factor(region_label, levels = unique(region_label[order(region_code)])))
+
+
 
 color_palette <- c(
   "Northing" = "#1B7837", "Southing" = "#762A83",
   "Easting" = "#003C30", "Westing" = "#543005",
-  "Deepening" = "#01665E", "Shallowing" = "#8C510A",
+  "Deepening" =  "#003C8F", "Shallowing" = "#A6CEE3",
   "Warming" = "#B2182B", "Cooling" = "#2166AC",
   "Not significant" = "grey80"
 )
@@ -511,7 +518,7 @@ for (i in seq_along(outcome_order)) {
       data = df_sub,
       aes(x = outcome_label, y = proportion, fill = direction_label),
       stat = "identity",
-      position = "stack", alpha = .7
+      position = "stack", alpha = .6
     ) + geom_text(
       data = df_sub,
       aes(
@@ -538,7 +545,7 @@ for (i in seq_along(outcome_order)) {
 }
 # add theme and facet
 p +
-  facet_wrap(~ region,ncol=3) +
+  facet_wrap(~ region_label,ncol=3) +
   theme_minimal(base_size = 8) +
   theme(
     axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
