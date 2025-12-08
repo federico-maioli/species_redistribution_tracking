@@ -9,6 +9,10 @@ library(paletteer)
 library(ggtext)
 library(ggstats)
 library(cowplot)
+library(geomtextpath)
+
+## definitely not the most efficient code you ever saw for plotting
+#https://commons.wikimedia.org/wiki/Category:It_ain%27t_much,_but_it%27s_honest_work#/media/File:Farmer_meme_with_apostrophe.jpg
 
 # read model ---------------------------------------------------------
 m <- read_rds(here('R/bayesian_trends/fitted/m_stud.rds'))
@@ -293,7 +297,7 @@ for (i in seq_along(outcomes)) {
   lims <- xlims_species %>% filter(outcome == outcome_name)
   
   species_data <- species_slopes_long %>%
-    filter(outcome == outcome_name) %>%
+    filter(outcome == outcome_name) %>% #%in% c('NS')
     mutate(
       # extract species name from region_species
       species = region_species %>%
@@ -359,40 +363,131 @@ p_species_supp
 ggsave(
   here('output/figures/supp/posterior_slopes_supp.png'),
   width = 180,
-  height = 220,
+  height = 240,
   dpi = 600,
   units = "mm",
   bg = "white"
 )
 
 
-# prop of significant shifts per region -----------------------------------
+# one example for presentation --------------------------------------------
 
+# xlims_species <- species_slopes_long %>%
+#   group_by(outcome) %>%
+#   summarise(max_abs = max(quantile(abs(full_slope), probs = .999), na.rm = TRUE), .groups = "drop") %>%
+#   mutate(max_abs = ifelse(max_abs == 0, 0.01, max_abs),
+#          xlim_low = -max_abs, xlim_high = max_abs)
+# 
+# species_plot_list_supp <- list()
+# 
+# for (i in seq_along(outcomes)) {
+#   outcome_name <- outcomes[i]
+#   outcome_title <- outcomes_pretty[i]
+#   lims <- xlims_species %>% filter(outcome == outcome_name)
+#   
+#   species_data <- species_slopes_long %>%
+#     filter(outcome == outcome_name,region %in% c('NS')) %>%
+#     mutate(
+#       # extract species name from region_species
+#       species = region_species %>%
+#         str_remove("^[^_]+_") %>%
+#         str_replace_all("_", " "),
+#       # create parsed label: number + italic species
+#       species_label = paste0("~italic('", species, "')")
+#     ) %>%
+#     group_by(region, region_species) %>%
+#     mutate(median_slope = median(full_slope)) %>%
+#     ungroup()
+#   
+#   p <- species_data %>%
+#     ggplot(aes(x = full_slope, y = sp_id)) +  # keep order by sp_id
+#     ggstats::geom_stripped_rows(aes(y = sp_id),
+#                                 odd = "white", even = "grey90", alpha = 0.2) +
+#     geom_vline(xintercept = 0, linetype = "dashed",
+#                color = "grey90", linewidth = 0.3) +
+#     stat_pointinterval(aes(color = median_slope),
+#                        .width = .95,
+#                        point_size = .5, 
+#                        interval_size = .5,
+#                        show.legend = FALSE) +
+#     col_gradients[[outcome_name]] +
+#     # map labels manually while keeping order
+#     scale_y_discrete(
+#       labels = function(x) parse(text = species_data$species_label[match(x, species_data$sp_id)])
+#     ) +
+#     scale_x_continuous(breaks = scales::pretty_breaks(n = 4)) +
+#     #coord_cartesian(xlim = c(lims$xlim_low, lims$xlim_high)) +
+#     facet_grid(region ~ ., scales = "free", space = "free", switch = "y") +
+#     labs(title = outcome_title, x = "Posterior estimate", y = "Species") +
+#     theme_minimal(base_size = 9) +
+#     theme(
+#       strip.placement = "outside",
+#       plot.title = ggtext::element_markdown(hjust = 0.5, size = 8),
+#       strip.text.y.left = element_text(angle = 0, size = 8),
+#       axis.text.y = element_text(size = 7),
+#       panel.spacing.y = unit(0.1, "cm"),
+#       strip.background = element_rect(fill = "white", color = NA),
+#       plot.background = element_rect(fill = "white", color = NA),
+#       panel.background = element_rect(fill = "white", color = NA),
+#       panel.grid = element_blank(),
+#       axis.ticks = element_line(color = "black", size = 0.3),
+#       axis.ticks.length = unit(2, "pt"),
+#       plot.margin = margin(2, 5, 2, 5)
+#     )
+#   
+#   if (i > 1)
+#     p <- p + theme(strip.text.y.left = element_blank(),
+#                    strip.background = element_blank())
+#   
+#   species_plot_list_supp[[outcome_name]] <- p
+# }
+# 
+# p_species_supp <- wrap_plots(species_plot_list_supp, nrow = 1) +
+#   plot_layout(axis_titles = "collect", axes = "collect_y") &
+#   theme(panel.border = element_blank(),
+#         panel.background = element_rect(fill = "white", colour = NA),
+#         plot.background = element_rect(fill = "white", colour = NA))
+# 
+# p_species_supp
+# 
+# # save
+# ggsave(
+#   here('output/figures/supp/posterior_slopes_supp.png'),
+#   width = 180,
+#   height = 150,
+#   dpi = 600,
+#   units = "mm",
+#   bg = "white"
+# )
+
+
+
+#  proportion of significant shifts plot ---------------------------------------
+
+# species summary 
+# compute median, mean, 95% CI per species x region x outcome
 species_summary <- species_slopes_long %>%
-  group_by(outcome, region_species, sp_id) %>% # Group by outcome and region_species
+  group_by(outcome, region_species, sp_id) %>%
   summarise(
-    median_slope = median(full_slope, na.rm = TRUE), # median
-    mean_slope = mean(full_slope, na.rm = TRUE), # mean
-    lower_95 = quantile(full_slope, 0.025, na.rm = TRUE), # 2.5% quantile
-    upper_95 = quantile(full_slope, 0.975, na.rm = TRUE), # 97.5% quantile
+    median_slope = median(full_slope, na.rm = TRUE),
+    mean_slope   = mean(full_slope, na.rm = TRUE),
+    lower_95     = quantile(full_slope, 0.025, na.rm = TRUE),
+    upper_95     = quantile(full_slope, 0.975, na.rm = TRUE),
     .groups = "drop"
   ) %>%
   mutate(
-    significant = case_when(
-      lower_95 > 0 | upper_95 < 0 ~ "yes",   # credible interval does not include zero
-      TRUE ~ "no"
-    )
-  ) %>%  mutate(
-    region = sub("_.*", "", region_species),
+    # assign significance
+    significant = ifelse(lower_95 > 0 | upper_95 < 0, "yes", "no"),
+    # split region and species
+    region  = sub("_.*", "", region_species),
     species = sub(".*?_", "", region_species),
+    # assign direction labels
     direction_label = case_when(
       significant == "no" ~ "Not significant",
-      
       outcome == "cogyc" & median_slope > 0 ~ "Northing",
       outcome == "cogyc" & median_slope < 0 ~ "Southing",
       outcome == "cogxc" & median_slope > 0 ~ "Easting",
       outcome == "cogxc" & median_slope < 0 ~ "Westing",
-      
       outcome == "depthnichec" & median_slope > 0 ~ "Deepening",
       outcome == "depthnichec" & median_slope < 0 ~ "Shallowing",
       outcome == "thermalnichec" & median_slope > 0 ~ "Warming",
@@ -401,24 +496,25 @@ species_summary <- species_slopes_long %>%
     )
   )
 
+# all possible directions
 all_directions <- c(
-  "Northing",
-  "Southing",
-  "Easting",
-  "Westing",
-  "Deepening",
-  'Shallowing',
-  "Warming",
-  "Cooling",
+  "Northing","Southing","Easting","Westing",
+  "Deepening","Shallowing","Warming","Cooling",
   "Not significant"
 )
 
-# total number of species-region combinations per region
+# total species per region
 total_counts <- species_summary %>%
   distinct(region, species) %>%
   count(region, name = "total_species")
 
-# count by region, outcome, direction label
+# overall counts 
+total_counts_overall <- tibble(
+  region = "Overall",
+  total_species = sum(total_counts$total_species)
+)
+
+# summary data by region
 summary_data <- species_summary %>%
   mutate(direction_label = factor(direction_label, levels = all_directions)) %>%
   group_by(region, outcome, direction_label) %>%
@@ -427,162 +523,277 @@ summary_data <- species_summary %>%
   left_join(total_counts, by = "region") %>%
   mutate(proportion = n / total_species)
 
-# label outcomes for legend titles
+# summary data overall
+summary_data_overall <- species_summary %>%
+  mutate(direction_label = factor(direction_label, levels = all_directions)) %>%
+  group_by(outcome, direction_label) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  complete(outcome, direction_label = all_directions, fill = list(n = 0)) %>%
+  mutate(region = "Overall") %>%
+  left_join(total_counts_overall, by = "region") %>%
+  mutate(proportion = n / total_species)
+
+# outcome labeling 
 summary_data <- summary_data %>%
   mutate(outcome_label = recode(outcome,
-                                "cogyc" = "Latitudinal shift",
-                                "cogxc" = "Longitudinal shift",
-                                "depthnichec" = 'Depth shift',
-                                "thermalnichec" = 'Thermal niche shift'
-  ))
+                                "cogyc" = "Latitude",
+                                "cogxc" = "Longitude",
+                                "depthnichec" = "Depth",
+                                "thermalnichec" = "Thermal niche"))
 
-# define consistent outcome and label mapping
-outcome_order <- c(
-  "Latitudinal shift", "Longitudinal shift", "Depth shift", "Thermal niche shift"
-)
+summary_data_overall <- summary_data_overall %>%
+  mutate(outcome_label = recode(outcome,
+                                "cogyc" = "Latitude",
+                                "cogxc" = "Longitude",
+                                "depthnichec" = "Depth",
+                                "thermalnichec" = "Thermal niche"))
 
+# bind region + overall
+summary_data <- bind_rows(summary_data, summary_data_overall)
 
-direction_map <- list(
-  "Latitudinal shift"      = c("Northing", "Not significant", "Southing"),
-  "Longitudinal shift"      = c("Easting", "Not significant", "Westing"),
-  "Depth shift"            = c("Deepening", "Not significant", "Shallowing"),
-  "Thermal niche shift"      = c("Warming", "Not significant", "Cooling")
-)
-
-#summary_data = summary_data |> mutate(region = factor(region, levels = c('EBS','GOA','BC','USWC','NEUS-SS','GOM','BS','NS','CBS', 'BAL', 'NIC'))
-  # region = recode(
-  #   region,
-  #   "BAL" = "Baltic Sea",
-  #   "BC" = 'British Columbia',
-  #   "BS" = 'Barents Sea',
-  #   "CBS" = 'Celtic-Biscay Shelf',
-  #   "USWC" = "U.S. West Coast", 
-  #   "EBS" = 'Eastern Bering Sea',
-  #   "GOM" = 'Gulf of Mexico',
-  #   "GOA" = 'Gulf of Alaska',
-  #   "NEUS-SS" = 'NE US & Scotian Shelf',
-  #   "NIC" = 'Northern Iberian Coast',
-  #   "NS" = 'North Sea'
-  # )
-#)
-
-summary_data <- summary_data %>%
-  mutate(
-    outcome_label = factor(outcome_label, levels = outcome_order)
-  )
-
-# get n species per region
-summary_data <- summary_data %>%
-  mutate(
-    region_label = paste0(region, " (n = ", total_species, ")"),
-    region_label = factor(region_label, levels = unique(region_label))
-  )
-
+# region labels and ordering
 region_order <- c('EBS','GOA','BC','USWC','NEUS-SS','GOM','BS','NS','CBS','BAL','NIC')
 
 summary_data <- summary_data %>%
-  # Extract region code using regex from region_label
-  mutate(region_code = str_extract(region_label, "^[A-Z-]+")) %>%
-  # Set factor for region_code
-  mutate(region_code = factor(region_code, levels = region_order)) %>%
-  # Set region_label factor, ordered by region_code
+  mutate(
+    region_label = paste0(region, " (n = ", total_species, ")"),
+    region_code  = ifelse(region == "Overall", "0", region),
+    region_code  = factor(region_code, levels = c("0", region_order))
+  ) %>%
   arrange(region_code) %>%
   mutate(region_label = factor(region_label, levels = unique(region_label[order(region_code)])))
 
+# direction maps 
+direction_map <- list(
+  "Latitude"      = c("Northing", "Southing", "Not significant"),
+  "Longitude"     = c("Easting", "Westing", "Not significant"),
+  "Depth"         = c("Deepening", "Shallowing", "Not significant"),
+  "Thermal niche" = c("Warming", "Cooling", "Not significant")
+)
 
+direction_map_tidy <- tibble(
+  outcome_label   = rep(names(direction_map), lengths(direction_map)),
+  direction_label = unlist(direction_map)
+)
 
+# filter relevant rows
+summary_data_filtered <- summary_data %>%
+  inner_join(direction_map_tidy, by = c("outcome_label", "direction_label"))
+
+# color palette 
 color_palette <- c(
   "Northing" = "#1B7837", "Southing" = "#762A83",
   "Easting" = "#003C30", "Westing" = "#543005",
-  "Deepening" =  "#003C8F", "Shallowing" = "#A6CEE3",
-  "Warming" = "#B2182B", "Cooling" = "#2166AC",
-  "Not significant" = "grey80"
+  "Deepening" = "#003C8F", "Shallowing" = "#A6CEE3",
+  "Warming"  = "#B2182B", "Cooling" = "#2166AC",
+  "NS_Latitude" = "grey80", "NS_Longitude" = "grey80",
+  "NS_Depth" = "grey80", "NS_Thermal niche" = "grey80"
 )
 
-# base plot
-p <- ggplot()
+# create NS-unique category + ordering
+df <- summary_data_filtered %>%
+  mutate(
+    direction_label_unique = ifelse(
+      direction_label == "Not significant",
+      paste0("NS_", outcome_label),
+      direction_label
+    ),
+    direction_label_unique = case_when(
+      outcome_label == "Depth"         ~ factor(direction_label_unique,
+                                                c("Shallowing", "NS_Depth", "Deepening")),
+      outcome_label == "Latitude"      ~ factor(direction_label_unique,
+                                                c("Southing", "NS_Latitude", "Northing")),
+      outcome_label == "Longitude"     ~ factor(direction_label_unique,
+                                                c("Westing", "NS_Longitude", "Easting")),
+      outcome_label == "Thermal niche" ~ factor(direction_label_unique,
+                                                c("Cooling", "NS_Thermal niche", "Warming"))
+    )
+  )
 
-# loop over each outcome and layer with its own fill scale
-for (i in seq_along(outcome_order)) {
-  oc <- outcome_order[i]
+# add spacing rows manually
+n_empty <- 2
+
+df_spaced <- df %>%
+  mutate(
+    outcome_label = factor(outcome_label,
+                           levels = c("Latitude", "Longitude", "Depth", "Thermal niche"))
+  ) %>%
+  arrange(region, outcome_label, direction_label_unique) %>%
+  group_by(region, outcome_label) %>%
+  mutate(group_id = cur_group_id()) %>%
+  ungroup() %>%
+  group_by(region, group_id) %>%
+  group_modify(~ bind_rows(
+    .x,
+    tibble(
+      outcome_label = NA,
+      direction_label = NA,
+      direction_label_unique = NA,
+      proportion = 0,
+      id = NA
+    )[rep(1, n_empty), ]
+  )) %>%
+  ungroup() %>%
+  group_by(region) %>%
+  mutate(id = row_number()) %>%
+  ungroup()
+
+# angles and label justification
+df_spaced <- df_spaced %>%
+  group_by(region) %>%
+  mutate(
+    n_bar = n(),
+    angle = 90 - 360 * (id - 0.5) / n_bar,
+    hjust = ifelse(angle < -90, 1, 0),
+    angle = ifelse(angle < -90, angle + 180, angle)
+  ) %>%
+  ungroup()
+
+# base data for outcome label arcs
+base_data_main <- df_spaced %>%
+  filter(!is.na(outcome_label)) %>%
+  group_by(region, outcome_label) %>%
+  summarise(start = min(id), end = max(id), .groups = "drop") %>%
+  mutate(title = (start + end) / 2)
+
+# circular region plot function
+plot_region_circular <- function(region_name) {
+  df_region   <- df_spaced       %>% filter(region == region_name)
+  base_region <- base_data_main  %>% filter(region == region_name)
   
-  df_sub <- summary_data %>%
-    filter(outcome_label == oc) %>%
-    filter(direction_label %in% direction_map[[oc]]) %>%
-    mutate(direction_label = factor(direction_label, levels = direction_map[[oc]]))
-  
-  valid_colors <- color_palette[names(color_palette) %in% direction_map[[oc]]]
-  
-  p <- p +
-    geom_bar(
-      data = df_sub,
-      aes(x = outcome_label, y = proportion, fill = direction_label),
-      stat = "identity",
-      position = "stack", alpha = .6
-    ) + geom_text(
-      data = df_sub,
+  ggplot(df_region, aes(factor(id), proportion, fill = direction_label_unique)) +
+    geom_bar(stat = "identity", width = 1, alpha = 0.7) +
+    scale_fill_manual(values = color_palette) +
+    geom_text(
       aes(
-        x = outcome_label,
-        y = proportion,
-        label = ifelse(proportion > 0, scales::percent(proportion, accuracy = 1), NA),
-        group = direction_label
+        label = ifelse(
+          proportion > 0 & !is.na(proportion),
+          ifelse(proportion < 0.01, "<1%", scales::percent(proportion, accuracy = 1)),
+          ""
+        ),
+        angle = angle, hjust = hjust
       ),
-      stat = "identity",
-      position = position_stack(vjust = .5),
-      # centers labels in each segment
-      size = 2.5,
-      color = "black",
-      fontface = "bold"
+      vjust = .5, size = 2
     ) +
-    scale_fill_manual(
-      values = valid_colors[direction_map[[oc]]],
-      name = oc,
-      drop = FALSE,
-      guide = guide_legend(order = i)  # force the order here
+    coord_polar() +
+    ylim(-1.2, max(df_region$proportion, na.rm = TRUE) + 0.1) +
+    theme_minimal(base_size = 7) +
+    theme(
+      axis.text = element_blank(),
+      axis.title = element_blank(),
+      panel.grid = element_blank(),
+      legend.position = "none",
+      plot.margin = margin(0, 0, 0, 0),
+      plot.title = element_text(hjust = 0.5, vjust = -5, face = "bold")
     ) +
-    scale_y_continuous(labels = NULL) +
-    new_scale_fill() + coord_cartesian(expand = FALSE) + coord_flip() + scale_x_discrete(limits = rev(outcome_order))
+    geom_segment(
+      data = base_region,
+      aes(x = start-.5, y = 0, xend = end+.5, yend = 0),
+      inherit.aes = FALSE, color = "black", linewidth = 0.3
+    ) +
+    geom_textpath(
+      data = base_region,
+      aes(x = title, y = -0.15, label = outcome_label),
+      inherit.aes = FALSE,
+      size = 2.1
+    ) +
+    ggtitle(region_name)
 }
-# add theme and facet
-p +
-  facet_wrap(~ region_label,ncol=3) +
-  theme_minimal(base_size = 8) +
-  theme(
-    axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
-    # legend.position = "bottom",
-    # legend.box = "vertical",    
-    strip.background = element_rect(fill = "white", color = NA),
-    plot.background = element_rect(fill = "white", color = NA),
-    panel.background = element_rect(fill = "white", color = NA),
-    panel.grid = element_blank(),  
-    strip.text = element_text(face = "bold", size = 9),
-    axis.text.y = element_text(face = "bold", size = 8),
-    axis.title = element_text(size = 9),
-    panel.spacing = unit(1, "lines"),
-   # plot.margin = margin(15, 15, 15, 15),
-    legend.position = "right",
-    legend.box = "vertical",
-    legend.title = element_text(face = "bold", size = 8),
-    legend.text = element_text(size = 7),
-    legend.spacing.y = unit(3, "mm"),
-    legend.key.size = unit(4, "mm"),
-    legend.margin = margin(5, 5, 5, 5)
-  ) +
-  labs(x = "", y = "Species (%) per directional shift") 
 
-# save
+# build plot list
+regions   <- unique(df_spaced$region)
+plot_list <- setNames(lapply(regions, plot_region_circular), regions)
+
+# custom legend 
+legend_data <- tibble(
+  outcome_label = rep(c("Latitude", "Longitude", "Depth", "Thermal niche"), each = 3),
+  direction_label = c("Southing", "n.s.", "Northing",
+                      "Westing", "n.s.", "Easting",
+                      "Shallowing", "n.s.", "Deepening",
+                      "Cooling", "n.s.", "Warming")
+) %>%
+  mutate(outcome_label = factor(
+    outcome_label,
+    levels = c("Latitude", "Longitude", "Depth", "Thermal niche")
+  ))
+
+legend_spaced <- legend_data %>%
+  group_split(outcome_label) %>%
+  map_df(~ bind_rows(.x,
+                     tibble(outcome_label = unique(.x$outcome_label),
+                            direction_label = NA)[rep(1, n_empty),])) %>%
+  mutate(
+    id    = row_number(),
+    value = .5,
+    angle = 90 - 360 * (id - 0.5) / n(),
+    hjust = ifelse(angle < -90, 1, 0),
+    angle = ifelse(angle < -90, angle + 180, angle)
+  )
+
+base_data_leg <- legend_spaced %>%
+  filter(!is.na(direction_label)) %>%
+  group_by(outcome_label) %>%
+  summarise(start = min(id), end = max(id), .groups = "drop") %>%
+  mutate(title = (start + end) / 2)
+
+legend_colors <- c(
+  "Southing" = "#762A83", "Northing" = "#1B7837",
+  "Westing"  = "#543005", "Easting" = "#003C30",
+  "Shallowing" = "#A6CEE3", "Deepening" = "#003C8F",
+  "Cooling" = "#2166AC", "Warming" = "#B2182B",
+  "n.s." = "grey80"
+)
+
+legend_plot <- ggplot(legend_spaced, aes(factor(id), value, fill = direction_label)) +
+  geom_bar(stat = "identity", width = 1, alpha=.7) +
+  scale_fill_manual(values = legend_colors, na.value = NA) +
+  coord_polar() +
+  ylim(-0.5, .8) +
+  theme_void() +
+  theme(plot.margin = margin(0, 0, 0, 0), legend.position = 'none') +
+  geom_text(
+    data = legend_spaced %>% filter(!is.na(direction_label)),
+    aes(label = direction_label, angle = angle, hjust = hjust),
+    vjust = .5, size = 2.4, fontface = "bold"
+  ) +
+  geom_segment(
+    data = base_data_leg,
+    aes(x = start-.5, y = 0, xend = end+.5, yend = 0),
+    inherit.aes = FALSE, color = "black", linewidth = .3
+  ) +
+  geom_textpath(
+    data = base_data_leg,
+    aes(x = title, y = -0.08, label = outcome_label),
+    inherit.aes = FALSE,
+    size = 2.7,
+    fontface = "bold"
+  )
+
+# combine main figure + legend
+p <- (plot_list[['Overall']] + plot_list[['EBS']] + plot_list[["GOA"]] + plot_list[['BC']] + plot_list[['USWC']] +
+        plot_list[['NEUS-SS']] + plot_list[['GOM']] + plot_list[['BS']] + free(legend_plot) + plot_list[['NS']] +
+        plot_list[['CBS']] + plot_list[['BAL']] + plot_list[['NIC']] ) + 
+  plot_layout(
+    design = "
+    ABCD
+    EFGH
+    IIKL
+    IIMN
+    "
+  )
+
+p
+
+# save figure 
 ggsave(
-  here('output/figures/main/prop_significant.png'),
-  width = 180,
-  height = 160,
-  dpi = 600,
-  units = "mm",
-  bg = "white"
+  here("output/figures/main/prop_significant.png"),
+  width = 180, height = 190,
+  dpi = 600, units = "mm", bg = "white"
 )
 
 
-# save slopes -------------------------------------------------------------
 
+# save slopes for supp data-------------------------------------------------------------
 # a dataset with species-specific trend slopes
 
 species_summary <- species_summary %>%

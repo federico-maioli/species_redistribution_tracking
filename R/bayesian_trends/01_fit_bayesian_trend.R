@@ -147,3 +147,5 @@ stud <- brm(
 )
 
 
+brms::stancode(stud)
+
