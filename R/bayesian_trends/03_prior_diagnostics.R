@@ -28,7 +28,7 @@ clean_priors <- prior_summary(fit) %>% as.data.frame() %>%
       class == "sd" ~ "$\\sigma$",
       class == "sigma" ~ "$\\sigma$",
       class == "nu" ~ "$\\nu$",
-      class == "L" ~ "$\\L$",
+      class == "L" ~ "$\\mathbf{R}_{r}$",
       TRUE ~ class
     ),
     # replace coef variable names
@@ -240,7 +240,7 @@ p2 = ggplot(priors_df, aes(
     ~facet_id,
     labeller = labeller(facet_id = facet_labels),
     scales = "free"
-  ) + scale_y_discrete(labels = function(x) parse(text = x)) + scale_x_continuous(expand = c(0,0)) +
+  ) + scale_y_discrete(labels = function(x) parse(text = x),expand=c(0,0.2)) + scale_x_continuous(expand = c(0,0)) +
   labs(
     x = NULL,
     y = NULL
@@ -251,6 +251,8 @@ p2 = ggplot(priors_df, aes(
     panel.grid = element_blank(),
     strip.text = element_text(face = "bold")
   ) 
+
+p2
 
 # species in region -------------------------------------------------------
 
@@ -338,7 +340,7 @@ p3 = ggplot(priors_df, aes(
     ~facet_id,
     scales = "free",
     labeller = labeller(facet_id = setNames(priors_df$facet_label, priors_df$facet_id))
-  ) + scale_y_discrete(labels = function(x) parse(text = x)) + scale_x_continuous(expand = c(0,0)) +
+  ) + scale_y_discrete(labels = function(x) parse(text = x),expand=c(0,0.2)) + scale_x_continuous(expand = c(0,0)) +
   labs(
     x = NULL,
     y = NULL
@@ -363,7 +365,7 @@ ggsave(
   here('output/figures/supp/priors_supp.png'),
   #plot = pp_plot,  
   width = 180,  
-  height = 170,
+  height = 180,
   dpi = 600,
   units = "mm"
 )
