@@ -45,12 +45,9 @@ brm(
  - Centered response variables and time predictor per species–region combination so that slopes represent deviations from species–region mean.
  - Time rescaled to decades for interpretable slope units (change per decade).
 
+</details>
 
 ### `02_model_diagnostics.R`
-
-<details>
-  <summary>Click here to expand</summary>
-
 
 -	Performs posterior predictive checks (PPCs) to evaluate fit.
 - Checks convergence using:
@@ -61,33 +58,23 @@ brm(
 
 
 ### `03_prior_diagnostics.R`
-
-<details>
-  <summary>Click here to expand</summary>
   
-	- Examines priors for global, regional, and species-level slopes.
-	- Compares priors against literature and empirical distributions from the data.
-
+- Examines priors for global, regional, and species-level slopes.
+- Compares priors against literature and empirical distributions from the data.
 
 
 ### `04_plot_model_slopes.R`
 
-<details>
-  <summary>Click here to expand</summary>
-
 -	Generates figures of estimated slopes for species and regions.
+
 
 
 ### `05_create_macro_latex.R`
 
-<details>
-  <summary>Click here to expand</summary>
-
 - Automates LaTeX Output
 	-	Extracts posterior summaries.
 	-	Produces LaTeX macros automatically for manuscript reporting.
-Code is from Sean Anderson 
-
+Code is from Sean.
 
 
 
