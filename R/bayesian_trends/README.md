@@ -13,7 +13,7 @@ We propagate standard errors from the spatiotemporal modeling into the trend ana
 
 - Estimated trends: `R/data/processed/estimated_trends/`
 
-the main script are:
+the main scripts are:
 
 ### `01_fit_bayesian_trends.R`
 
@@ -59,9 +59,10 @@ brm(
 
 ### `03_prior_diagnostics.R`
   
-- Examines priors for global, regional, and species-level slopes.
+- Plot priors for global, regional, and species-level slopes.
 - Compares priors against literature and empirical distributions from the data.
 
+<img src="../output/figures/supp_priors_supp.png" width="700" />
 
 ### `04_plot_model_slopes.R`
 
