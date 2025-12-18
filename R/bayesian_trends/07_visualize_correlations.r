@@ -134,8 +134,8 @@ for (i in seq_len(nrow(rho))) {
   value_str <- paste0(est, " [95\\% CI: ", lower, "--", upper, "]")
   
   # macro names (both directions)
-  macro1 <- paste0("rho", left_var, "_", right_var, "_", region)
-  macro2 <- paste0("rho", right_var, "_", left_var, "_", region)
+  macro1 <- paste0("rho", left_var, "", right_var, "", region)
+  macro2 <- paste0("rho", right_var, "", left_var, "", region)
   
   # write both macros with identical content
   write_tex(value_str, macro1)
