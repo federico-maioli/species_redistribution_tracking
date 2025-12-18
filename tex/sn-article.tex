@@ -181,9 +181,13 @@ Marine regions: COW = California-Oregon-Washington, NEUS = Northeast U.S. and Sc
 \subsection{Coherent spatial shifts in some regions and region-specific niche warming}
 
 \input{output/values/bayesian_trend_analysis/region_slopes}
+\input{output/values/rho_values}
 
 At the regional scale, posterior slopes for spatial shifts varied in direction but were generally small and uncertain, offering limited evidence for consistent changes in mean latitude, longitude, or depth across species (Fig.~\ref{fig:posterior_slopes}b). Depth showed the clearest—though still weak and variable—signals, with modest deepening along the U.S. West Coast (USWC; \DepthUSWCMedian{}~m~decade$^{-1}$ \DepthUSWCCI{}) and the Northeast U.S. \& Scotian Shelf (NEUS–SS; \DepthNEUSMedian{}~m~decade$^{-1}$ \DepthNEUSCI{}). Although regional slopes were weak, many species within some regions shifted in the same direction (Fig.~\ref{fig:prop_significant}). In the Eastern Bering Sea (EBS), 64\% of species moved northward, and a similar proportion did so in the North Sea (NS; 60\%), whereas six of eight species in the Baltic Sea (BAL) shifted southward. Depth shifts were also directionally consistent within some regions with many species deepening in the NEUS–SS (39\%) and BC (34\%), while few moved shallower. Some regions showed no detectable shifts—for example, no species in the Gulf of Alaska (GOA) shifted in latitude, longitude, or depth, and depth did not change in the Northern Iberian Coast (NIC). Thermal-niche temperatures increased in nearly all regions and closely tracked local ocean-warming rates (Fig.~\ref{fig:map}; \textit{$\rho$} = 0.79, \textit{n} = 11, \textit{p} = 0.0036). The only regions without widespread thermal-niche warming were the EBS, Barents Sea (BS), and NIC. 
-Despite widespread niche warming, the relationship between spatial shifts and thermal exposure varied among regions (Supplementary Fig~). In some regions, species that shifted poleward or deeper experienced weaker increases in thermal-niche temperatures, suggesting partial avoidance of warming, whereas in others spatial shifts were unrelated to—or even positively associated with—niche warming.
+Despite widespread niche warming, the relationship between spatial shifts and thermal exposure varied among regions (Supplementary Fig~\ref{fig:corr_shifts_supp}). In some regions, as generally expected species that shifted poleward or deeper experienced weaker increases in thermal-niche temperatures. For instance in the NEUS-SS (posterior rho -0.88) CBS (-0.85) and NS (-0.81) and EBS (-0.63). Depth was for GOM (-0.79), BC (-0.72), and NS (-0.69). while longitude not really.
+, suggesting partial avoidance of warming, whereas in others spatial shifts were unrelated to—or even positively associated with—niche warming. in some regions we found shifts to co-vary for instance in the in the BC, USWC NEUS-SS and GOM latitudinal shifts and longitudianl shifts were associated, generally folowing the coastile. in the NS latitudianl shift were associated with depth shifts 
+
+\rho_depthnichec_thermalnichec_BAL
 
 \begin{figure}[H]
 \centering
@@ -476,22 +480,11 @@ M.L. was supported by a research grant from the Swedish Research Council Formas 
 \caption{Species-specific trend shifts. Color shows median effect size; more intense colors indicate larger deviations from zero. Points and lines show median and 95\% CI. Marine regions: EBS = Eastern Bering Sea, GOA = Gulf of Alaska, BC = British Columbia, USWC = US West Coast, NEUS-SS = Northeast U.S. \& Scotian Shelf, GOM = Gulf of Mexico, BS = Barents Sea, NS = North Sea, CBS = Celtic-Biscay Shelf, BAL = Baltic Sea, NIC = Northern Iberian Coast.}\label{fig:posterior_slopes_supp}
 \end{figure}
 
-\begin{figure}[H]
-\centering
-\includegraphics[width=1\textwidth]{output/figures/supp/prop_significant_supp.png}
-\caption{This is a widefig. This is an example of long caption this is an example of long caption  this is an example of long caption this is an example of long caption}\label{fig:prop_significant_supp}
-\end{figure}
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=1\textwidth]{output/figures/supp/pca_loadings_supp.png}
-\caption{This is a widefig. This is an example of long caption this is an example of long caption  this is an example of long caption this is an example of long caption}\label{fig:pca_loadings_supp}
-\end{figure}
-
-\begin{figure}[h]
-\centering
-\includegraphics[width=1\textwidth]{output/figures/supp/corr_supp.png}
-\caption{This is a widefig. This is an example of long caption this is an example of long caption  this is an example of long caption this is an example of long caption}\label{fig:corr_supp}
+\includegraphics[width=1\textwidth]{output/figures/supp/corr_shifts_supp.png}
+\caption{This is a widefig. This is an example of long caption this is an example of long caption  this is an example of long caption this is an example of long caption}\label{fig:corr_shifts_supp}
 \end{figure}
 
 \clearpage
