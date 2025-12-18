@@ -131,11 +131,11 @@ for (i in seq_len(nrow(rho))) {
   upper      <- mround(rho$Q97.5[i], 2)
   
   # value string
-  value_str <- paste0(est, " (95\\% CI: ", lower, "--", upper, ")")
+  value_str <- paste0(est, " [95\\% CI: ", lower, "--", upper, "]")
   
   # macro names (both directions)
-  macro1 <- paste0("rho_", left_var, "_", right_var, "_", region)
-  macro2 <- paste0("rho_", right_var, "_", left_var, "_", region)
+  macro1 <- paste0("rho", left_var, "_", right_var, "_", region)
+  macro2 <- paste0("rho", right_var, "_", left_var, "_", region)
   
   # write both macros with identical content
   write_tex(value_str, macro1)
