@@ -10,6 +10,8 @@ library(ggtext)
 library(ggstats)
 library(cowplot)
 library(geomtextpath)
+library(knitr)
+library(kableExtra)
 
 ## definitely not the most efficient code you ever saw for plotting
 #https://commons.wikimedia.org/wiki/Category:It_ain%27t_much,_but_it%27s_honest_work#/media/File:Farmer_meme_with_apostrophe.jpg
@@ -808,6 +810,39 @@ species_summary <- species_summary %>%
   ) %>%
   select(-region_species) %>%   # remove redundant column
   relocate(outcome, region, species, sp_id, .before = median_slope) %>% arrange(desc(sp_id))
+
+
+supp_table <- species_summary %>%
+  mutate(
+    estimate = sprintf(
+      "%.2f [%.2f, %.2f]",
+      median_slope, lower_95, upper_95
+    )
+  ) %>%
+  select(
+    Region = region,
+    Species = species,
+    Outcome = outcome,
+    Estimate = estimate
+  )
+
+supp_table_wide <- supp_table %>%
+  pivot_wider(
+    names_from = Outcome,
+    values_from = Estimate
+  )
+
+supp_table_wide <- supp_table_wide %>%
+  rename(
+    `Latitudinal shift` = lat_shift,
+    `Longitudinal shift` = lon_shift,
+    `Depth shift` = depth_shift,
+    `Thermal-niche shift` = thermal_shift
+  )
+
+
+kbl(supp_table_wide, booktabs = T, "latex",escape=TRUE,longtable = T,
+    linesep = "") %>% kable_styling(latex_options = c("repeat_header","striped"), font_size = 6)
 
 # save as rds and csv
 write_rds(species_summary, here('R/data/processed/bayesian_species_trends.rds'))

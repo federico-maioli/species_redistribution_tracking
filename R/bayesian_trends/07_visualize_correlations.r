@@ -119,6 +119,12 @@ write_tex <- function(x, macro, append = TRUE) {
 # clean file before writing
 unlink("output/values/rho_values.tex")
 
+rho <- rho  %>%
+  mutate(region_short = case_when(
+    region_short == "NEUS-SS" ~ "NEUS",
+    TRUE ~ region_short 
+  )) # annoying with -SS
+
 # loop through each row of rho table
 for (i in seq_len(nrow(rho))) {
   
@@ -131,7 +137,7 @@ for (i in seq_len(nrow(rho))) {
   upper      <- mround(rho$Q97.5[i], 2)
   
   # value string
-  value_str <- paste0(est, " [95\\% CI: ", lower, "--", upper, "]")
+  value_str <- paste0(est, " [95\\% CI: ", lower, ", ", upper, "]")
   
   # macro names (both directions)
   macro1 <- paste0("rho", left_var, "", right_var, "", region)
