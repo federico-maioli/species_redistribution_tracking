@@ -34,10 +34,10 @@ Thumbs.db
 *.nc
 *.rds
 *.csv
-/data/environmental/
+R/data/environmental/
 /data/trawl_surveys/fishglob_clean.rds
 # Misc
 *.html
 # Presentation
 /presentation
-FETCH_HEAD
+
