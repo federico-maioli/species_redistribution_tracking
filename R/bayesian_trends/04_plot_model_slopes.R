@@ -838,11 +838,14 @@ supp_table_wide <- supp_table_wide %>%
     `Longitudinal shift` = lon_shift,
     `Depth shift` = depth_shift,
     `Thermal-niche shift` = thermal_shift
+  ) %>% mutate(
+    Species = gsub("_", " ", Species),
+    Species = paste0("\\textit{", Species, "}")
   )
 
 
-kbl(supp_table_wide, booktabs = T, "latex",escape=TRUE,longtable = T,
-    linesep = "") %>% kable_styling(latex_options = c("repeat_header","striped"), font_size = 6)
+kbl(supp_table_wide, booktabs = T, "latex",escape=FALSE,longtable = T,
+    linesep = "") %>% kable_styling(latex_options = c("repeat_header","striped"), font_size = 7) %>% writeLines( here('output/tables/supp/species_slopes.tex'))
 
 # save as rds and csv
 write_rds(species_summary, here('R/data/processed/bayesian_species_trends.rds'))
