@@ -1,604 +1,507 @@
-\documentclass[11pt]{article}
-\usepackage[utf8]{inputenc}
-\usepackage[margin=1.25in]{geometry}
-\usepackage{amsmath, amsfonts, amssymb}
-\usepackage{subfig}
-\usepackage[dvipsnames]{xcolor}
-\definecolor{niceblue}{HTML}{236899}
+%Version 3.1 December 2024
+% See section 11 of the User Manual for version history
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                                                 %%
+%% Please do not use \input{...} to include other tex files.       %%
+%% Submit your LaTeX manuscript as one .tex document.              %%
+%%                                                                 %%
+%% All additional figures and files should be attached             %%
+%% separately and not embedded in the \TeX\ document itself.       %%
+%%                                                                 %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%\documentclass[referee,sn-basic]{sn-jnl}% referee option is meant for double line spacing
+
+%%=======================================================%%
+%% to print line numbers in the margin use lineno option %%
+%%=======================================================%%
+
+%%\documentclass[lineno,pdflatex,sn-basic]{sn-jnl}% Basic Springer Nature Reference Style/Chemistry Reference Style
+
+%%=========================================================================================%%
+%% the documentclass is set to pdflatex as default. You can delete it if not appropriate.  %%
+%%=========================================================================================%%
+
+%%\documentclass[sn-basic]{sn-jnl}% Basic Springer Nature Reference Style/Chemistry Reference Style
+
+%%Note: the following reference styles support Namedate and Numbered referencing. By default the style follows the most common style. To switch between the options you can add or remove Numbered in the optional parenthesis. 
+%%The option is available for: sn-basic.bst, sn-chicago.bst%  
+ 
+%%\documentclass[pdflatex,sn-nature]{sn-jnl}% Style for submissions to Nature Portfolio journals
+%%\documentclass[pdflatex,sn-basic]{sn-jnl}% Basic Springer Nature Reference Style/Chemistry Reference Style
+\documentclass[pdflatex,sn-nature,referee]{sn-jnl}% Math and Physical Sciences Numbered Reference Style
+%%\documentclass[pdflatex,sn-mathphys-ay]{sn-jnl}% Math and Physical Sciences Author Year Reference Style
+%%\documentclass[pdflatex,sn-aps]{sn-jnl}% American Physical Society (APS) Reference Style
+%%\documentclass[pdflatex,sn-vancouver-num]{sn-jnl}% Vancouver Numbered Reference Style
+%%\documentclass[pdflatex,sn-vancouver-ay]{sn-jnl}% Vancouver Author Year Reference Style
+%%\documentclass[pdflatex,sn-apa]{sn-jnl}% APA Reference Style
 
 
-\newcommand{\rev}[1]{{\color{niceblue} #1}}
+%%%% Standard Packages
+%%<additional latex packages if required can be included here>
 
-\usepackage{hyperref}
-\usepackage{nameref}
-\hypersetup{
-    colorlinks=true,
-    linkcolor=black,
-    filecolor=black,      
-    urlcolor=niceblue,
-    citecolor=niceblue,
-    linkbordercolor = white
-}
-\usepackage{amsbsy}
-\usepackage{epsfig}
-\usepackage{subfig}
-\usepackage{bm}
-\usepackage{xspace}
-\usepackage{color}
-\usepackage{subfloat}
-\usepackage{float}
+\usepackage{graphicx}%
+\usepackage{multirow}%
+\usepackage{amsmath,amssymb,amsfonts}%
+\usepackage{amsthm}%
+\usepackage{mathrsfs}%
+\usepackage[title]{appendix}%
+\usepackage{xcolor}%
+\usepackage{textcomp}%
+\usepackage{manyfoot}%
+\usepackage{booktabs}%
+\usepackage{algorithm}%
+\usepackage{algorithmicx}%
+\usepackage{algpseudocode}%
+\usepackage{listings}%
+\usepackage{bibunits} % for Appendix biblio
 \usepackage{lineno}
-\usepackage{ragged2e}
-\usepackage{placeins}
-\usepackage{comment}
-\usepackage{hanging} % for SI references... not necessary but looks nice
+\defaultbibliography{references} % for appendix
+\defaultbibliographystyle{sn-nature} % for appendix
 
-\makeatletter
-\let\LN@align\align
-\let\LN@endalign\endalign
-\renewcommand{\align}{\linenomath\LN@align}
-\renewcommand{\endalign}{\LN@endalign\endlinenomath}
-\let\LN@gather\gather
-\let\LN@endgather\endgather
-\renewcommand{\gather}{\linenomath\LN@gather}
-\renewcommand{\endgather}{\LN@endgather\endlinenomath}
-\makeatother
-
-\widowpenalty10000
-\clubpenalty10000
-
-\definecolor{darkgrey}{HTML}{A9A9A9}
-\renewcommand\linenumberfont{\normalfont\bfseries\small\color{darkgrey}}
-\modulolinenumbers[2]
-
+% for table supp
 \usepackage{booktabs}
-\usepackage[round]{natbib}
-\bibliographystyle{fishfish}
-\bibpunct{(}{)}{,}{a}{}{,}
-\usepackage{authblk}
-\usepackage{pdflscape}
+\usepackage{longtable}
+\usepackage{colortbl}
+\usepackage{xcolor}
+\usepackage{caption}
 
-% Linux Libertine:
-\usepackage{textcomp}
-\usepackage[sb]{libertine}
-\usepackage[varqu,varl]{inconsolata}% sans serif typewriter
-\usepackage[libertine,bigdelims,vvarbb]{newtxmath} % bb from STIX
-\usepackage[cal=boondoxo]{mathalfa} % mathcal
-\useosf % osf for text, not math
-\usepackage[supstfm=libertinesups,%
-  supscaled=1.2,%
-  raised=-.13em]{superiors}
-\usepackage{setspace}
-
-% for table formatting
-\usepackage{array}
-\newcolumntype{^}{>{\currentrowstyle}}
-
-\newcommand{\PreserveBackslash}[1]{\let\temp=\\#1\let\\=\temp}
-\newcolumntype{C}[1]{>{\PreserveBackslash\centering}p{#1}}
-\newcolumntype{R}[1]{>{\PreserveBackslash\raggedleft}p{#1}}
-\newcolumntype{L}[1]{>{\PreserveBackslash\raggedright}p{#1}}
-
-\newcommand{\ml}[1]{{\color{red}#1}}
-% \newcommand{\lar}[1]{{\color{purple}#1}}
-% other colours: orange, magenta, sky blue, purple, grey
-
-\newcommand*{\TitleFont}{%
-      \usefont{\encodingdefault}{\rmdefault}{b}{n}%
-      \fontsize{13}{15}%
-      \selectfont}
-      
-\newcommand{\R}[1]{\label{#1}\linelabel{#1}}
-% \newcommand{\lr}[1]{page~\pageref{#1}, line~\lineref{#1}}
-\newcommand{\lr}[1]{line~\lineref{#1}}
-
-
-\title{Multidimensional tracking of marine species redistribution under climate change}
-
-
-\date{}
-
-% Tentative order 
-\author[1,*]{Federico Maioli} 
-\author[1]{Daniël van Denderen}
-\author[2]{Max Lindmark} 
-\author[1]{Marcel Montany\`es} 
-\author[3]{Eric J. Ward} 
-\author[4]{Sean C. Anderson}
-\author[1]{Martin Lindegren} 
-
-\affil[1]{National Institute of Aquatic Resources, Technical University of Denmark, 2800 Kgs. Lyngby, Denmark}
-\affil[2]{Department of Aquatic Resources, Institute of Marine Research, Swedish University of Agricultural Sciences, 453 30 Lysekil, Sweden}
-\affil[3]{Conservation Biology Division, Northwest Fisheries Science Center, NOAA Fisheries, Seattle, WA 98112, USA}
-\affil[4]{Pacific Biological Station, Fisheries and Oceans Canada, Nanaimo, BC V9T 6N7, Canada}
-
+\raggedbottom
+%%\unnumbered% uncomment this for unnumbered level heads
 
 \begin{document}
-\begin{spacing}{1.5}
 
+\title[Article Title]{Limited net redistribution of marine species during decades of ocean warming}
+
+\author*[1]{\fnm{Federico} \sur{Maioli}}\email{fedma@aqua.dtu.dk} 
+\author[1]{\fnm{Daniël} \spfx{van}\sur{Denderen}}\email{pdvd@aqua.dtu.dk} 
+\author[2]{\fnm{Max} \sur{Lindmark}}\email{max.lindmark@slu.se}  
+\author[1]{\fnm{Marcel} \sur{Montanyès}}\email{m.montanyes@creaf.cat}  
+\author[3]{\fnm{Eric\,J.} \sur{Ward}}\email{eric.ward@noaa.gov}  
+\author[4]{\fnm{Sean\,C.} \sur{Anderson}}\email{sean.anderson@dfo-mpo.gc.ca}  
+\author[1]{\fnm{Martin} \sur{Lindegren}}\email{mli@aqua.dtu.dk} 
+
+\affil*[1]{\orgdiv{National Institute of Aquatic Resources}, \orgname{Technical University of Denmark (DTU)}, \orgaddress{\street{Henrik Dams Allé 202}, \city{Kongens Lyngby}, \postcode{2800}, \country{Denmark}}}  
+
+\affil[2]{\orgdiv{Department of Aquatic Resources}, \orgname{Swedish University of Agricultural Sciences (SLU)}, \orgaddress{\street{Turistgatan 5}, \city{Lysekil}, \postcode{45330}, \country{Sweden}}}  
+
+\affil[3]{\orgdiv{Conservation Biology Division}, \orgname{NOAA Fisheries, Northwest Fisheries Science Center}, \orgaddress{\street{2725 Montlake Blvd E}, \city{Seattle}, \postcode{WA 98112}, \country{USA}}}  
+
+\affil[4]{\orgdiv{Pacific Biological Station}, \orgname{Fisheries and Oceans Canada}, \orgaddress{\street{3190 Hammond Bay Rd}, \city{Nanaimo}, \postcode{BC V9T 6N7}, \country{Canada}}}  
+
+\newpage
+
+\linenumbers
+
+% 200 words
+\abstract{Marine species are widely expected to shift poleward or deepward as ocean temperatures rise, tracking the thermal environments required for survival and reproduction. Yet many populations deviate from these expectations, remaining stationary or shifting in variable directions, raising questions about the extent to which marine species reorganize coherently under climate change.
+
+Here we analyse decades of standardized bottom-trawl surveys spanning 11 regions of the North Atlantic and Northeast Pacific to track changes in latitude, longitude, depth, and realized thermal niches of more than 200 demersal fish populations. Across regions, net latitudinal, longitudinal, and depth shifts were generally small, as opposing species trajectories offset one another. In contrast, most populations experienced increasing temperatures within their realized thermal niches, indicating that spatial shifts did not fully offset ocean warming. Within some regions, however, many species shifted coherently along predictable environmental gradients, partially reducing thermal exposure.
+
+Together, these results show that climate-driven redistribution of marine species does not manifest as a simple, cross-regional pattern of poleward and deepward tracking. Instead, responses are regionally structured and multidimensional, highlighting the need for integrative approaches to anticipate biodiversity responses under continued ocean warming.
+}
+
+ 
+\keywords{Marine climate change, Species redistribution, Multidimensional range shifts, Ocean warming, Demersal fishes}
 
 \maketitle
 
-\vspace*{\fill}
-\noindent
-Corresponding author: \href{mailto:fedma@aqua.dtu.dk}{fedma@aqua.dtu.dk}
-
-\clearpage
-\linenumbers
-%\setcounter{secnumdepth}{0}
-\setcounter{secnumdepth}{5}
-
-
 \newpage
 
-\begin{refsection}
-\section{Introduction}
+\section{Introduction}\label{Introduction}
+The world’s oceans are warming rapidly, driving a major reorganization of marine biodiversity \citep{ipcc_ocean_2022}. Marine species are widely expected to respond to ocean warming by tracking their thermal niches---the temperature ranges suitable for survival and reproduction \citep{grinnell_niche-relationships_1917}. Such tracking often involves shifts in geographic distribution \citep{tingley_birds_2009}. Consistent with this expectation, studies across marine taxa and regions document widespread poleward and deepward movements, making these shifts one of the most frequently reported biological responses to climate change \citep{parmesan_globally_2003, parmesan_ecological_2006, poloczanska_global_2013, poloczanska_responses_2016}. These shifts reshape marine ecosystems and influence resource management and conservation planning worldwide \citep{pinsky_preparing_2018, palacios-abrantes_climate_2025, pecl_biodiversity_2017}.
 
-The world’s oceans are warming rapidly, driving a major reorganization of marine biodiversity \citep{ipcc_ocean_2019}. As temperatures rise, many species respond by tracking their thermal niche ---the range of temperatures suitable for survival and reproduction \citep{grinnell_niche-relationships_1917}--- through shifts in geographic distribution \citep{lenoir_species_2020}. These shifts, typically towards higher latitudes or deeper waters, are among the most widespread biological responses to climate change \citep{parmesan_globally_2003, parmesan_ecological_2006, poloczanska_global_2013, poloczanska_responses_2016} and are reshaping ecosystems, challenging resource management, and redefining conservation priorities \citep{pinsky_preparing_2018, pecl_biodiversity_2017}. 
+At the same time, observed responses often depart from this general pattern. Many marine populations remain stationary or shift in directions that deviate from poleward or deepward trends, even under sustained warming \citep{rubenstein_climate_2023, fuchs_wrong-way_2020, lawlor_mechanisms_2024}. This variability reflects, in part, the complex spatial structure of ocean warming, including heterogeneous climate velocities and physical constraints imposed by coastlines, bathymetry, and circulation patterns \citep{burrows_pace_2011, pinsky_marine_2013}. As a result, it remains unclear whether heterogeneous species responses add up to a coherent, cross-regional redistribution pattern during ocean warming, or whether opposing movements cancel out at broader spatial scales.
 
-At the center of this transformation are continental shelfs. Continental shelfs sustain exceptional biodiversity and productivity, support some of the world’s largest fisheries, and contribute roughly X\% of the global marine catch \citep{watson_database_2017}. Shelf systems also experience warming at rates exceeding the global ocean average \citep[e.g.,][]{pershing_slow_2015, song_arctic_2023}, exposing resident species to accelerated thermal stress. Thus, continental shelves support high biodiversity and productivity while facing disproportionate exposure to climate-driven warming.
+Determining whether species responses combine into coherent redistribution patterns requires evaluating movement across multiple spatial dimensions simultaneously. Most studies, however, examine redistribution along a single gradient at a time---most commonly latitude, or, less often, depth \citep{lenoir_climate-related_2015}. While these approaches have revealed important climate-related patterns, they provide limited insight into how species combine movements along different spatial dimensions, and what this means for net redistribution across regions. In marine systems, species may shift horizontally, move vertically into cooler waters, remain in place while tolerating greater thermal exposure, or combine these strategies \citep{nye_changing_2009}. Without integrating these responses, we lack a complete picture of climate-driven redistribution under ocean warming \citep{lawlor_mechanisms_2024, fredston_reimagining_2025}.
 
-Climate change–driven range shifts in marine systems are well documented \citep{poloczanska_global_2013, burrows_geographical_2014}. Yet, most previous research has examined only a single spatial dimension—typically the poleward movement of range centroids \citep[e.g.][]{nye_changing_2009,  dulvy_climate_2008, pinsky_marine_2013}. This narrow focus oversimplifies species' responses to warming and may help explain why model predictions of range shifts both in terms of magnitude and direction often fail \citep{lawlor_mechanisms_2024, fredston_reimagining_2025}. Such limitations also hinder our ability to forecast future changes in species distribution and composition and design effective management and conservation measures. In reality, marine species rarely respond along a single axis. For instance, fish may track their thermal niche by shifting in space, moving into deeper waters, and/or remain in place and experience increased thermal exposure \citep{nye_changing_2009}. Considering shifts in multiple directions and their potential interactions offers a more realistic representation of climate-driven redistribution of marine fishes.
+To address this gap, we develop and apply a multidimensional framework that evaluates climate-driven redistribution across three complementary dimensions: horizontal range shifts (changes in range centroids), vertical redistributions (realized depth niches), and changes in realized thermal niches. This framework allows us to assess not only the direction and magnitude of spatial movements, but also whether such movements effectively track shifting thermal environments. If populations fully follow changing isotherms, their realized thermal niches should remain stable through time; systematic warming of realized niches instead indicates incomplete tracking and increasing thermal exposure. We apply this framework to decades of standardized scientific bottom-trawl surveys encompassing more than 200 well-sampled demersal fish populations across 11 regions of the North Atlantic and Northeast Pacific. These regions span broad latitudinal and climatic gradients, include some of the fastest-warming continental shelf seas \citep{pershing_slow_2015, song_arctic_2023}, and contain some of the most comprehensive long-term records of marine biodiversity change (Fig.~\ref{fig:map}; \citep{maureaud_are_2021, maureaud_fishglob_data_2024}). Using spatiotemporal and Bayesian mixed-effects models, we estimate long-term trends in species’ horizontal distributions, depth niches, and realized thermal niches. By examining these responses both within and across regions, we assess whether species-level movements combine into coherent redistribution patterns and evaluate the extent to which such movements reduce thermal exposure under ocean warming.
 
-To that end, we here develop and apply a multidimensional framework that considers three complementary dimensions of climate response: (i) horizontal range shifts, captured through changes in range centroids; (ii) vertical redistributions, reflected in realized depth niches; and (iii) changes in realized thermal niches, which reveal whether species are increasingly exposed to warming. While even broader approaches have been advocated \citep{fredston_reimagining_2025}, our focus on spatial and thermal axes captures the primary pathways by which marine fish interact with rapid ocean warming.
 
-Our study draws on a comprehensive set of standardized scientific bottom-trawl surveys, including more than 200 well sampled demersal (bottom-living) fish populations across 11 regions of the North Atlantic and Northeast Pacific. These regions include some of the fastest-warming continental shelf seas, span broad latitudinal and climatic gradients, and provide some of the world's most comprehensive long-term records of marine biodiversity change \citep{maureaud_are_2021, maureaud_fishglob_data_2024}. Using a combination of spatiotemporal generalized linear mixed-effects models and Bayesian mixed-effects models, we quantify long-term trends in marine fish species range centroids, depth niches, and thermal niches, evaluate whether consistent patterns emerge across regions, and assess whether distinct combinations of responses correspond to coherent strategies. Finally, we test whether these strategies are associated with changes in population abundance, potentially distinguishing species that are adapting to warming conditions from those in decline.
+\begin{figure}[h]
+\centering
+\includegraphics[width=1\textwidth]{output/figures/main/map.png}
+\caption{Overview of survey coverage and bottom temperature trends.
+The central map shows the regions included in the analysis, with colored polygons indicating region extents. The tile plot summarizes the number of hauls per region by year. Surrounding panels display regional trends in mean bottom temperature over time; bold values indicate the estimated decadal rate of temperature change.}\label{fig:map}
+\end{figure}
 
-%By integrating these metrics, we can disentangle true movements from passive thermal exposure and uncover how different response pathways interact.
+\section{Results}\label{Results}
 
-\section{Methods}
+\input{output/values/bayesian_trend_analysis/global_slopes}
+
+\subsection{No net spatial shifts, but consistent niche warming}
+
+Overall, we detected no consistent directional shifts in either latitude or longitude across species and regions, as 95\% credible intervals (CIs) greatly overlapped zero (Fig. \ref{fig:posterior_slopes}a). The posterior median global slope ($\beta_{\text{decade}}$) for latitudinal change was \LatMedian{} km~decade$^{-1}$ \LatCI{}, and for longitudinal change \LonMedian{} km~decade$^{-1}$ \LonCI{}. Depth exhibited a slightly stronger, though still uncertain, tendency toward deepening (\DepthMedian{} m~decade$^{-1}$ \DepthCI{}), while thermal niche temperatures increased consistently across species and regions (\ThermalMedian{} $^\circ$C~decade$^{-1}$ \ThermalCI{}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=1\textwidth]{output/figures/main/posterior_slopes.png}
+\caption{\label{fig:posterior_slopes}Trends in distributional shifts of demersal fish species, shown from left to right for latitudinal, longitudinal, depth, and thermal niche dimensions. Points and horizontal lines indicate posterior medians and 95\% Bayesian credible intervals of decadal trends.
+(a) Global posterior slopes across all regions.
+(b) Region-specific posterior slopes.
+In (a), interval shading reflects the posterior distribution along a continuous gradient; in (b), color indicates median effect size, with more intense colors representing larger deviations from zero.
+Marine regions:  EBS = Eastern Bering Sea, GOA = Gulf of Alaska, BC = British Columbia, USWC = U.S. West Coast,  NEUS-SS = Northeast U.S. and Scotian Shelf, GOM = Gulf of Mexico, BS = Barents Sea, NS = North Sea, CBS = Celtic–Biscay Shelf,  BAL = Baltic Sea, NIC = Northern Iberian Coast.}
+\end{figure}
+
+\subsection{Limited average spatial shifts, but coordinated species responses within some regions}
+
+\input{output/values/bayesian_trend_analysis/region_slopes}
+
+\input{output/values/rho_values}
+
+At the regional scale, posterior slopes for spatial shifts varied in direction but were generally small and uncertain, offering limited evidence for consistent changes in mean latitude, longitude, or depth across species (Fig.~\ref{fig:posterior_slopes}b). Depth showed the clearest---though still weak and variable---signals, with modest deepening along the U.S. West Coast (USWC; \DepthUSWCMedian{}~m~decade$^{-1}$ \DepthUSWCCI{}) and the Northeast U.S. and Scotian Shelf (NEUS–SS; \DepthNEUSMedian{}~m~decade$^{-1}$ \DepthNEUSCI{}). Although regional slopes were weak, many species within some regions shifted in the same direction (Fig.~\ref{fig:prop_significant}). In the Eastern Bering Sea (EBS), 64\% of species moved northward, with a similar proportion in the North Sea (NS; 60\%), whereas six of eight species in the Baltic Sea (BAL) shifted southward. Depth shifts were also directionally consistent within some regions, with many species deepening in the NEUS–SS (39\%) and British Columbia (BC; 34\%), while few moved shallower. In contrast, some regions showed no detectable spatial shifts---for example, no species in the Gulf of Alaska (GOA) shifted in latitude, longitude, or depth, and depth did not change in the Northern Iberian Coast (NIC). Thermal-niche temperatures increased in nearly all regions and closely tracked local ocean-warming rates (Fig.~\ref{fig:map}; \textit{$\rho$} = 0.79, \textit{n} = 11, \textit{p} = 0.0036). The only regions without widespread thermal-niche warming were the EBS, Barents Sea (BS), and NIC.
+
+Although thermal niche warming was widespread, in some regions species that shifted poleward or deeper experienced smaller increases in their thermal-niche temperatures. Negative correlations between latitudinal shifts and thermal niche warming were strongest in the NEUS–SS ($\rho$ = \rhocogycthermalnichecNEUS), CBS (\rhocogycthermalnichecCBS), NS (\rhocogycthermalnichecNS), and EBS (\rhocogycthermalnichecEBS), while depth shifts showed similar patterns in the GOM (\rhodepthnichecthermalnichecGOM), BC (\rhodepthnichecthermalnichecBC), and NS (\rhodepthnichecthermalnichecNS). Longitudinal shifts generally showed weak or no relationship with thermal-niche change, except in the NEUS–SS, where longitudinal movements co-varied with latitude (\rhocogyccogxcNEUS). Spatial shifts along different axes also co-varied in other regions: in BC, USWC, NEUS–SS, and GOM, latitudinal and longitudinal shifts were associated, reflecting coast-parallel movements, whereas in the NS, latitudinal and depth shifts were correlated, with northward movements coinciding with deepening (\rhodepthnicheccogycNS).
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=1\textwidth]{output/figures/main/prop_significant.png}
+\caption{\label{fig:prop_significant}Proportion of species with supported distributional shifts over time. Trends are shown for latitudinal, longitudinal, depth, and thermal niche shifts. Bar plots indicate the proportion of species per region showing a particular response, with shifts considered supported if at least 95\% of the posterior distribution excludes zero; otherwise, shifts are marked as non-significant (n.s.). Marine regions: EBS = Eastern Bering Sea, GOA = Gulf of Alaska, BC = British Columbia, USWC = U.S. West Coast,  NEUS-SS = Northeast U.S. and Scotian Shelf, GOM = Gulf of Mexico, BS = Barents Sea, NS = North Sea, CBS = Celtic–Biscay Shelf,  BAL = Baltic Sea, NIC = Northern Iberian Coast.
+}
+\end{figure}
+
+\subsection{Species show heterogeneous spatial shifts but niche warming is widespread}
+
+\input{output/values/bayesian_trend_analysis/species_slopes}
+\input{output/values/bayesian_trend_analysis/prop_signif}
+\input{output/values/bayesian_trend_analysis/prop_signif_by_dir}
+
+At the species level, spatial shifts were highly variable in both direction and magnitude (Fig.~\ref{fig:prop_significant}, Supplementary Table~\ref{tab:S_species_slopes}, Supplementary Fig.~\ref{fig:posterior_slopes_supp}). About \LatPerc{} of the 226 populations shifted in latitude, with northward and southward movements occurring in similar proportions. The most extreme northward shift was seen in \MaxLatSpecies{} in \MaxLatRegion{} (\MaxLatMedian{}~km~decade$^{-1}$ \MaxLatCI{}), and the largest southward in \MinLatSpecies{}~km~decade$^{-1}$ in \MinLatRegion{} (\MinLatMedian{} \MinLatCI{}). Longitudinal shifts occurred in 40\% of species, with \LonWestingPerc{} moving westward and \LonEastingPerc{} eastward; the strongest eastward and westward shifts were \MaxLonSpecies{} in \MaxLonRegion{} (\MaxLonMedian{}~km~decade$^{-1}$ \MaxLonCI{}) and \MinLonSpecies{} in \MinLonRegion{} (\MinLonMedian{}~km~decade$^{-1}$ \MinLonCI{}), respectively. Depth shifts were less frequent, with \DepthDeepeningPerc{} of species moving deeper and \DepthShallowingPerc{} shallower. The strongest deepening occurred in \MaxDepthSpecies{} in \MaxDepthRegion{} (\MaxDepthMedian{}~m~decade$^{-1}$ \MaxDepthCI{}), and the greatest shallowing in \MinDepthSpecies{} in \MinDepthRegion{} (\MinDepthMedian{}~m~decade$^{-1}$  \MinDepthCI{}). 
+In contrast, most species experienced warming in their thermal niches (\ThermalPerc{}), led by \MaxThermalSpecies{} in \MaxThermalRegion{} (\MaxThermalMedian{}~$^\circ$C~decade$^{-1}$ \MaxThermalCI{}), and only three species showing signs of cooling.
+
+
+\section{Discussion}\label{sec:Discussion}
+
+Marine biodiversity is reorganizing under ocean warming, and numerous studies have documented poleward and deepward shifts across taxa and regions \citep{poloczanska_global_2013,dulvy_climate_2008,poloczanska_responses_2016, perry_climate_2005}. These patterns have often been interpreted as evidence for a pervasive, directional redistribution of marine life in response to climate change. Our results complicate this narrative. Analyzing more than 200 demersal fish populations across 11 continental shelf regions, we found little evidence for consistent, net spatial redistribution along latitude, longitude, or depth when responses were aggregated across regions. Instead, species-level movements were highly variable and often balanced out across species and regions, yielding weak average trends at cross-regional scales, with coherence emerging only in some regions. At the same time, realized thermal niches warmed across most species and regions.
+
+This lack of strong net spatial redistribution contrasts with several cross-regional syntheses that report substantial, directional range shifts. For example, Poloczanska et al. \citep{poloczanska_global_2013} estimated mean poleward movements of roughly 30–70 km decade$^{-1}$ at species’ centroids and leading edges, with comparable rates reported in the BioShifts database \citep{lenoir_species_2020}. By comparison, the cross-regional trends we estimate were one to two orders of magnitude smaller and lacked a consistent direction. Importanly, weak net spatial redistribution does not imply a lack of biological response to ocean warming. Rather, it emerges from the diversity of redistribution pathways available to marine species and the constraints that shape them. Although temperature gradients broadly align with latitude and depth, local bathymetry, coastlines, ocean circulation, and habitat structure generate region-specific pathways for movement \citep{pinsky_marine_2013, garcia_molinos_climate_2016}. Species traits, habitat associations, and non-thermal drivers such as fishing pressure, oxygen availability, and prey distributions further modulate these responses \citep{sunday_species_2015, deutsch_climate_2015, wisz_role_2013, bandara_importance_2024}. As a result, heterogeneous---and sometimes opposing---species-level movements arise within and among regions under similar warming trends, producing weak aggregate signals at broader spatial scales.
+
+A consistent signal across regions was widespread warming of realized thermal niches. Most species experienced increasing temperatures in the habitats they occupied, even where spatial redistribution occurred, suggesting that redistribution rarely provided full thermal compensation under ocean warming. Rather than maintaining stable thermal conditions through uniform isotherm tracking, these patterns align with evidence that realized thermal niches are dynamic under climate change \citep{fredston_range_2021, ward_win_2024}. Thermal compensation nonetheless emerged in some regions, where species that shifted poleward or deeper tended to experience smaller increases in thermal-niche temperature. In systems with strong latitudinal temperature gradients, such as the Eastern Bering Sea and the North Sea, poleward movements were associated with reduced niche warming, whereas in regions with weak latitudinal gradients or steep depth gradients---such as the Gulf of Mexico and British Columbia---depth provided the primary pathway for partial mitigation. The North Sea represents a particularly coherent case, with many species shifting in concert poleward and deepward, reflecting tightly coupled horizontal and vertical thermal gradients. There, well-documented examples such as North Sea cod illustrate that effective thermal tracking can occur under specific geographic and environmental configurations (Supplementary Table S1; \citealp{perry_climate_2005, engelhard_climate_2014}), but such cases remain the exception rather than the rule.
+
+Our analysis focuses on well-sampled species from standardized surveys, enabling consistent estimation of spatial and thermal metrics and explicit propagation of uncertainty across multiple dimensions of redistribution. This design results in narrower taxonomic and geographic coverage than global syntheses, but it allows redistribution pathways to be evaluated within a unified statistical framework. Many cross-regional analyses pool heterogeneous datasets and rely on summary metrics such as range edges, often without explicitly accounting for uncertainty in underlying shifts \citep{brown_ecological_2016, lenoir_species_2020, dahms_temperature_2023}. By contrast, our two-step framework estimates spatial and thermal metrics directly from standardized survey data and models temporal trends jointly across multiple dimensions. This approach propagates uncertainty from observations to species-, region-, and cross-regional summaries and allows correlations among redistribution pathways to vary among regions. These methodological differences likely explain why we detect weaker net redistribution signals at cross-regional scales than earlier syntheses.
+
+Taken together, our results show that, under climate change, marine species redistribution does not manifest as a simple, cross-regional shift toward cooler habitats along predictable poleward or deepward axes. Instead, redistribution reflects multidimensional, context-dependent responses shaped by local environmental gradients, physical constraints, and species-specific ecological pathways. When aggregated across regions, these heterogeneous trajectories often offset one another, yielding weak net redistribution despite sustained ocean warming. This complexity challenges assumptions of uniform poleward and deepward tracking and underscores the need for multidimensional approaches to anticipate biodiversity responses under continued climate change.
+
+
+\section{Methods}\label{methods}
 
 \subsection{Data sources}
 
-\subsubsection{Fish data}
+\textbf{Fish observations.} We compiled fish biomass densities data (kg km\textsuperscript{-2}) from 
+a large-scale collection of standardized, fishery-independent bottom-trawl surveys \citep{maureaud_fishglob_data_2024}. Each trawl deployment (haul) recorded the catch by species, with biomass standardized by the sampled (``swept'') area, alongside the haul’s location, depth, and time. We selected surveys with a consistent sampling protocol and at least 15 years of coverage, resulting in 17 surveys across 11 regions in the North Atlantic and Northeast Pacific (Fig.~\ref{fig:map}).
+To ensure robust estimates of species’ spatial and temporal dynamics, we kept only taxa that (i) made up 99\% of the cumulative regional biomass, (ii) occurred in at least 15\% of hauls in that region, and (iii) were sampled in at least two hauls per year. These criteria yielded 226 fish populations (species–region combinations) across all regions (Supplementary Table~\ref{tab:S_species_slopes}).
 
-Fish density data (kg/km\textsuperscript{2}) were obtained from 
-a large-scale compilation of standardized, fishery-independent bottom-trawl surveys \citep{maureaud_fishglob_data_2024}. Each trawl deployment (haul) records the catch by species, with biomass standardized by the sampled ("swept") area, alongside the haul’s location, depth, and time. We selected surveys with a consistent sampling protocol and temporal coverage of at least 15 years \citep{maureaud_fishglob_data_2024}, resulting in 17 surveys across 11 regions (Fig \ref{fig:map}).
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[scale=0.7]{output/figures/main/map.png}
-\caption{Overview of survey data. (a) Map showing the surveys and ecoregions considered in the analysis. (b) Number of hauls per survey by year.}
-    \label{fig:map}
-\end{figure}
-
-To avoid sampling bias and ensure robust estimation of the spatial and temporal dynamics of species, we retained only taxa that (i) contributed 99\% of the cumulative biomass within each region and (ii) occurred in at least 15\% of hauls within that region. This filtering yielded a final dataset of 237 fish populations (species–region combinations) across all regions (Table S).
-
-
-\subsubsection{Temperature data}
-
-Since most observations lack in situ measurements of bottom temperature, we used monthly bottom temperature data derived from the Copernicus Global Ocean Physics Reanalysis \citep{european_union-copernicus_marine_service_global_2018}, which provides values on a regular grid with a spatial resolution of 1/12$^{\circ}$ (approximately 7 km at the study latitudes).
-
-%Where possible, we validated the model-derived temperatures against available in situ measurements, finding good agreement between the two (Appendix Fig. SX).
-
-\subsection{Species spatiotemporal modeling}\label{sec:Species spatiotemporal modeling}
-
-To model species distributions and how they have changed over time, we employed spatiotemporal generalized linear mixed-effects models (GLMMs), a flexible and widely used approach in fisheries science \citep{thorson_geostatistical_2015, thorson_model-based_2016}. For each species analyzed (S1 Table), we modeled biomass density as a Tweedie-distributed response, appropriate for data containing a combination of zeroes and continuous positive values. 
-The general form of the spatiotemporal GLMM can be represented as:
-\begin{align}
-    y_{s,t} &\sim \text{Tweedie} \left( \mu_{\boldsymbol{s},t}, p, \phi \right), \quad 1 < p < 2, \label{eq:1} \\
-    \mu_{s,t} &= \exp \left( X_{\boldsymbol{s},t} \beta + \omega_{\boldsymbol{s}} + \epsilon_{\boldsymbol{s},t} \right), \label{eq:2} \\
-    \omega &\sim \operatorname{MVN} \left(0, \Sigma_{\omega} \right), \label{eq:3} \\
-    \epsilon_{t} &\sim \operatorname{MVN} \left(0, \Sigma_{\epsilon} \right), \label{eq:4}
-\end{align}
-where \( y_{\mathbf{s},t} \) represents fish density (kg/km\(^2\)) at spatial location \( \mathbf{s} \) and time \( t \), \( \mu \) is the expected mean CPUE, and \( p \) and \( \phi \) are the power and dispersion parameters of the Tweedie distribution, respectively. \( \mathbf{X}_{\mathbf{s},t} \) is the design matrix of covariates including year (as a categorical variable) and a second-degree polynomial of log(depth), consisting of both linear and quadratic terms. The vector \( \bm{\beta} \) contains the corresponding fixed-effect coefficients.
-We included log-transformed depth as a second-order polynomial to help constrain predictions to plausible magnitudes across the depth gradient.
-
-Because fish species are not constrained by survey boundaries, and some surveys cover only a small part of the distribution range of species we aggregated multiple surveys into broader regions for modeling when appropriate. Surveys with extensive and clearly defined coverage (e.g., the North Sea IBTS) were modeled independently, while those with contiguous spatial domains and partial overlap in time and space (e.g., surveys conducted in British Columbia) were combined (Fig \ref{fig:map}). When multiple surveys were present within a region, we included survey identity as a fixed effect to account for potential differences in sampling. To capture intra-annual variability, we also included a month-specific random intercept for surveys spanning more than three months: $\alpha_m \sim \mathcal{N}(0, \sigma_{\alpha_m}^{2})$, where \textit{m} indexes the sampled months.
-
-The parameters \( \omega_{\mathbf{s}} \) and \( \epsilon_{\mathbf{s},t} \) (Equations \ref{eq:3}--\ref{eq:4}) represent spatial and spatiotemporal random effects, respectively, both modeled as Gaussian Markov random fields \citep{lindgren_explicit_2011}. The spatial random field is shared across years, and represents static spatial effects such as habitat that are not accounted for by the fixed effects, while the spatiotemporal fields represent interannual spatial variation. We assumed spatiotemporal random fields to be independent across years to capture annual variation in spatial structure. While a first-order autoregressive (AR1) process could have been used to model temporal dependence, we opted for the independent formulation to strike a balance between computational efficiency and model flexibility. This approach allows spatial patterns to vary freely from year to year, accommodating potential non-stationary dynamics in species distributions without imposing strict temporal correlation structures.
-
-For British Columbia surveys, which have a biennial sampling structure, we modeled spatiotemporal variation as a random walk process. This modifies Equation \ref{eq:4} into $\epsilon_{\boldsymbol{s},t} \sim  \operatorname{MVN}(\epsilon_{t-1},\Sigma_{\epsilon})$ to allow for flexibility in estimating the spatial and temporal processes in years without data \citep{ward_win_2024}.
-
-Latent spatial and spatiotemporal random fields were approximated using a triangulated mesh with a minimum spacing (cutoff) of 20 km constructed with the \texttt{fmesher} R package \citep{lindgren_fmesher_2025}. This cutoff distance represents the smallest allowed distance between two mesh vertices. We assumed a shared range parameter between the spatial and spatiotemporal fields, while allowing each field to have its own variance.
-
-The maximum marginal log-likelihood was estimated using Template Model Builder \citep[TMB;][]{kristensen_tmb_2016}, which applies the Laplace approximation to integrate out random effects. Models were fit in R 4.1.0 \citep{r_core_team_r_2021} using the \texttt{sdmTMB} package \citep{anderson_sdmtmb_2024}, which interfaces TMB with INLA-based spatial methods \citep{rue_approximate_2009}. Only models with a positive-definite Hessian and a maximum absolute log-likelihood gradient $< 0.001$ were considered successfully converged and used for inference \citep{anderson_sdmtmb_2024}.
+\noindent
+\textbf{Environmental data.} We obtained bottom temperature data from the Copernicus Global Ocean Physics Reanalysis \citep{european_union-copernicus_marine_service_global_2018}, which provides monthly estimates at 1/12$^{\circ}$ ($\approx$7 km) resolution. While in situ measurements exist for some surveys in certain years, we used this modeled product to obtain temporally averaged and spatially consistent time series. Bathymetric data were derived from the GEBCO 2023 dataset \citep{gebco_bathymetric_compilation_group_2023_gebco_2023_2023}, which provides global seafloor depth at 0.00417° ($\approx$400 m) resolution.
 
 
 
-\subsubsection{Prediction grid}
+\subsection{Spatiotemporal modeling}\label{sec:Species spatiotemporal modeling}
 
-After model fitting and validation We predicted species-specific densities on a 4 $\times$ 4 km spatial grid (in local UTM coordinates) covering each region for all years with available data. Bathymetric information was extracted at the centroid of each grid cell from GEBCO \citep{gebco_bathymetric_compilation_group_2023_gebco_2023_2023}, which provides a bathymetric grid with a horizontal resolution of 0.00417° (approximately 400 m at our study latitudes).
-Similarly, at each grid cell centroid, we extracted the average monthly temperature for the 12 months preceding the earliest survey month from the Copernicus Global Ocean Physics Reanalysis dataset.
+\textbf{Model structure.} We modeled species distributions and their temporal dynamics using spatiotemporal generalized linear mixed-effects models (GLMMs), a flexible approach widely used in fisheries science \citep{thorson_geostatistical_2015, thorson_model-based_2016}. For each species (Supplementary Table~\ref{tab:S_species_slopes}), biomass density was modeled with a Tweedie distribution, using year (as a factor) and log-transformed depth (modeled as a second-order polynomial) as predictors. Survey identity and quarter were included as fixed effects to account for differences in sampling and seasonal variation when appropriate. Spatial and spatiotemporal variation was captured through random fields, approximated via the stochastic partial differential equation (SPDE) method with Gaussian Markov random fields \citep{lindgren_explicit_2011}. Models were implemented in R with the \texttt{sdmTMB} package \citep{anderson_sdmtmb_2024}, which integrates finite-element meshes constructed with \texttt{fmesher} \citep{lindgren_fmesher_2025} into Template Model Builder (TMB) \citep{kristensen_tmb_2016}. Full details on model structure, parameterization, and fitting procedures are provided in Appendix A.
 
-\subsubsection{Spatial and thermal metrics}\label{sec:Spatial and thermal metrics}
 
-To assess how species respond to ocean warming, we calculated annual metrics that capture both spatial redistribution and thermal exposure, namely range centroids (latitude and longitude), realized depth niche, and realized thermal niche. 
-We estimated horizontal shifts in distribution using range centroids rather than range edges, since centroids have shown to be less prone to noise and provide a clearer signal of range-wide movement, thereby offering more stable and representative measures of geographic displacement \citep{shoo_detecting_2006}.
-The centroids were estimated as the biomass-weighted mean latitude and longitude (center of gravity) across grid cells. Realized depth and thermal niches were computed as biomass-weighted averages of depth and temperature, respectively, representing the environmental conditions most heavily occupied by each species (Table~\ref{table:derived_quantities}). All metrics were derived from biomass densities predicted on the prediction grid using the fitted the spatiotemporal models. 
 
-\begin{table}[h!]
-\caption{Summary of derived spatial and thermal metrics. All statistics are calculated using predicted species density across grid cells.}
+\noindent
+\textbf{Prediction grid and environmental matching.} 
+After model fitting and validation we predicted species-specific densities on a 4 × 4 km spatial
+grid (in local UTM coordinates) covering each region for all years with available data. For each grid cell, we assigned bathymetry and the average bottom temperature over the 12 months preceding the earliest survey month in a region. This procedure generated a consistent spatiotemporal dataset of predicted biomass, depth, and temperature for downstream analyses.
+
+\noindent
+\textbf{Derivation of multidimensional spatial and thermal-niche metrics.} To assess species responses to ocean warming, we computed annual metrics that characterize both spatial redistribution and thermal exposure, specifically range centroids (UTM northing and easting), realized depth niche, and realized thermal niche. Horizontal shifts in distribution were quantified using range centroids rather than range edges, as centroids are less susceptible to noise and provide a clearer signal of overall distributional movement, thus offering a more stable and representative measure of geographic displacement \citep{shoo_detecting_2006}. Range centroids were calculated as the biomass-weighted mean UTM northing and easting (center of gravity) across grid cells. The realized depth and thermal niches were computed as biomass-weighted averages of depth and bottom temperature, respectively, summarizing the environmental conditions most intensely occupied by each species (Table~\ref{table:derived_quantities}). All these metrics were derived from biomass density predictions across the spatial grid generated by the fitted spatiotemporal models.
+
+\begin{sidewaystable}[!htbp]
+\caption{Summary of annual spatial and thermal metrics used to quantify species’ distributional and thermal responses to ocean warming.}
+\label{table:derived_quantities}
 \centering
 \renewcommand{\arraystretch}{1.5}
-\begin{tabular}{
-    >{\raggedright\arraybackslash}p{3.2cm} 
-    >{\raggedright\arraybackslash}p{3.5cm} 
-    >{\raggedright\arraybackslash}p{5cm} 
-    >{\raggedright\arraybackslash}p{4.3cm}
-}
+\begin{tabular}{@{}p{3.2cm}p{3.5cm}p{5cm}p{4.3cm}@{}}
 \toprule
-\textbf{Name} & \textbf{Metric} & \textbf{Definition / Formula} & \textbf{Interpretation} \\
+Name & Metric & Definition / Formula & Interpretation \\
 \midrule
-
-\textbf{Range centroid (latitude)} & Density-weighted latitude & 
-$\bar{y} = \frac{\sum y_i D_i}{\sum D_i}$, where $y_i$ is the UTM northing of grid cell $i$, and $D_i$ is predicted density. & 
-Tracks north–south distributional shifts. \\
-
-\textbf{Range centroid (longitude)} & Density-weighted longitude & 
-$\bar{x} = \frac{\sum x_i D_i}{\sum D_i}$, where $x_i$ is the UTM easting of grid cell $i$. & 
-Tracks east–west distributional shifts. \\
-
-\textbf{Depth niche} & Density-weighted depth & 
-$\bar{z} = \frac{\sum z_i D_i}{\sum D_i}$, where $z_i$ is depth in grid cell $i$. & 
+Range centroid (UTM northing) & Density-weighted northing &
+$\bar{y} = \frac{\sum y_i D_i}{\sum D_i}$, where $y_i$ is the UTM northing of grid cell $i$, and $D_i$ is predicted density. &
+Tracks north–south shifts in the centre of the species’ distribution. \\
+Range centroid (UTM easting) & Density-weighted easting &
+$\bar{x} = \frac{\sum x_i D_i}{\sum D_i}$, where $x_i$ is the UTM easting of grid cell $i$. &
+Tracks east–west shifts in the centre of the species’ distribution. \\
+Depth niche & Density-weighted depth &
+$\bar{z} = \frac{\sum z_i D_i}{\sum D_i}$, where $z_i$ is depth in grid cell $i$. &
 Captures changes in vertical habitat use. \\
-
-\textbf{Thermal niche} & Density-weighted temperature & 
-$\bar{T} = \frac{\sum T_i D_i}{\sum D_i}$, where $T_i$ is bottom temperature in grid cell $i$. & 
+Thermal niche & Density-weighted temperature &
+$\bar{T} = \frac{\sum T_i D_i}{\sum D_i}$, where $T_i$ is bottom temperature in grid cell $i$. &
 Reflects thermal conditions in occupied habitat. \\
-
-\bottomrule
+\botrule
 \end{tabular}
-\label{table:derived_quantities}
-\end{table}
+\end{sidewaystable}
 
-\subsubsection{Population abundance}
-
-For estimating abundance of each fish population, we calculated an area-weighted relative population abundance index by multiplying biomass density by cell area, summing these relative biomass values, and applying a generic bias correction \citep{thorson_geostatistical_2015, thorsonImplementingGeneric2016}. We then estimated population-specific temporal trends in abundance by fitting a linear model to the log-transformed annual indices.
+\newpage
 
 \subsection{Bayesian trend analysis}\label{sec:Bayesian trend analysis}
 
-We estimated trends in the set of spatial and thermal metrics described above using multivariate Bayesian mixed-effects models because these metrics are often correlated. For example, depth shifts can co-occur with changes in range centroid, and we modeled them jointly to capture shared variation. We initially modelled the outcomes using a multivariate normal (MVN) distribution, but posterior predictive checks revealed heavier tails than the MVN could capture, so we refitted the model using univariate Student-t distribution for each response, which are more robust to extreme values \citep[e.g.,][]{anderson_black-swan_2017}. Residual correlations across responses were retained using a multivariate normal correlation structure. This change improved predictive accuracy, as confirmed by higher leave-one-out cross-validation (LOO) scores \citep{vehtari_practical_2017} (Supplementary Table~\ref{tab:elpd}).
+We estimated temporal trends in spatial and thermal metrics using Bayesian mixed-effects models that jointly model multiple, potentially correlated responses. Each response was modeled using a Student-t likelihood to provide robustness to extreme values \citep[e.g.,][]{anderson_black-swan_2017}, with uncertainty from the spatiotemporal modeling propagated via observation-specific standard errors. Correlations among responses were captured through a region-specific multivariate normal (MVN) covariance structure, allowing shared variation among spatial and thermal metrics to be estimated explicitly. Temporal trends were estimated hierarchically as varying slopes, with a global effect of time, region-level deviations, and species-specific deviations nested within regions, enabling inference across biological scales. To improve interpretability and facilitate model fitting, response variables and the time predictor were mean-centered within each species–region combination, such that their means equal zero. Under this parameterization, intercepts were omitted and all coefficients represent deviations from the species–region mean. Time was rescaled to decades, allowing slope parameters to be interpreted directly as rates of change per decade.
 
-Next, we compared two alternative random-effects structures using LOO cross-validation: (i) random slopes varying by species–region combinations, and (ii) a hierarchicalstructure with species nested within regions. The nested specification was better supported and was therefore adopted for all subsequent analyses (Supplementary Table~\ref{tab:elpd}). This hierarchical framework improved model fit and, importantly, allowed us to estimate global, regional, and species-level trends within a single unified model.
-
-An alternative would have been to fit separate models for each species and outcome. But this ignores information shared across taxa, regions, and outcomes. Instead, a hierarchical specification applies partial pooling: estimates draw strength from the broader dataset while still allowing region- and species-specific deviations. This shrinkage produces estimates that are more stable than those from independent fits (Supplementary Fig.~\ref{fig:shrinkage}; \citealt{mcelreath_statistical_2018}).
-
-
-To improve interpretability and aid in model convergence, we mean-centered both the response variables and the time predictor within each species–region combination so that their mean is zero. As a result, the intercept can be omitted. We then rescaled time to decades, so that the slope can be interpreted directly as the rate of change per decade.
 Thus the model can be written as:
 
-\begin{align}
-y_{i}^{(j)} &\sim \operatorname{Student-t}\left(\nu^{(j)}, \mu_{i}^{(j)}, \sigma^{(j)}\right),\qquad j=1,\dots,4,\\
-\mu_{i}^{(j)} &= \beta^{(j)} \cdot \text{decade}_{i} + \beta_{\text{region}[r[i]]}^{(j)} \cdot \text{decade}_{i} + \beta_{\text{species}[s[i]]}^{(j)} \cdot \text{decade}_{i},\label{eq:linearpred} \\
-\boldsymbol{\Sigma} &=
+
+\begin{gather}
+y_{i}^{(j)} \sim \operatorname{Student\text{-}t}
+\left(\nu^{(j)}, 
+\mu_{i}^{(j)}, 
+\sqrt{(\sigma^{(j)})^{2} + (s^{(j)}_{i})^{2}}
+\right),
+\qquad j=1,\dots,4, 
+\\
+\mu_{i}^{(j)} =
+\beta^{(j)} \cdot \text{decade}_{i}
++ \beta_{\text{reg}[r[i]]}^{(j)} \cdot \text{decade}_{i}
++ \beta_{\text{reg:sp}[r[i],s[i]]}^{(j)} \cdot \text{decade}_{i}\label{eq:linearpred},
+\\
+\beta_{\text{reg}[r]}^{(j)} \sim 
+\operatorname{N}\!\left(0,\sigma_{\text{reg}}^{(j)}\right),
+\\
 \begin{bmatrix}
-\sigma_1^2 & \rho_{12}\sigma_1\sigma_2 & \rho_{13}\sigma_1\sigma_3 & \rho_{14}\sigma_1\sigma_4 \\
-\rho_{21}\sigma_2\sigma_1 & \sigma_2^2 & \rho_{23}\sigma_2\sigma_3 & \rho_{24}\sigma_2\sigma_4 \\
-\rho_{31}\sigma_3\sigma_1 & \rho_{32}\sigma_3\sigma_2 & \sigma_3^2 & \rho_{34}\sigma_3\sigma_4 \\
-\rho_{41}\sigma_4\sigma_1 & \rho_{42}\sigma_4\sigma_2 & \rho_{43}\sigma_4\sigma_3 & \sigma_4^2
-\end{bmatrix},\\
-% OR
-\begin{bmatrix}
-\varepsilon_i^{(1)} \\ \varepsilon_i^{(2)} \\ \varepsilon_i^{(3)} \\ \varepsilon_i^{(4)}
+\beta_{\text{reg:sp}[r,s]}^{(1)} \\
+\beta_{\text{reg:sp}[r,s]}^{(2)} \\
+\beta_{\text{reg:sp}[r,s]}^{(3)} \\
+\beta_{\text{reg:sp}[r,s]}^{(4)}
 \end{bmatrix}
-&\sim \operatorname{MVN}\!\left(
-\mathbf{0},\ 
-\operatorname{diag}(\sigma_1,\sigma_2,\sigma_3,\sigma_4)\;
-\mathbf{R}\;
-\operatorname{diag}(\sigma_1,\sigma_2,\sigma_3,\sigma_4)
-\right).
-\end{align}
+\sim 
+\operatorname{MVN}\!\left(
+\mathbf{0},\,
+\mathbf{S}_{r}\,\mathbf{R}_{r}\,\mathbf{S}_{r}
+\right),
+\qquad \text{for each species}~s~\text{in region}~r
+\\
+\mathbf{S}_{r} =
+\begin{bmatrix}
+\sigma^{(1)}_{\text{reg:sp},r} & 0 & 0 & 0 \\
+0 & \sigma^{(2)}_{\text{reg:sp},r} & 0 & 0 \\
+0 & 0 & \sigma^{(3)}_{\text{reg:sp},r} & 0 \\
+0 & 0 & 0 & \sigma^{(4)}_{\text{reg:sp},r}
+\end{bmatrix},
+\\
+\mathbf{R}_{r} =
+\begin{bmatrix}
+1 & \rho_{12} & \rho_{13} & \rho_{14} \\
+\rho_{12} & 1 & \rho_{23} & \rho_{24} \\
+\rho_{13} & \rho_{23} & 1 & \rho_{34} \\
+\rho_{14} & \rho_{24} & \rho_{34} & 1
+\end{bmatrix}.
+\end{gather}
+
 
 \vspace{1em}
 
+
+
 \noindent Here, $y^{(j)}_i$ denotes the response variable $j$ for observation $i$, where $j$ is the latitudinal centroid,
-longitudinal centroid, depth niche or thermal niche (Table \ref{table:derived_quantities}). The linear predictor (Eq \ref{eq:linearpred}) includes a global slope of decade for response $j$, denoted $\beta^{(j)}$, along with a deviation in slope for region $r$, $\beta^{(j)}_{\text{region}[r[i]]}$, and a deviation in slope for species $s$ within region, $\beta^{(j)}_{\text{species}[s[i]]}$. Finally,
-$\boldsymbol{\Sigma}$ represents the residual covariance matrix capturing residual correlations among the response variables. The scale parameters $\sigma^{(j)}$ are estimated as part of the Student-t and the residual correlation matrix $\mathbf{R}$ controls how residuals co-vary across responses.
+longitudinal centroid, depth niche or thermal niche (Table \ref{table:derived_quantities}). The term $s^{(j)}_i$ is the known standard error associated with observation $i$, $\sigma^{(j)}$ is a response-specific residual scale parameter, and $\nu^{(j)}$ is the degrees of freedom. The linear predictor $\mu^{(j)}_i$ (Eq.~\ref{eq:linearpred}) models temporal trends as varying slopes, with a global effect of time $\beta^{(j)}$, region-specific deviations $\beta^{(j)}_{\text{reg}[r]}$, and species-specific deviations nested within region $\beta^{(j)}_{\text{reg:sp}[r,s]}$. 
 
-We used weakly informative priors for the global slopes (decade effects), guided by published rates of range shifts, depth changes, and ocean warming. For latitudinal and longitudinal centroids, we specified Normal$(0, 50)$ km decade$^{-1}$ priors, which accommodate range shifts up to ~30 km decade$^{-1}$ observed in marine taxa \citep{poloczanska_global_2013}. For depth, we used a Normal$(0, 5)$ m decade$^{-1}$ prior, consistent with estimates of ~3.6 m decade$^{-1}$ deepening in North Sea demersal fish \citep{dulvy_climate_2008}. For thermal niches, we applied a Normal$(0, 0.5)$ °C decade$^{-1}$ prior, encompassing values comparable to the ~0.37 $^\circ$C decade$^{-1}$ observed in rapidly warming shelf seas \citep{chen_longterm_2020}.
-For group-level variation in slopes (the standard deviation of year effects), we used $\operatorname{Student-t}$ distributions truncated to $(0,\infty)$ with 3 degrees of freedom, allowing a wide range of biologically plausible variation. Priors were $\operatorname{Student-t}(3, 0, 30)$ km decade$^{-1}$ for spatial centroids, $\operatorname{Student-t}(3, 0, 10)$ m decade$^{-1}$ for depth, and $\operatorname{Student-t}(3, 0, 0.2)$ $^\circ$C decade$^{-1}$ for thermal niches. For species nested within regions, we specified slightly broader priors: $\operatorname{Student-t}(3, 0, 40)$ km decade$^{-1}$ for spatial centroids, $\operatorname{Student-t}(3, 0, 20)$ m decade$^{-1}$ for depth, and $\operatorname{Student-t}(3, 0, 0.4)$ $^\circ$C decade$^{-1}$ for thermal niches. These priors were validated against empirical distributions from the data to ensure consistency with observed variability (Supplementary Fig.~\ref{fig:priors}).
+Species-level slopes deviation were modelled jointly across responses using a MVN distribution with region-specific covariance matrices $\boldsymbol{\Sigma_r} = \mathbf{S}_{r}\mathbf{R}_{r}\,\mathbf{S}_{r}$. This structure allows temporal trends in different response variables to be correlated among species within the same region, as controlled by $\mathbf{R}_{r}$, while allowing these correlation patterns and the magnitude of response-specific variability to differ among regions.
 
-We fit models in R using the \texttt{brms} package \citep{burkner_brms_2017}, which interfaces with Stan via \texttt{rstan} \citep{stan2024,stan_development_team_rstan_2024}. All other priors followed \texttt{brms} defaults. Each model ran with four Markov chain Monte Carlo (MCMC) chains of 4,000 iterations, discarding the first 2,000 as warm-up. The remaining 2,000 samples per chain (8,000 total post–warm-up draws) formed the posterior distribution. Convergence was confirmed by $\hat{R} < 1.01$, absence of divergent transitions, and effective sample sizes $>$ 400 for all key parameters \citep{vehtari_rank-normalization_2021}.
+Priors were weakly informative and guided by published rates of range shifts, depth changes, and ocean warming (Appendix B). We fit models in R using the \texttt{brms} package \citep{burkner_brms_2017}, which interfaces with Stan via \texttt{rstan} \citep{stan2024,stan_development_team_rstan_2024}. Each model ran with four Markov chain Monte Carlo (MCMC) chains of 4,000 iterations, discarding the first 2,000 as warm-up. The remaining 2,000 samples per chain (8,000 total post–warm-up draws) formed the posterior distribution. Convergence was confirmed by $\hat{R} < 1.01$, absence of divergent transitions, and effective sample sizes $> 400$ for all key parameters \citep{vehtari_rank-normalization_2021}, as detailed in Appendix B.
 
 
-\subsection{Expected shifts from thermal envelopes and climate analogs mapping}
+\bibliography{references}% common bib file
+%% if required, the content of .bbl file can be included here once bbl is generated
+%%\input sn-article.bbl
 
-To estimate expected shifts based on thermal changes, we applied two common methods for calculating spatially explicit climate velocities: thermal envelope shifts \citep{pinsky_marine_2013} and climate analog mapping \citep{fitzpatrick_contemporary_2019}. Thermal envelope shifts measure climate change velocity as the movement of isotherms across thermal gradients. This provides a directional estimate of how rapidly and in which direction species' thermal niches are expected to shift. In contrast, climate analog mapping identifies the regions where future climatic conditions resemble those of a reference location during a baseline period. This statistical approach maps areas of climatic similarity over time rather than assuming continuous displacement along gradients. Finally, we compared expected and observed shifts by testing both the strength of their correlation and their directional alignment.
+\backmatter
 
-\subsubsection{Thermal envelopes}
+\bmhead{Supplementary information}
+Supplementary Table S1, Figs. 1–2 and Appendices A–B providing additional information on spatiotemporal models and Bayesian trend analysis.
 
-To estimate population-specific shifts expected under climate-driven thermal change, we fit simplified species distribution models using only temperature predictors. These models followed the structure in \textit{\nameref{sec:Species spatiotemporal modeling}}), but excluded spatial and spatiotemporal random fields to isolate temperature effects.
+\bmhead{Acknowledgements}
+We thank all those who contributed to the collection of the survey data and the FISHGLOB consortium for providing public access to the dataset and for discussions held in Oldenburg. F.M. also thanks Christofer Griffith for early discussions that helped shape this work.
 
-We modeled predicted density as a function of year and two temperature-based smooth terms:
-\begin{equation}
-\text{Density} \sim \beta_t + f_1(\text{MeanTemp}) + f_2(\text{MaxTemp})
-\label{eq:8}
-\end{equation}
-Here, $\beta_t$ is a year-specific intercept (treated as a factor), and $f_1$ and $f_2$ are smooth functions estimated with penalized splines using $k = 3$ basis functions. MeanTemp is the average bottom temperature over the 12 months preceding the earliest survey month; MaxTemp is the temperature of the warmest month in that period. The spline terms allow for nonlinear species–temperature relationships. Models were fit using the \texttt{sdmTMB} R package.
+\bmhead{Data availability}
+All code used to perform the analyses and generate the figures is available at \url{https://github.com/federico-maioli/species_redistribution_tracking} and will be archived on Zenodo upon acceptance.
 
-We then derived spatial metrics (range centroid and depth niche) from the fitted values and assessed their temporal trends using the Bayesian framework described in \textit{\nameref{sec:Bayesian trend analysis}}). These temperature-only models provide climate envelope-based expectations under thermal forcing.
-
-%\subsubsection{Climate analogs}
-
-%To estimate expected shifts based on climate analogs, we conducted a spatial grid search for climate analogs at 4 km resolution across each region. For every grid cell, we identified locations in the final five years of the survey period that were climatically analogous to the estimated thermal niche in the first five years. Thermal niches were calculated (as in \textit{\nameref{sec:Spatial and thermal metrics}}) separately for minimum, maximum, and mean bottom temperatures over the 12 months preceding the earliest survey month.
-
-%For each temperature metric, we applied a non-parametric Wilcoxon rank-sum test to compare the distribution of thermal niche values between the baseline (first five years) and final period. Grid cells where the null hypothesis of equal distributions was not rejected ($p \geq 0.05$) were considered climate analogs, while those with $p < 0.05$ were classified as novel climates.
-
-%To define analog zones, we retained grid cells identified as analogs for each temperature variable (minimum, maximum, and mean) individually and overlaid the results. We then estimated the direction and magnitude of climate displacement by calculating the geographic distance between the range centroid of the first survey year and the nearest analogs (within the 10\textsuperscript{th} percentile of all distances) in the final five years. The median shift in both the longitudinal and latitudinal axes represented the expected displacement under thermal climate analogs.
-
-
-\newpage
-
-\section{Results}
-
-\subsection{No net spatial shifts, but widespread niche warming across species and regions}
-
-Overall, we found no consistent directional shifts across species and regions in either latitude or longitude over time, as indicated by 95\% Credible Intervals (CIs) overlapping zero. In our Bayesian regression model, the posterior mean global slope ($\beta_{\text{decade}}$) for latitudinal shift was 0.35 km decade$^{-1}$ [95\% CI: -8.04, 8.82], and for longitudinal shift was -2.73 km decade$^{-1}$ [95\% CI: -8.82, 2.88] (Fig. \ref{fig:effsize}). In contrast, we observed modest support for cross-regional trends in species deepening and strong support for thermal niche warming. The global slope for depth shift was 0.6 m decade$^{-1}$ [95\% CI: -0.53, 1.64], whereas for thermal niche shift it was 0.18 $^{\circ}$C decade$^{-1}$ [95\% CI: 0.07, 0.29] (Fig. \ref{fig:effsize}a).
-
-
-\subsection{Regional variation in species shifts}
-
-Region-wide community trends revealed that horizontal shifts were generally weak and inconsistent, whereas vertical and thermal niche shifts were more frequent and pronounced (Fig. \ref{fig:effsize}b). 
-
-Latitudinal shifts varied among regions, with the highest proportion of species demonstrating significant changes (i.e., 95\% CIs excluding zero) in the North Sea (NS; 73\%) and Celtic-Biscay Shelf (CBS; 64\%), and fewer in the Gulf of Mexico (GMX; 15\%) and Gulf of Alaska (GOA; 14\%) and none in the Northern Iberian Coast (NIC; Supplementary Fig. \ref{fig:prop_sign}). Interestingly, both northward and southward responses were roughly balanced across most regions, although NS showed more northward movements (53\%) and the Baltic Sea (BAL) more southward (63\%). The only region with a clearly significant mean latitudinal shift was British Columbia (BC), showing a southward change of $-16.74$ km decade$^{-1}$ [95\% CI: $-30.44$, $-2.93$].
-
-Longitudinal shifts  were generally weaker, with the highest proportion of species showing significant changes found in NS (80\%) and GMX (51\%), while only few species were found in CBS (10\%) and in the California–Oregon–Washington region (COW; 3\%). Eastward and westward movements were both observed, with NS showing predominantly westward shifts (53\%).
-
-Depth-related shifts were most pronounced in BC (66\%) and NS (60\%), with species mainly moving to deeper waters in the northeast U.S. and Scotian Shelf (NEUS; 52\%) and BC (45\%) (Supplementary Fig. \ref{fig:prop_sign}). Significant shifts towards greater depths were found in BC ($1.97$ m decade$^{-1}$ [95\% CI: $0.40$, $3.80$]) and NEUS ($1.84$ m decade$^{-1}$ [95\% CI: $0.32$, $3.50$]), while BAL and Barents Sea (BS) showed lower proportions of significant changes in depth distribution (0–31\%).
-
-In contrast to the spatial shifts above, thermal niche shifts were widespread and consistent across most regions (Supplementary Fig. \ref{fig:prop_sign}. More specifically, nearly all species in BC, CBS, COW, GMX, GOA, NEUS, and NS exhibited significant warming responses, with rates ranging from $0.13^{\circ}$C decade$^{-1}$ (CBS, COW) to $0.53^{\circ}$C decade$^{-1}$ in NEUS. Only NIC, EBS , and BS lacked significant thermal shifts.
-
-
-\subsection{Species-specific responses}
-
-Of the 237 fish populations assessed, approximately 38\% showed significant latitudinal shifts (Fig.~\ref{fig:effsize}c), with 48 species moving northward (20\%) and 43 southward (18\%). The most extreme northward shift was observed in \textit{Trisopterus minutus} in the NS ( 120.10 km decade$^{-1}$), and the strongest southward shift in \textit{Scyliorhinus canicula} in NS (-95.52 km decade$^{-1}$).  
-Longitudinal shifts were significant for 35\% of species, with 50 shifting westward (21\%) and 32 shifting eastward. The largest eastward shift occurred in \textit{Harengula jaguana} in the GMX (107.39 km decade$^{-1}$), and the greatest westward shift in \textit{Merluccius bilinearis} in the NEUS (-68.49 km decade$^{-1}$).  
-Depth shifts were significant for 34\% of species, with 48 species moving deeper (20\%) and 33 shallower. The strongest deepening occurred in \textit{Sebastes reedi} in BC (-13.04 m decade$^{-1}$), and the greatest shallowing in \textit{Squalus suckleyi} in BC (22.94 m decade$^{-1}$).  
-Thermal niche shifts were the most widespread, with 78\% of species showing significant warming responses and none cooling. The largest positive response was in \textit{Urophycis tenuis} in NEUS (0.56 $^\circ$C decade$^{-1}$).  
-
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[scale=0.6]{output/figures/main/posterior_slopes.png}
-\caption{Trends in distributional shifts of demersal fish species over time, from left to right: latitudinal, longitudinal, depth, and thermal niche shifts. Points and horizontal lines indicate posterior medians and 95\% Bayesian credible intervals.  
-(a) Global posterior slopes ($\beta_{year}$),  
-(b) Region-specific trends,  
-(c) Species-specific trends (rows represent species within regions; see Supplementary XX).  
-Density intervals in (a-b) use a continuous gradient reflecting x-values; in (c), color represents median effect size, with more intense colors indicating larger deviations from zero.  
-Marine regions: COW = California-Oregon-Washington, NEUS = Northeast U.S. and Scotian Shelf, BS = Barents Sea, NS = North Sea, BC = British Columbia, GOA = Gulf of Alaska, GMX = Gulf of Mexico, NIC = Northern Iberian Coast, EBS = Eastern Bering Sea, CBS = Celtic-Biscay Shelf, BAL = Baltic Sea.}
-    \label{fig:effsize}
-\end{figure}
-
-
-\subsection{Species poorly track climate velocities}
-
-Overall, species did not consistently track either the magnitude or the direction of their predicted thermal envelope shifts. Correlations between observed and expected shifts were generally weak, and only about half of the species exhibited alignment in shift direction (Supplementary Table \ref{tab:thermal_envelope}). This pattern was consistent across all regions, with no significant positive correlations observed between expected and actual shifts (Supplementary Table \ref{tab:thermal_envelope_regions}). However, some regions showed higher directional agreement: for example, 79\% of species in the EBS and 69\% in the BS displayed matching latitudinal shift directions between observed and expected values (Supplementary Table \ref{tab:thermal_envelope_regions}).
-
-
-\begin{table}[ht]
-\caption{Correlation and directional agreement between observed shifts and shifts expected by the thermal envelope. The proportion of aligned responses represents the fraction of species for which the expected and observed shifts share the same direction (i.e., sign).}
-\centering
-\label{tab:thermal_envelope}
-\begin{tabular}[t]{l|r|r|r}
-\hline
-Shift type & $\rho$ & \textit{p}--value & Proportion of aligned responses \\
-\hline
-Longitudinal & -0.14 & 0.03 & 0.47 \\
-\hline
-Latitudinal & 0.04 & 0.51 & 0.48 \\
-\hline
-Depth & -0.01 & 0.85 & 0.53 \\
-\hline
-\end{tabular}
-\end{table}
-
-\subsection{Shift strategies across regions}
-
-Across regions, the first two principal components explained most of the variation in species shifts (67.4–95.5\%), reflecting consistent covariation between spatial redistribution (latitudinal, longitudinal, and depth) and thermal niche shifts. In most regions, PC1 represented a dominant axis along which stronger spatial shifts were associated with weaker thermal niche warming, and vice versa (Fig. \ref{fig:pca}, Fig. \ref{fig:loadings}).
-
-Poleward movement was the spatial axis most negatively correlated with niche warming, especially in regions characterized by broad latitudinal gradients. The strongest correlation occurred in the NS ($\rho = -0.89$), followed by the EBS ($\rho = -0.73$), the NEUS and BS (both $\rho = -0.63$), and then the CBS ($\rho = -0.58$), BC ($\rho = -0.50$), and COW ($\rho = -0.39$).
-
-In regions where poleward movement was less pronounced, other axes became more strongly associated with warming. For instance, longitudinal shifts dominated in the Baltic Sea (BAL, $\rho = -0.80$), while depth shifts played the key role in the GMX ($\rho = -0.70$).
-Spatial responses also occurred jointly in certain systems. In the NS, poleward and depth shifts were positively correlated ($\rho = 0.89$). In the NEUS, poleward and eastward shifts tended to co-occur ($\rho = 0.82$), while in the BAL, eastward and depthward shifts were correlated ($\rho = 0.62$).
-In contrast, correlations with warming were minimal in the NIC and the GOA, and no clear relationship emerged.
-
-\begin{figure}[h]
-    \centering
-        \includegraphics[scale=0.6]{output/figures/main/pca.png}
-    \caption{Principal component analysis (PCA) of species shifts by region. Each panel shows species scores (points) and shift loadings (arrows). Blue arrows highlight the dominant shift strategy used to avoid niche warming in each region, with color intensity indicating the strength of its correlation ($\rho$) with thermal niche warming (darker blue = stronger negative correlation). The percentages shown on the PC1 and PC2 axis labels represent the range of variance explained across regions. Regions are represented by the following codes:
-COW = California-Oregon-Washington states, NEUS = Northeast U.S. and Scotian Shelf, BS = Barents Sea, NS = North Sea, BC = British Columbia, GOA = Gulf of Alaska, GMX = Gulf of Mexico, NIC = Northern Iberian Coast, EBS = Eastern Bering Sea,
-CBS = Celtic-Biscay Shelf,
-BAL = Baltic Sea.
-}
-    \label{fig:pca}
-\end{figure}
-
-\subsection{Limited evidence for shift strategies predicting abundance trajectories}
-
-Across regions, relationships between abundance trends and distributional shifts were generally weak (Fig. \ref{fig:win_lose}a). However, a significant effect of latitudinal shifts was detected, indicating that species moving poleward more rapidly tended to experience stronger declines in abundance (slope = –0.003, $R^2$ = 0.02, $p$ = 0.034). No significant associations were found for longitudinal (slope = 0.001, $R^2$ = 0, $p$ = 0.45), depth (slope = 0.001, $R^2$ = 0, $p$ = 0.91), or thermal niche shifts (slope = -0.009, $R^2$ = 0, $p$ = 0.98).
-
-The relationships also varied markedly across regions with no single shift dimension consistently related to changes in abundance (Fig. \ref{fig:win_lose}b). However, in the NEUS, abundance declined with poleward- (slope = –0.018, $p$ = 0.011, $R^2$ = 0.27), eastward- (slope = –0.010, $p$ = 0.050, $R^2$ = 0.17), and PC1 shifts (slope = –0.265, $p < 0.001$, $R^2$ = 0.31), with PC1 representing a composite of poleward and eastward movement opposed to thermal niche warming (Supplementary Fig. \ref{fig:loadings}). In contrast, species expanding into deeper habitats tended to increase in abundance (slope = 0.137, $p$ = 0.011, $R^2$ = 0.27).
-
-In the BAL, poleward shifts were strongly associated with abundance declines (slope = –0.034, $p$ = 0.025, $R^2$ = 0.60). Deeper niche use tended to correspond with higher abundance (slope = 0.555, $p$ = 0.089, $R^2$ = 0.41), and PC1, reflecting stronger eastward and depth shifts coupled with reduced poleward and thermal niche shifts— was positively related to abundance (slope = 0.200, $p$ = 0.012, $R^2$ = 0.19; Supplementary Fig. \ref{fig:loadings}). In the NIC, abundance declined with PC1 (slope = –0.175, $p < 0.001$, $R^2$ = 0.16), which primarily captures broad spatial displacement, including poleward, eastward, and depth shifts. In the GOA, abundance declined with both eastward shifts (slope = –0.016, $p$ = 0.052, $R^2$ = 0.26) and PC1 (slope = –0.138, $p$ = 0.021, $R^2$ = 0.09), the latter reflecting combined poleward/eastward movement and thermal niche warming. No other regions showed significant associations between abundance trends and spatial or niche shifts.
-
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[scale=0.5]{output/figures/main/win_lose.png}
-    \caption{
- Relationships between species abundance trends and distributional shifts. (a) Global slopes across all regions for each shift dimension (poleward, eastward, depth, and thermal niche). Reported in the top right are the estimated slope, $R^2$, and $p$-values. (b) Region-specific coefficients, illustrating how the strength and direction of associations vary among systems. Points and lines indicate means and 95\% confidence intervals. Negative values denote declining abundance with increasing shift magnitude, while positive values indicate increasing abundance. Region codes: COW = California–Oregon–Washington, NEUS = Northeast U.S. and Scotian Shelf, BS = Barents Sea, NS = North Sea, BC = British Columbia, GOA = Gulf of Alaska, GMX = Gulf of Mexico, NIC = Northern Iberian Coast, EBS = Eastern Bering Sea, CBS = Celtic–Biscay Shelf, BAL = Baltic Sea.}
-    \label{fig:win_lose}
-\end{figure}
-
-
-\section{Discussion}
-
-%Marine biodiversity is undergoing rapid reorganization under ocean warming, with many studies reporting net poleward and deepward shifts as species track their thermal niches \citep{parmesan_globally_2003, perry_climate_2005, dulvy_climate_2008}. Yet these latitudinal and vertical redistributions represent only a subset of possible responses, and they are typically examined independently \citep{fredston_reimagining_2025}. This unidimensional perspective limits our ability to understand how species respond across the full range of ecological pathways available to them, and whether such movements reduce their exposure to warming. To address this gap, we developed a multidimensional framework that jointly quantifies horizontal, vertical, and thermal niche dynamics for more than 200 fish populations across 11 rapidly warming continental shelf regions. We show that redistribution is more variable, less coherent, and less effective at buffering populations from ocean warming than previously assumed. Moreover, associations between redistribution strategies and abundance trends were weak, indicating that movement alone is not a reliable predictor of population resilience under climate change.
-
-%Across regions, we found little evidence for net poleward migration. Instead, horizontal shifts tended to balance out, with some species or regions showing northward movement while others shifted southward or remained stationary. This lack of a consistent cross-regional signal contrasts with global syntheses that emphasize widespread poleward redistribution, and highlights the importance of accounting for regional variability in climate trajectories, habitat geometry, and species’ ecological constraints. The absence of a dominant poleward fingerprint suggests that latitudinal movement alone is not a universal pathway of thermal niche tracking.
-
-
-%Using a multidimensional framework applied to two to three decades of standardized bottom-trawl surveys, we tracked horizontal, vertical, and thermal niche dynamics of demersal fish populations across 11 rapidly warming continental shelf regions. We show that despite substantial warming there are overall weak net cross-regional patterns in range shift, with no strong or consistent signal of poleward movement. 
-%Many species did not track their thermal niches through spatial redistribution. Instead, their movements have been poorly aligned with regional warming, leaving populations in environments that have warmed in step with local ocean trends. These patterns indicate that simple assumptions—such as species universally moving poleward, deeper, or into cooler habitats—are inadequate. Rather, the redistribution of marine biodiversity is shaped by a complex interplay of processes, including ecological constraints, limited dispersal, habitat fragmentation, and non-thermal factors such as oxygen availability, prey dynamics, and biotic interactions \citep{sunday_species_2015,dulvy_climate_2008,deutsch_climate_2015,siren_interactive_2020}.
-
-% Our findings differ from global syntheses that report consistent poleward or deepening shifts in marine species \citep[e.g.,][]{poloczanska_global_2013, burrows_geographical_2014}. Several differences in data and methods, rather than species’ actual responses, may explain this difference. First, global syntheses often rely on literature-reported shifts, which can bias results toward species where changes are expected or easiest to detect. Second, most meta-analyses do not propagate uncertainty from the original estimates \citep{rubenstein_climate_2023}, which makes it hard to know how reliable the reported trends are. Third, analytical choices strongly influence estimated shift rates. For example, estimates based on presence–absence data often differ from those based on abundance data, and using range edges instead of distribution centroids can also change results. These differences can sometimes be larger than the effects of the underlying ecological drivers \citep{brown_2016}. Finally, some long-term range-shift studies overlook changes in survey design and effort over time. Sites may be added or removed, and sampling intensity can increase or decrease across years or regions. Ignoring these changes can hide real trends or create false ones \citep{thorson_model-based_2016}.
-
-% say how we overcome this
-
-% By drawing on standardized, fishery-independent bottom-trawl surveys with consistent sampling designs across regions, our study minimizes these methodological artifacts. This provides a clearer signal of true biological responses to ocean warming and likely explains why we detect weaker and more variable cross-regional patterns compared to studies synthesizing heterogeneous data sources.
-
-%One can expect that species shifting their ranges quickly are the ones better coping with climate change, maintaining stable or growing populations as they track their preferred thermal habitats. Our results challenge this view. Across regions, relationships between range shifts and abundance trends were generally weak, indicating that movement alone is not a reliable predictor of demographic success. At a cross-regional scale, we found that species moving poleward more rapidly tended to experience stronger declines in abundance. This finding is consistent with recent work by \citet{chiaikin_2024}, who also reported negative associations between poleward shifts and population trends.
-
-%One possible explanation is a detection artifact: species moving beyond the boundaries of survey domains may appear to decline, even if their total population size remains stable or increases. This may be occurring in the NEUS–SS region, where north-eastward shifts were associated with declines, while populations shifting deeper—yet remaining within the survey area—showed increases. Alternatively, negative associations may reflect real demographic costs of displacement, such as moving into suboptimal habitats or encountering greater competition and predation in newly occupied areas \citep{pinsky_marine_2013, fredston_reimagining_2025}. 
-%Regardless of this, this might be a problem for fisherman as stock shifitng north might means less accessiability and higher fuel coasts.
-%Regional contrasts highlight that there is no single “safe” response to climate change. In the Baltic, poleward shifts corresponded with declines, whereas depth and eastward shifts supported abundance. In NIC and GOA, broad spatial displacement along multiple axes was associated with negative population trends. These divergent patterns suggest that the relationship between redistribution and demographic outcomes is highly context dependent, shaped by local oceanography, habitat availability, and species-specific life histories \citep{dulvy_climate_2008, sunday_species_2015, deutsch_climate_2015}. Together, our findings caution against assuming that poleward movement universally signals resilience to warming. Instead, tracking abundance alongside redistribution is essential for identifying species at greatest risk under accelerating climate change. Improved understanding of species redistribution requires expansion of monitoring programs
-% also the opposite is true so that more thermal niche warming doesn't mean spescie are losing ..
-
-% something like region-wise shifts behave as expected. e.g. BC Columbia steep depth gradient, North Sea going North means also going deep, etc. etc.
-
-% in the winner loser part mention that species shifting north faster might be declining because they escape the survey domain 
-
-% estimate of range shifts are in the same ballpark as 
-
-% weak agreement with thermal envelopes. Our comparison of observed and expected thermal envelope shifts revealed poor tracking of both the magnitude and direction of climate velocities. Only about half of species exhibited shifts in the expected direction, and correlations between observed and predicted rates were weak. This mismatch is consistent with previous work \citep{gordo-vilaseca_over_2023} and suggest influences of other factors, wether restricted geographies preventing shifts, biological interactions orstocasticty or recovery from perturbations..In contrast to overall weak net effects.. Some regions geographical and oceanic feature prevented shift... such as
-
-\section{Acknowledgements}
-
-\section{Author contributions}
-
-\section{Data Availability Statement}
-
-\section{Funding}
-BUSEFUL
+\bmhead{Funding}
 M.L. was supported by a research grant from the Swedish Research Council Formas (grant no. 2022-01511 to Max Lindmark).
-Dani? Eric? Sean? 
-
-\end{spacing}
-
-\bibliographystyle{fishfish}
-\bibliography{references}
 
 \clearpage
 
-\renewcommand{\thefigure}{S\arabic{figure}}
-\renewcommand{\thetable}{S\arabic{table}}
-\setcounter{figure}{0}
-\setcounter{table}{0}
-\addtocontents{toc}{\protect\setcounter{tocdepth}{0}}
-\onehalfspacing
 \linenumbers
 \resetlinenumber
-\setcounter{secnumdepth}{0}
+
 \setcounter{page}{1}
 \setcounter{equation}{0}
-\nolinenumbers
-\floatplacement{table}{H}
-\floatplacement{figure}{H}
-
-\section{Supplementary Information}
-
-\input{output/tables/supp/table_elpd}
-
-\newpage
-
-\begin{figure}[h]
-    \centering
-        \includegraphics[scale=0.7]{output/figures/supp/priors.png}
-    \caption{(a) Prior distributions plotted against literature-reported values (black dashed line), showing that reported estimates fall within the prior ranges.
- Region-level (b) and species-within-region (c) standard deviations (SD) of the year slope estimates. Orange dashed lines indicate empirical SD estimates, showing that observed variability is compatible with the specified prior ranges.
-}
-    \label{fig:priors}
-\end{figure}
-
-\newpage
-
-\begin{figure}[h]
-    \centering
-        \includegraphics[scale=0.7]{output/figures/supp/shrinkage_supp.png}
-    \caption{Comparison of estimated decade effects from our Bayesian mixed-effects model (red) versus separate single-species models (blue) for each species. The hierarchical model applies shrinkage, pulling extreme species-level slopes toward the region mean and the grand mean based on the collective evidence across region and species.
-}
-    \label{fig:shrinkage}
-\end{figure}
-
-\newpage
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[scale=.65]{output/figures/supp/prop_significant_supp.png}
-    \caption{Proportion of significant species-level responses across regions and shift types, where significance is defined as the 95\% Bayesian credible interval of the species-specific slope excluding zero. 
-Bars show the percentage of species with significant latitudinal (northing/southing), longitudinal (easting/westing), depth (deepening/shallowing), and thermal niche (warming/cooling) shifts. 
-Each bar is divided by direction of change, and numbers within the bars indicate the proportion of species in each category. 
-Grey segments denote non-significant responses.}
-    \label{fig:prop_sign}
-\end{figure}
 
 
-\newpage
 
-\begin{table}[ht]
-\caption{Correlation and directional agreement between observed shifts and shifts expected by the thermal envelope across regions. 
-The proportion of aligned responses represents the fraction of species for which the expected and observed shifts share the same direction (i.e., sign). 
-$\rho$ denotes the Pearson correlation coefficient between observed and expected shifts. 
-Region codes: COW = California–Oregon–Washington, NEUS = Northeast U.S. and Scotian Shelf, BS = Barents Sea, NS = North Sea, BC = British Columbia, GOA = Gulf of Alaska, GMX = Gulf of Mexico, NIC = Northern Iberian Coast, EBS = Eastern Bering Sea, CBS = Celtic–Biscay Shelf, BAL = Baltic Sea.}
+\renewcommand{\thetable}{S\arabic{table}}
+\setcounter{table}{0}
+\renewcommand{\thefigure}{S\arabic{figure}}
+\setcounter{figure}{0}
+\addtocontents{toc}{\protect\setcounter{tocdepth}{0}}
+\renewcommand{\theHfigure}{S\arabic{figure}}
+\renewcommand{\theHtable}{S\arabic{table}}
+
+
+
+\newgeometry{left=2cm,right=2cm,top=2.5cm,bottom=2.5cm}
+
+\section*{Supplementary Information}
+
+\subsection*{Supplementary table and figures}\label{sec:supp_figs}
+
+\begin{figure}[!htbr]
 \centering
-\label{tab:thermal_envelope_regions}
-\begin{tabular}{l l r r r}
-\hline
-Region & Type of shift & Proportion aligned & $\rho$ & \textit{p}--value \\
-\hline
-BAL & Longitudinal shift & 0.38 & -0.55 & 0.16 \\
-BAL & Latitudinal shift  & 0.62 & 0.32  & 0.44 \\
-BAL & Depth shift        & 0.38 & -0.15 & 0.72 \\
-BC  & Longitudinal shift & 0.34 & 0.16  & 0.40 \\
-BC  & Latitudinal shift  & 0.31 & 0.00  & 0.99 \\
-BC  & Depth shift        & 0.59 & -0.08 & 0.68 \\
-BS  & Longitudinal shift & 0.38 & -0.46 & 0.07 \\
-BS  & Latitudinal shift  & 0.69 & 0.50  & 0.05 \\
-BS  & Depth shift        & 0.56 & 0.06  & 0.83 \\
-CBS & Longitudinal shift & 0.61 & 0.09  & 0.61 \\
-CBS & Latitudinal shift  & 0.32 & -0.30 & 0.10 \\
-CBS & Depth shift        & 0.52 & -0.05 & 0.78 \\
-COW & Longitudinal shift & 0.38 & -0.15 & 0.47 \\
-COW & Latitudinal shift  & 0.54 & 0.07  & 0.75 \\
-COW & Depth shift        & 0.58 & 0.06  & 0.76 \\
-EBS & Longitudinal shift & 0.36 & -0.31 & 0.29 \\
-EBS & Latitudinal shift  & 0.79 & 0.25  & 0.39 \\
-EBS & Depth shift        & 0.57 & 0.01  & 0.97 \\
-GMX & Longitudinal shift & 0.54 & -0.11 & 0.54 \\
-GMX & Latitudinal shift  & 0.46 & -0.13 & 0.44 \\
-GMX & Depth shift        & 0.49 & 0.26  & 0.13 \\
-GOA & Longitudinal shift & 0.47 & 0.06  & 0.83 \\
-GOA & Latitudinal shift  & 0.53 & -0.11 & 0.70 \\
-GOA & Depth shift        & 0.60 & -0.19 & 0.49 \\
-NEUS & Longitudinal shift & 0.43 & -0.01 & 0.96 \\
-NEUS & Latitudinal shift  & 0.48 & -0.11 & 0.62 \\
-NEUS & Depth shift        & 0.65 & 0.19  & 0.38 \\
-NIC  & Longitudinal shift & 0.55 & -0.04 & 0.88 \\
-NIC  & Latitudinal shift  & 0.41 & 0.30  & 0.17 \\
-NIC  & Depth shift        & 0.32 & -0.43 & 0.04 \\
-NS   & Longitudinal shift & 0.53 & -0.24 & 0.38 \\
-NS   & Latitudinal shift  & 0.53 & 0.12  & 0.67 \\
-NS   & Depth shift        & 0.60 & 0.16  & 0.56 \\
-\hline
-\end{tabular}
-\end{table}
-
-\newpage
-\begin{figure}[h]
-    \centering
-        \includegraphics[scale=0.6]{output/figures/supp/pca_loadings_supp.png}
-    \caption{PC1 loadings for each region. Bars represent the magnitude and direction of the loading for each outcome, with values on the side of the bars. Positive values indicate a positive association with PC1, while negative values indicate a negative association.
-}
-    \label{fig:loadings}
+\includegraphics[width=.9\textwidth]{output/figures/supp/posterior_slopes_supp}
+    \caption{Species-specific trend shifts. Color shows median effect size; more intense colors indicate larger deviations from zero. Points and lines show median and 95\% CI. Marine regions: EBS = Eastern Bering Sea, GOA = Gulf of Alaska, BC = British Columbia, USWC = U.S. West Coast,  NEUS-SS = Northeast U.S. and Scotian Shelf, GOM = Gulf of Mexico, BS = Barents Sea, NS = North Sea, CBS = Celtic–Biscay Shelf,  BAL = Baltic Sea, NIC = Northern Iberian Coast.}
+    \label{fig:posterior_slopes_supp}
 \end{figure}
+
+
+\begin{figure}[!htbr]
+\centering
+\includegraphics[width=1\textwidth]{output/figures/supp/corr_shifts_supp.png}
+\caption{Heatmap of posterior mean correlations ($\rho$) between trends in latitude, longitude, depth, and realized thermal niche across regions. Colors indicate the strength and direction of associations.}\label{fig:corr_shifts_supp}
+\end{figure}
+
+\captionof{table}{Posterior median decadal trends with 95\% Bayesian credible intervals for latitudinal, longitudinal, depth, and realized thermal-niche shifts of demersal fish populations across regions. Latitudinal and longitudinal shifts are expressed in km decade$^{-1}$, depth shifts in m decade$^{-1}$, and thermal-niche shifts in ~$^\circ$C~decade$^{-1}$. Marine regions: EBS = Eastern Bering Sea, GOA = Gulf of Alaska, BC = British Columbia, USWC = U.S. West Coast, NEUS–SS = Northeast U.S. and Scotian Shelf, GOM = Gulf of Mexico, BS = Barents Sea, NS = North Sea, CBS = Celtic–Biscay Shelf, BAL = Baltic Sea, NIC = Northern Iberian Coast.}
+\label{tab:S_species_slopes}
+\input{output/tables/supp/species_slopes}
+
 
 \clearpage
 
-\subsubsection{References}
-\begin{hangparas}{1em}{1}
-Chen, Z., Kwon, Y.-O., Chen, K., Fratantoni, P., Gawarkiewicz, G. \& Joyce, T.M. (2020)
-Long‐Term SST Variability on the Northwest Atlantic Continental Shelf and Slope. Geophysical Research Letters 47(1), e2019GL085455.
-URL \url{https://agupubs.onlinelibrary.wiley.com/doi/10.1029/2019GL085455}. Publisher: AGU.
+\renewcommand{\thetable}{A\arabic{table}}
+\setcounter{table}{0}
+\renewcommand{\thefigure}{A\arabic{figure}}
+\setcounter{figure}{0}
+\renewcommand{\theequation}{A\arabic{equation}}
+\setcounter{equation}{0}
 
-Dulvy, N.K., Rogers, S.I., Jennings, S., Stelzenmüller, V., Dye, S.R. \& Skjoldal, H.R. (2008)
-Climate change and deepening of the North Sea fish assemblage: a biotic indicator of warming seas. Journal of Applied Ecology 45(4), 1029–1039.
-URL \url{https://onlinelibrary.wiley.com/doi/10.1111/j.1365-2664.2008.01488.x}. Publisher: British Ecological Society.
+\renewcommand{\theHfigure}{A\arabic{figure}}
+\renewcommand{\theHtable}{A\arabic{table}}
+\renewcommand{\theHequation}{A\arabic{equation}}
 
-Poloczanska, E.S., Brown, C.J., Sydeman, W.J., Kiessling, W. et al. (2013)
-Global imprint of climate change on marine life. Nature Climate Change 3(10), 919–925.
-URL \url{https://www.nature.com/articles/nclimate1958}. Publisher: Nature Publishing Group.
+\begin{bibunit} % for appendix
+\subsection*{Appendix A - Additional information on spatiotemporal models}\label{sec:A}
 
-\end{hangparas}
+The general form of the spatiotemporal GLMM can be represented as:
+\begin{align}
+    y_{s,t} &\sim \text{Tweedie} \left( \mu_{\mathbf{s},t}, p, \phi \right), \quad 1 < p < 2, \label{eq:1} \\
+    \mu_{s,t} &= \exp \left(\boldsymbol{\beta} \boldsymbol{\text{X}_{\boldsymbol{s},t}}  + \omega_{\boldsymbol{s}} + \epsilon_{\boldsymbol{s},t} \right), \label{eq:2} \\
+    \boldsymbol{\omega} &\sim \operatorname{MVN} \left(\boldsymbol{0}, \boldsymbol{\Sigma}_{\omega} \right), \label{eq:3} \\
+    \boldsymbol{\epsilon}_{t} &\sim \operatorname{MVN} \left(0, \boldsymbol{\Sigma}_{\epsilon} \right), \label{eq:4}
+\end{align}
+where \( y_{\mathbf{s},t} \) represents fish density (kg/km\(^2\)) at spatial location \( \mathbf{s} \) and time \( t \), \( \mu \) is the expected mean density, and \( p \) and \( \phi \) are the power and dispersion parameters of the Tweedie distribution, respectively. \( \mathbf{X}_{\mathbf{s},t} \) is the design matrix of covariates including year (as a categorical variable) and a second-degree polynomial of log(depth), which helps constrain predictions to biologically plausible magnitudes across the depth gradient. The vector \( \boldsymbol{\beta} \) contains the corresponding fixed-effect coefficients.
+
+Because fish species are not constrained by survey boundaries, and some surveys cover only a small part of the distribution range of species we aggregated multiple surveys into broader regions for modeling when appropriate. Surveys with extensive and clearly defined coverage (e.g., the North Sea IBTS) were modeled independently, while those with contiguous spatial domains and partial overlap in time and space (i.e., surveys conducted in British Columbia, Northeast U.S \& Scotian Shelf and Celtic-Biscay shelf) were combined (Fig \ref{fig:survey}). For regions with multiple surveys, we included survey identity as a fixed effect to control for methodological differences. We did not apply this correction in British Columbia because surveys there follow harmonized field protocols and are typically analysed jointly \citep[e.g.,][]{Anderson2019BCGroundfish, ward_win_2024}. In regions where surveys occur multiple times per year (BAL, NS, NEUS-SS, CBS, GOM), we included quarter as a fixed effect to account for within-year variation in sampling. In cases where a designated sampling period extended across multiple quarters, we used combined categories (e.g., Q2–Q3 or Q3-Q4).
+
+The parameters \( \omega_{\mathbf{s}} \) and \( \epsilon_{\mathbf{s},t} \) (Equations \ref{eq:3}--\ref{eq:4}) represent spatial and spatiotemporal random effects, respectively, both modeled as Gaussian Markov random fields \citep{lindgren_explicit_2011}. The spatial random field is shared across years, and represents static spatial effects such as habitat that are not accounted for by the fixed effects, while the spatiotemporal fields represent interannual spatial variation. We assumed spatiotemporal random fields to be independent across years to capture annual variation in spatial structure. While a first-order autoregressive (AR1) process could have been used to model temporal dependence, we opted for the independent formulation to strike a balance between computational efficiency and model flexibility. This approach allows spatial patterns to vary freely from year to year, accommodating potential non-stationary dynamics in species distributions without imposing strict temporal correlation structures. For British Columbia surveys, which have a biennial sampling structure, we modeled spatiotemporal variation as a random walk process. This modifies Equation \ref{eq:4} into $\epsilon_{\boldsymbol{s},t} \sim  \operatorname{MVN}(\epsilon_{t-1},\boldsymbol{\Sigma}_{\epsilon})$ to allow for flexibility in estimating the spatial and temporal processes in years without data \citep{ward_win_2024}.
+
+Latent spatial and spatiotemporal random fields were approximated using a triangulated mesh with a minimum spacing (cutoff) of 20 km constructed with the \texttt{fmesher} R package \citep{lindgren_fmesher_2025}. This cutoff distance represents the smallest allowed distance between two mesh vertices. We assumed a shared range parameter (distance at which points are effectively independent \citep{lindgren_explicit_2011}) between the spatial and spatiotemporal fields, while allowing each field to have its own variance.
+
+Model parameters were estimated by maximizing the marginal log-likelihood using Template Model Builder (TMB; \citep{kristensen_tmb_2016}, which applies the Laplace approximation to integrate out random effects. Models were fit in R 4.1.0 \citep{r_core_team_r_2021} using the \texttt{sdmTMB} package \citep{anderson_sdmtmb_2024}, which interfaces TMB with INLA-based spatial methods \citep{rue_approximate_2009}. Only models with a positive-definite Hessian and a maximum absolute log-likelihood gradient $< 0.001$ were considered successfully converged and used for inference \citep{anderson_sdmtmb_2024}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{output/figures/supp/surveys_supp.png}
+    \caption{(a) Regions where multiple surveys were combined. (b) Overlap in survey months within each region.}
+    \label{fig:survey}
+\end{figure}
+
+\putbib
+
+\end{bibunit}
+
+\newpage
+
+\renewcommand{\thetable}{B\arabic{table}}
+\setcounter{table}{0}
+\renewcommand{\thefigure}{B\arabic{figure}}
+\setcounter{figure}{0}
+\renewcommand{\theequation}{B\arabic{equation}}
+\setcounter{equation}{0}
+
+\renewcommand{\theHfigure}{B\arabic{figure}}
+\renewcommand{\theHtable}{B\arabic{table}}
+\renewcommand{\theHequation}{B\arabic{equation}}
+
+\begin{bibunit}
+
+\subsection*{Appendix B - Additional information on Bayesian trend analysis}\label{sec:B}
+
+\noindent
+\textbf{Rationale for the Student-t likelihood}.
+We first modeled spatial and thermal responses with a multivariate normal (MVN) likelihood because these metrics often covary (e.g., depth shifts co-occurring with changes in geographic range centroids). Posterior predictive checks, however, showed heavier tails than the MVN could capture. We therefore modeled each response with a univariate Student-t likelihood, which better accommodates extreme values. We preserved correlations among responses by modeling group-level effects with a MVN covariance structure, allowing shared variation across responses to be captured explicitly. This specification improved predictive performance, as shown by higher expected log predictive density (ELPD) from leave-one-out cross-validation compared with the MVN model (Table~\ref{tab:elpd}; \citep{vehtari_practical_2017}).
+
+\begin{table}[!htbp]
+\centering
+    \caption{Expected log predictive density (ELPD) differences between models. ELPD differences are reported relative to the best-performing model, which is assigned a value of zero. Negative values indicate poorer expected out-of-sample predictive performance. SE denotes the standard error of the ELPD difference}
+    \label{tab:elpd}
+\input{output/tables/supp/table_elpd}
+\end{table}
+
+\noindent
+\textbf{Hierarchical structure.} 
+An alternative to our approach would have been to fit separate models for each species and response. Such models, however, ignore information shared across taxa, regions, and outcomes. By using a hierarchical structure, we applied partial pooling: estimates borrow strength from the full dataset while still allowing region- and species-specific deviations. This shrinkage yields more stable estimates than independent fits (Fig.~\ref{fig:shrinkage_supp}; \citep{mcelreath_statistical_2018}) and allows us to estimate global, regional, and species-level trends within a single unified framework. We modeled correlations among response variables at the regional level because species within the same region experience similar environmental conditions and constraints. This structure captures shared variation in temporal trends among species within regions while allowing species-specific departures from regional patterns.
+
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics[width=1\linewidth]{output/figures/supp/shrinkage_supp.png}
+    \caption{Comparison of hierarchical trend estimates versus separate linear trend fits. Posterior slopes from the full hierarchical model (red) are compared to slopes obtained from independent linear models (blue) fitted to a random subset of 50 species. Partial pooling in the hierarchical model shrinks extreme estimates toward the regional and global mean, producing more stable and biologically plausible trend estimates across species.}
+    \label{fig:shrinkage_supp}
+\end{figure}
+
+\noindent
+\textbf{Priors specification and validation}.
+All priors are summarized in Table~\ref{tab:priors_supp}. Throughout, Normal$(\mu,\sigma)$ and Student-t$(\nu,\mu,\sigma)$ denote distributions with location $\mu$ and dispersion $\sigma$, where $\sigma$ is the standard deviation for the Normal and the scale parameter for the Student-t, and $\nu$ denotes the degrees of freedom. We specified weakly informative priors for global temporal slopes (decade effects) based on published rates of range shifts, depth changes, and ocean warming (Fig.~\ref{fig:priors_supp}a). For latitudinal and longitudinal centroids, we used Normal$(0,50)$ km decade$^{-1}$ priors, accommodating observed shifts of up to ~30 km decade$^{-1}$ in marine taxa \citep{poloczanska_global_2013}. For depth, we applied a Normal$(0,5)$ m decade$^{-1}$ prior, consistent with reported deepening of ~3.6 m decade$^{-1}$ in North Sea demersal fish \citep{dulvy_climate_2008}. For thermal niches, we used a Normal$(0,0.5)$ $^\circ$C decade$^{-1}$ prior, encompassing rates observed in rapidly warming shelf seas \citep{chen_longterm_2020}.
+To model group-level variation in slopes, we assigned Student-t distributions truncated to $(0,\infty)$ with three degrees of freedom, allowing substantial but biologically plausible variation. Region-level slope standard deviations followed Student-t$(3,0,30)$ km decade$^{-1}$ priors for spatial centroids, Student-t$(3,0,10)$ m decade$^{-1}$ for depth, and Student-t$(3,0,0.2)$ $^\circ$C decade$^{-1}$ for thermal niches. For species nested within regions, we specified broader priors---Student-t$(3,0,40)$ km decade$^{-1}$, Student-t$(3,0,20)$ m decade$^{-1}$, and Student-t$(3,0,0.4)$ $^\circ$C decade$^{-1}$, respectively.
+These priors were consistent with the empirical variability observed in the data, providing appropriate regularization while remaining flexible enough to capture biologically plausible trends (Fig.~\ref{fig:priors_supp}b–c). All remaining model parameters retained the default priors provided by \texttt{brms} (\citep{burkner_brms_2017}; Table~\ref{tab:priors_supp}).
+
+\begin{table}[!htbp]
+\centering
+    \caption{Prior distributions for model parameters. Fixed effects ($\beta$), group-level and standard deviations ($\sigma$), degrees of freedom ($\nu$) for the Student-t distribution, and the correlation matrix of region-level effects ($\mathbf{R}_r$). The source column indicates whether the prior was changed from the default.}
+    \label{tab:priors_supp}
+\input{output/tables/supp/table_priors_supp}
+\end{table}
+
+
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics[width=1\linewidth]{output/figures/supp/priors_supp.png}
+    \caption{Prior specification and validation for temporal trend parameters.
+(a) Priors for global temporal slopes (decade effects) shown relative to literature-reported values (black dashed lines).
+(b) Priors for region-level slope variation compared with empirical distributions from the data (orange dashed lines).
+(c) Priors for species-level slope variation nested within regions compared with empirical distributions (orange dashed lines). Priors are weakly informative and consistent with observed variability, providing regularization without constraining plausible trends.}
+    \label{fig:priors_supp}
+\end{figure}
+
+
+\noindent
+\textbf{Model diagnostics}.
+Model fit and convergence were assessed using posterior predictive checks (PPCs) and standard MCMC diagnostics. PPCs confirmed that the model captures the central tendency, variability, and distributional shape of the observed data (Fig.~\ref{fig:pp_supp}). Convergence diagnostics indicated $\hat{R} < 1.01$ for all parameters, no divergent transitions, and effective sample sizes $> 400$, confirming reliable posterior sampling (Fig.~\ref{fig:rhat_supp}; \cite{vehtari_rank-normalization_2021}). One parameter fell slightly below the recommended bulk ESS threshold, but visual inspection of the chains indicated satisfactory mixing (not shown), supporting reliable posterior sampling.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=1\linewidth]{output/figures/supp/pp_supp.png}
+    \caption{Posterior predictive checks for the four outcomes. Observed values ($y$) are compared with simulated datasets drawn from the posterior predictive distribution ($y_{rep}$). Close alignment between the two indicates good model fit.}
+    \label{fig:pp_supp}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.7\linewidth]{output/figures/supp/rhat_supp.png}
+    \caption{Convergence diagnostics for the hierarchical trend model. Panels show $\hat{R}$, bulk effective sample size (ESS), and tail ESS for all parameters. Yellow regions indicate values outside recommended thresholds.}
+    \label{fig:rhat_supp}
+\end{figure}
+
+
+
+ % same .bib, reused keys get prefix
+\clearpage
+\putbib
+
+\end{bibunit}
+
+%\include{output/tables/supp/table_exp_obs_region}
+
 
 \end{document}
