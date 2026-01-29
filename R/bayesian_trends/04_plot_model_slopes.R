@@ -75,7 +75,7 @@ for (i in seq_along(outcomes)) {
   p <- global_slopes_long %>%
     filter(outcome == outcome_name) %>%
     ggplot(aes(x = slope, y = 1)) +
-    geom_vline(xintercept = 0, linetype = "22", size = 0.3, alpha = 0.3) +
+    geom_vline(xintercept = 0, linetype = "dashed", size = 0.3, alpha = .3) +
     tidybayes::stat_halfeye(
       aes(fill = after_stat(x)),
       .width = 0.95,
@@ -156,7 +156,7 @@ for (i in seq_along(outcomes)) {
     mutate(region = factor(region, levels = rev(c('EBS','GOA','BC','USWC','NEUS-SS','GOM','BS','NS','CBS', 'BAL', 'NIC')))) %>%
     ggplot(aes(x = slope, y = region, fill = slope)) +
     ggstats::geom_stripped_rows(aes(y = region), odd = "grey90", even = 'white' , alpha = 0.2) +
-    geom_vline(xintercept = 0, linetype = "22", size = 0.3, alpha = 0.3) +
+    geom_vline(xintercept = 0, linetype = "dashed", size = 0.3, alpha = .3) +
     stat_pointinterval(aes(color = median_slope), .width = 0.95, point_size = 1.6, interval_size = 0.9, show.legend = FALSE) +
     col_gradients[[outcome_name]] +
     scale_x_continuous(breaks = scales::pretty_breaks(n = 4)) +
