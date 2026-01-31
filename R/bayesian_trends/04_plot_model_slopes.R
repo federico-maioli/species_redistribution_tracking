@@ -512,7 +512,7 @@ total_counts <- species_summary %>%
 
 # overall counts 
 total_counts_overall <- tibble(
-  region = "Overall",
+  region = "Across regions",
   total_species = sum(total_counts$total_species)
 )
 
@@ -531,7 +531,7 @@ summary_data_overall <- species_summary %>%
   group_by(outcome, direction_label) %>%
   summarise(n = n(), .groups = "drop") %>%
   complete(outcome, direction_label = all_directions, fill = list(n = 0)) %>%
-  mutate(region = "Overall") %>%
+  mutate(region = "Across regions") %>%
   left_join(total_counts_overall, by = "region") %>%
   mutate(proportion = n / total_species)
 
@@ -559,7 +559,7 @@ region_order <- c('EBS','GOA','BC','USWC','NEUS-SS','GOM','BS','NS','CBS','BAL',
 summary_data <- summary_data %>%
   mutate(
     region_label = paste0(region, " (n = ", total_species, ")"),
-    region_code  = ifelse(region == "Overall", "0", region),
+    region_code  = ifelse(region == "Across regions", "0", region),
     region_code  = factor(region_code, levels = c("0", region_order))
   ) %>%
   arrange(region_code) %>%
@@ -675,31 +675,51 @@ plot_region_circular <- function(region_name) {
         ),
         angle = angle, hjust = hjust
       ),
-      vjust = .5, size = 2
+      vjust = .5, size = ifelse(
+        region_name == "Across regions",
+        3.2, 2.4
+      )
     ) +
     coord_polar() +
-    ylim(-1.2, max(df_region$proportion, na.rm = TRUE) + 0.1) +
-    theme_minimal(base_size = 7) +
+    ylim(ifelse(
+        region_name == "Across regions",
+        -.4, -.8
+      ), max(df_region$proportion, na.rm = TRUE) + 0.05) +
+    theme_minimal(base_size = 8) +
     theme(
       axis.text = element_blank(),
       axis.title = element_blank(),
       panel.grid = element_blank(),
       legend.position = "none",
-      plot.margin = margin(0, 0, 0, 0),
-      plot.title = element_text(hjust = 0.5, vjust = -5, face = "bold")
+      plot.margin = margin(0, 0, 0, 0)
     ) +
     geom_segment(
       data = base_region,
       aes(x = start-.5, y = 0, xend = end+.5, yend = 0),
-      inherit.aes = FALSE, color = "black", linewidth = 0.3
+      inherit.aes = FALSE, color = "black", linewidth = 0.2
     ) +
-    geom_textpath(
-      data = base_region,
-      aes(x = title, y = -0.15, label = outcome_label),
-      inherit.aes = FALSE,
-      size = 2.1
-    ) +
-    ggtitle(region_name)
+    # geom_textpath(
+    #   data = base_region,
+    #   aes(x = title, y = -0.15, label = outcome_label),
+    #   inherit.aes = FALSE,
+    #   size = 2.1
+    # ) + 
+    annotate(
+      "text",
+      x = mean(as.numeric(factor(df_region$id))),
+      y = ifelse(
+        region_name == "Across regions",
+        -.4, -.8
+      ), 
+      label = ifelse(
+        region_name == "Across regions",
+        "Across\nregions",
+        gsub("-", "-\n", region_name)
+      ),
+      size = 3,
+      fontface = "bold"
+    ) 
+  #+ ggtitle(region_name)
 }
 
 # build plot list
@@ -709,10 +729,10 @@ plot_list <- setNames(lapply(regions, plot_region_circular), regions)
 # custom legend 
 legend_data <- tibble(
   outcome_label = rep(c("Latitude", "Longitude", "Depth", "Thermal niche"), each = 3),
-  direction_label = c("Southing", "n.s.", "Northing",
-                      "Westing", "n.s.", "Easting",
-                      "Shallowing", "n.s.", "Deepening",
-                      "Cooling", "n.s.", "Warming")
+  direction_label = c("South", "n.s.", "North",
+                      "West", "n.s.", "East",
+                      "Shallow", "n.s.", "Deep",
+                      "Cool", "n.s.", "Warm")
 ) %>%
   mutate(outcome_label = factor(
     outcome_label,
@@ -726,9 +746,9 @@ legend_spaced <- legend_data %>%
                             direction_label = NA)[rep(1, n_empty),])) %>%
   mutate(
     id    = row_number(),
-    value = .5,
+    value = .3,
     angle = 90 - 360 * (id - 0.5) / n(),
-    hjust = ifelse(angle < -90, 1, 0),
+    hjust = ifelse(angle < -90, 1.2, - 0.2),
     angle = ifelse(angle < -90, angle + 180, angle)
   )
 
@@ -739,60 +759,98 @@ base_data_leg <- legend_spaced %>%
   mutate(title = (start + end) / 2)
 
 legend_colors <- c(
-  "Southing" = "#762A83", "Northing" = "#1B7837",
-  "Westing"  = "#543005", "Easting" = "#003C30",
-  "Shallowing" = "#A6CEE3", "Deepening" = "#003C8F",
-  "Cooling" = "#2166AC", "Warming" = "#B2182B",
+  "South" = "#762A83", "North" = "#1B7837",
+  "West"  = "#543005", "East" = "#003C30",
+  "Shallow" = "#A6CEE3", "Deep" = "#003C8F",
+  "Cool" = "#2166AC", "Warm" = "#B2182B",
   "n.s." = "grey80"
 )
 
 legend_plot <- ggplot(legend_spaced, aes(factor(id), value, fill = direction_label)) +
-  geom_bar(stat = "identity", width = 1, alpha=.7) +
+  geom_bar(stat = "identity", width = 1, alpha = .7) +
   scale_fill_manual(values = legend_colors, na.value = NA) +
   coord_polar() +
-  ylim(-0.5, .8) +
+  ylim(-0.6, .7) +
   theme_void() +
-  theme(plot.margin = margin(0, 0, 0, 0), legend.position = 'none') +
+  theme(
+    plot.margin = margin(0, 0, 12, 0),
+    legend.position = "none",
+   panel.border = element_rect(color = "grey40", fill = NA, linewidth = 0.2),
+    #plot.background = element_rect(fill = 'antiquewhite')
+  ) +
+  #labs(title = "Legend") +
   geom_text(
     data = legend_spaced %>% filter(!is.na(direction_label)),
-    aes(label = direction_label, angle = angle, hjust = hjust),
-    vjust = .5, size = 2.4, fontface = "bold"
+    aes(label = direction_label, angle = angle, hjust = hjust ),
+    vjust = .5, size = 2.5#, fontface = "bold"
   ) +
   geom_segment(
     data = base_data_leg,
-    aes(x = start-.5, y = 0, xend = end+.5, yend = 0),
+    aes(x = start - .5, y = 0, xend = end + .5, yend = 0),
     inherit.aes = FALSE, color = "black", linewidth = .3
   ) +
   geom_textpath(
     data = base_data_leg,
     aes(x = title, y = -0.08, label = outcome_label),
     inherit.aes = FALSE,
-    size = 2.7,
-    fontface = "bold"
+    size = 2.6
+  )  + annotate(
+    "text",
+    x = Inf,
+    y = Inf,
+    label = "Direction of change by dimension",
+   # hjust = 1.1,   # pull slightly left
+    vjust = -.8,   # pull slightly down
+    size = 3.1,
+    fontface = "bold",
+    colour = "black"
   )
 
-# combine main figure + legend
-p <- (plot_list[['Overall']] + plot_list[['EBS']] + plot_list[["GOA"]] + plot_list[['BC']] + plot_list[['USWC']] +
-        plot_list[['NEUS-SS']] + plot_list[['GOM']] + plot_list[['BS']] + free(legend_plot) + plot_list[['NS']] +
-        plot_list[['CBS']] + plot_list[['BAL']] + plot_list[['NIC']] ) + 
-  plot_layout(
-    design = "
-    ABCD
-    EFGH
-    IIKL
-    IIMN
-    "
-  )
 
-p
+p_b <- (
+  plot_list[['EBS']] + plot_list[["GOA"]] + plot_list[['BC']] + plot_list[['USWC']] +    plot_list[['NEUS-SS']] + plot_list[['GOM']] + plot_list[['BS']] + plot_list[['NS']] +
+    plot_list[['CBS']] + plot_list[['BAL']] + plot_list[['NIC']]
+) +
+  plot_layout(design = "
+    ABC
+    DEF
+    GHI
+    LMN
+    ")
+# # +
+#   plot_layout(design = "
+#     ABCD
+#     EFGH
+#     ILMN
+#     ")
 
-# save figure 
-ggsave(
-  here("output/figures/main/prop_significant.png"),
-  width = 180, height = 190,
-  dpi = 600, units = "mm", bg = "white"
+p_a <- plot_list[["Across regions"]] +  theme(
+  plot.margin = margin(0, 0, 0, 0))
+
+
+a_legend <- cowplot::plot_grid(
+  p_a,
+  legend_plot,
+  ncol = 1,
+  #rel_heights = c(1, 1),
+  labels = c('a')
 )
 
+final_plot <- cowplot::plot_grid(
+  a_legend,
+  p_b,
+  ncol = 2,
+  rel_widths = c(1, 1.5),
+  labels = c("", "b")
+)
+
+final_plot
+
+ggsave(
+  here("output/figures/main/prop_significant.png"),
+  width = 180, height = 150,
+  dpi = 600, units = "mm", bg = "white"
+)
 
 
 # save slopes for supp data-------------------------------------------------------------
