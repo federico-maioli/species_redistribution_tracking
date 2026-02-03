@@ -91,38 +91,40 @@ axis_labels_sf <- st_as_sf(axis_labels, coords = c("lon","lat"), crs = 4326) |>
   st_transform(lcc_crs)
 
 map <- ggplot() +
-  geom_sf(data = survey_regions, aes(fill = region_short), alpha = 0.5) +
-  geom_sf(data = world, color = 'black', fill = 'grey80', size = 0.1) +
+  geom_sf(data = survey_regions, aes(fill = region_short), alpha = 0.7) +
+  geom_sf(data = world, color = 'grey40', fill = 'grey90', size = 0.1) +
   
   # Region labels
   geom_text_repel(
     data = survey_regions,
     aes(label = region_short, geometry = geometry),
-    size = 2.8,
+    size = 3,
     stat = "sf_coordinates",
     min.segment.length = 0.5,
     seed = 1,
     box.padding = 0.3,
     color = "black",
     bg.color = "white",
-    bg.r = 0.2
+    bg.r = 0.1
   ) +
   geom_sf_text(
     data = axis_labels_sf,
     aes(label = label),
     size = 1.5,
-    color = "grey60"
+    color = "grey50"
   ) +
   
   scale_fill_manual(values = region_colors, name = "Region") +
   coord_sf(crs = lcc_crs, xlim = c(-5100, 5100), ylim = c(-600, 6100)) +
-  theme_bw(base_size = 10) +
+  theme_light(base_size = 10) +
   theme(
     legend.position = 'none',
     plot.margin = margin(0, 0, 0, 0),
     axis.text = element_blank(),
     axis.ticks = element_blank(),
     axis.title = element_blank(),
+    panel.grid.major = element_line(linewidth = 0.05, color = "grey85"),
+    panel.grid.minor = element_line(linewidth = 0.05, color = "grey85"),
   ) +
   labs(x = NULL, y = NULL)
 
@@ -179,21 +181,31 @@ region_plots <- map(regions, function(r) {
   y_breaks <- scales::breaks_extended(n = 5)(range(data_r$mean_temp, na.rm = TRUE))
   
   ggplot(data_r, aes(x = year, y = mean_temp)) +
-    geom_line(color = region_colors[r], alpha = .8, linewidth = .2) +
-    geom_textsmooth(
-      aes(label = slope_expr),
-      method = "lm",
-      se = FALSE,
+    geom_line(color = region_colors[r], alpha = .9, linewidth = .4) +
+    annotate(
+      "text",
+      x = Inf, y = -Inf,
+      label = unique(data_r$slope_expr),
+      hjust = 1.05, vjust = -0.4,
       size = 2.2,
-      color = "black",
-      parse = TRUE,
-      vjust = -0.3,
-      linetype = 3,
-      hjust = 1,
-      linewidth = 0.3
+      colour = "grey30",
+      parse = TRUE
     ) +
+    # geom_textsmooth(
+    #   aes(label = slope_expr),
+    #   method = "lm",
+    #   se = FALSE,
+    #   size = 2.2,
+    #   color = "black",
+    #   parse = TRUE,
+    #   vjust = -0.3,
+    #   linetype = 3,
+    #   hjust = 1,
+    #   linewidth = 0.3
+    # ) +
     scale_y_continuous(
       breaks = y_breaks,
+        expand = expansion(mult = c(0.15, 0.02)),
       labels = sapply(y_breaks, function(y) as.expression(bquote(.(y)*degree*C)))
     ) +
     theme_bw(base_size = 5) +
@@ -230,14 +242,25 @@ haul_counts <- unique_hauls %>%
 
 haul_plot <- ggplot(haul_counts, aes(x = year, y = region_short, fill = n_hauls)) +
   geom_tile(color = "black", alpha = 0.8) +
-  scale_fill_viridis_c(option = "mako", direction = -1, name = "Number of hauls",
-                       guide = guide_colorbar(
-                         title.position = "left",
-                         title.vjust = 1,
-                         barwidth = 15,
-                         barheight = 0.3
-                       )) +
-  labs(x = NULL, y = NULL) +
+  scale_fill_gradient(
+    low  = "#f1f5f9",  # very light blue-grey
+    high = "#5b84b1",  # muted steel blue
+    name = "Number of hauls",
+    guide = guide_colorbar(
+      title.position = "left",
+      title.vjust = 1,
+      barwidth = 15,
+      barheight = 0.3
+    )
+  ) +
+  # scale_fill_viridis_c(option = "mako", direction = -1, name = "Number of hauls",
+  #                      guide = guide_colorbar(
+  #                        title.position = "left",
+  #                        title.vjust = 1,
+  #                        barwidth = 15,
+  #                        barheight = 0.3
+  #                      )) +
+  labs(x = NULL, y = NULL,title = "Temporal coverage and sampling intensity") +
   scale_x_continuous(expand = c(0, 0)) +
   theme_minimal(base_size = 7) +
   theme(
@@ -248,8 +271,17 @@ haul_plot <- ggplot(haul_counts, aes(x = year, y = region_short, fill = n_hauls)
     panel.grid.minor = element_blank(),
     legend.box.margin = margin(-5, 0, 0, 0),
     legend.margin = margin(2, 0, 0, 0),
-    plot.margin = margin(2, 5, 2, 5)
-  )
+    plot.margin = margin(0, 5, 2, 5),
+    plot.title = element_text(
+      size = 7.5,
+      hjust = 0.5,
+      face = "plain",
+      colour = "grey20",
+      margin = margin(b = 4)
+    ),
+    plot.title.position = "plot"
+)
+
 
 # assemble final plot ----------------------------------------------------
 
@@ -291,7 +323,7 @@ final_plot
 ggsave(
   filename = "output/figures/main/map.png",
   width = 180,
-  height = 130,
+  height = 150,
   dpi = 600,
   units = "mm"
 )
