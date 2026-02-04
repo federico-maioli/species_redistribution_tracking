@@ -429,22 +429,18 @@ Publisher: Nature Publishing Group},
     author = {Kristensen, Kasper and Nielsen, Anders and Berg, Casper W. and Skaug, Hans and Bell, Bradley M.},
     year = {2016},
 }
-@misc{anderson_sdmtmb_2024,
-    title = {{sdmTMB}: {An} {R} {Package} for {Fast}, {Flexible}, and {User}-{Friendly} {Generalized} {Linear} {Mixed} {Effects} {Models} with {Spatial} and {Spatiotemporal} {Random} {Fields}},
-    copyright = {© 2024, Posted by Cold Spring Harbor Laboratory. This pre-print is available under a Creative Commons License (Attribution 4.0 International), CC BY 4.0, as described at http://creativecommons.org/licenses/by/4.0/},
-    shorttitle = {{sdmTMB}},
-    url = {https://www.biorxiv.org/content/10.1101/2022.03.24.485545v4},
-    doi = {10.1101/2022.03.24.485545},
-    abstract = {Geostatistical spatial or spatiotemporal data are common across scientific fields. However, appropriate models to analyse these data, such as generalised linear mixed effects models (GLMMs) with Gaussian Markov random fields (GMRFs), are computationally intensive and challenging for many users to implement. Here, we introduce the R package sdmTMB, which extends the flexible interface familiar to users of lme4, glmmTMB, and mgcv to include spatial and spatiotemporal latent GMRFs using an SPDE-(stochastic partial differential equation) based approach. SPDE matrices are constructed with fmesher and estimation is conducted via maximum marginal likelihood with TMB or via Bayesian inference with tmbstan and rstan. We describe the model and explore case studies that illustrate sdmTMB’s flexibility in implementing penalised smoothers, non-stationary processes (time-varying and spatially varying coefficients), hurdle models, cross-validation and anisotropy (directionally dependent spatial correlation). Finally, we compare the functionality, speed, and interfaces of related software, demonstrating that sdmTMB can be an order of magnitude faster than R-INLA. We hope sdmTMB will help open this useful class of models to a wider field of geostatistical analysts.},
-    language = {en},
-    urldate = {2025-04-02},
-    publisher = {bioRxiv},
-    author = {Anderson, Sean C. and Ward, Eric J. and English, Philina A. and Barnett, Lewis A. K. and Thorson, James T.},
-    month = jul,
-    year = {2024},
-    note = {Pages: 2022.03.24.485545
-Section: New Results},
+
+@article{sdmTMB2025,
+  title = {{{sdmTMB}}: {{An R Package}} for {{Fast}}, {{Flexible}}, and {{User-Friendly Generalized Linear Mixed Effects Models}} with {{Spatial}} and {{Spatiotemporal Random Fields}}},
+  author = {Anderson, Sean C. and Ward, Eric J. and English, Philina A. and Barnett, Lewis A. K. and Thorson, James T.},
+  year = 2025,
+  journal = {Journal of Statistical Software},
+  volume = {115},
+  pages = {1--46},
+  doi = {10.18637/jss.v115.i02}
 }
+
+
 @article{rue_approximate_2009,
     title = {Approximate {Bayesian} {Inference} for {Latent} {Gaussian} models by using {Integrated} {Nested} {Laplace} {Approximations}},
     volume = {71},
@@ -1055,4 +1051,32 @@ This article is part of the theme issue ‘Physiological diversity, biodiversity
     note = {\_eprint: https://onlinelibrary.wiley.com/doi/pdf/10.1111/gcb.17008},
     keywords = {Metabolic Index, fisheries, marine biogeography, oxygen, physiology, species distribution modeling, species shifts, temperature},
     pages = {e17008},
+}
+@article{anderson_sdmtmb_2025,
+    title = {{sdmTMB}: {An} {R} {Package} for {Fast}, {Flexible}, and {User}-{Friendly} {Generalized} {Linear} {Mixed} {Effects} {Models} with {Spatial} and {Spatiotemporal} {Random} {Fields}},
+    volume = {115},
+    copyright = {Copyright (c) 2025 Sean C. Anderson, Eric J. Ward, Philina A. English, Lewis A. K. Barnett, James T. Thorson},
+    issn = {1548-7660},
+    shorttitle = {{sdmTMB}},
+    url = {https://doi.org/10.18637/jss.v115.i02},
+    doi = {10.18637/jss.v115.i02},
+    abstract = {Geostatistical spatial or spatiotemporal data are common across scientific fields. However, appropriate models to analyze these data, such as generalized linear mixed effects models (GLMMs) with Gaussian Markov random fields (GMRFs), are computationally intensive and challenging for many users to implement. Here, we introduce the R package sdmTMB, which extends the flexible interface familiar to users of lme4, glmmTMB, and mgcv to include spatial and spatiotemporal latent GMRFs using the stochastic partial differential equation (SPDE) approach. SPDE matrices are constructed with fmesher, and estimation is conducted via maximum marginal likelihood with TMB or via Bayesian inference with tmbstan and rstan. We describe the model and explore case studies that illustrate sdmTMB's flexibility in implementing penalized smoothers, non-stationary processes (time-varying and spatially varying coefficients), hurdle models, cross-validation, and anisotropy (directionally dependent spatial correlation). Finally, we compare the functionality, speed, and interfaces of related software, demonstrating that sdmTMB can be an order of magnitude faster than R-INLA. We hope sdmTMB will help open this useful class of models to more geostatistical analysts.},
+    language = {en},
+    urldate = {2026-02-03},
+    journal = {Journal of Statistical Software},
+    author = {Anderson, Sean C. and Ward, Eric J. and English, Philina A. and Barnett, Lewis A. K. and Thorson, James T.},
+    month = dec,
+    year = {2025},
+    pages = {1--46},
+}
+
+@article{davidsonMysteryDisappearing2026,
+  title = {Mystery of the Disappearing Dogfish: Transboundary Analyses Reveal Steep Population Declines across the Northeast Pacific with Little Evidence for Regional Redistribution},
+  author = {Davidson, Lindsay N. K. and English, Philina A. and King, Jackie and Grant, Paul B. C. and Taylor, Ian G. and Barnett, Lewis A. K. and Gertseva, Vladlena and Tribuzio, Cindy A. and Anderson, Sean C.},
+  year = 2026,
+  journal = {Fish and Fisheries},
+  volume = {27},
+  number = {1},
+  pages = {1--12},
+  doi = {10.1111/faf.70028}
 }
