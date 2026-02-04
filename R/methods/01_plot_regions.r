@@ -279,14 +279,14 @@ haul_plot <- ggplot(haul_counts, aes(x = year, y = region_short, fill = n_hauls)
   scale_x_continuous(expand = c(0, 0)) +
   theme_minimal(base_size = 8) +
   theme(
-    panel.spacing = unit(0.9, "lines"),
+    panel.spacing = unit(1.2, "lines"),
     legend.position = "bottom",
     legend.direction = "horizontal",
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
     legend.box.margin = margin(-5, 0, 0, 0),
     legend.margin = margin(1, 0, 0, 0),
-    plot.margin = margin(0, 5, 2, 5),
+    plot.margin = margin(0, 5, 0, 5),
     plot.title = element_text(
       size = 7.5,
       hjust = 0.5,
@@ -338,7 +338,7 @@ final_plot
 ggsave(
   filename = "output/figures/main/map.png",
   width = 180,
-  height = 160,
+  height = 150,
   dpi = 600,
   units = "mm"
 )
