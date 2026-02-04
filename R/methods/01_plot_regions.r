@@ -98,7 +98,7 @@ map <- ggplot() +
   geom_text_repel(
     data = survey_regions,
     aes(label = region_short, geometry = geometry),
-    size = 3,
+    size = 3.4,
     stat = "sf_coordinates",
     min.segment.length = 0.5,
     seed = 1,
@@ -223,22 +223,22 @@ region_plots <- map(regions, function(r) {
         expand = expansion(mult = c(0.15, 0.02)),
       labels = sapply(y_breaks, function(y) as.expression(bquote(.(y)*degree*C)))
     ) +
-    theme_bw(base_size = 5) +
+    theme_bw(base_size = 7) +
     labs(
       title = unique(data_r$region_full),
       x = NULL,
       y = NULL
     ) +
     theme(
-      plot.title = element_text(face = "bold", hjust = 0.5, size = 6),
+      plot.title = element_text(face = "bold", hjust = 0.5, size = 6.5),
       axis.ticks = element_line(color = "black"),
       axis.ticks.length = unit(2, "pt"),
-      axis.text = element_text(size = 6),
+      axis.text = element_text(size = 6.5),
       panel.grid.major = element_blank(),
       panel.grid.minor = element_blank(),
       axis.text.x  = element_text(angle = 45, hjust = 1),
      # theme(aspect.ratio = 0.4) 
-     plot.margin = margin(7,2,7,2)
+     plot.margin = margin(2,2,5,2)
     )
 })
 
@@ -277,21 +277,21 @@ haul_plot <- ggplot(haul_counts, aes(x = year, y = region_short, fill = n_hauls)
   #                      )) +
   labs(x = NULL, y = NULL,title = "Temporal coverage and sampling intensity") +
   scale_x_continuous(expand = c(0, 0)) +
-  theme_minimal(base_size = 7) +
+  theme_minimal(base_size = 8) +
   theme(
-    panel.spacing = unit(0.4, "lines"),
+    panel.spacing = unit(0.9, "lines"),
     legend.position = "bottom",
     legend.direction = "horizontal",
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
     legend.box.margin = margin(-5, 0, 0, 0),
-    legend.margin = margin(2, 0, 0, 0),
+    legend.margin = margin(1, 0, 0, 0),
     plot.margin = margin(0, 5, 2, 5),
     plot.title = element_text(
       size = 7.5,
       hjust = 0.5,
-      face = "plain",
-      colour = "grey20",
+      face = "bold",
+      colour = "black",
       margin = margin(b = 4)
     ),
     plot.title.position = "plot"
@@ -338,7 +338,7 @@ final_plot
 ggsave(
   filename = "output/figures/main/map.png",
   width = 180,
-  height = 150,
+  height = 160,
   dpi = 600,
   units = "mm"
 )
