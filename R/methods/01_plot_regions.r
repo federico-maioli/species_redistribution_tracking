@@ -154,6 +154,21 @@ temp_summary <- grid %>%
   group_by(year, region_full, region_short) %>%
   summarise(mean_temp = mean(mean_year_temp, na.rm = TRUE), .groups = "drop")
 
+temp_summary <- temp_summary %>%
+  filter(
+    (region_short == "NIC"      & year >= 1994 & year <= 2019) |
+      (region_short == "CBS"      & year >= 1994 & year <= 2020) |
+      (region_short == "BAL"      & year >= 1999 & year <= 2020) |
+      (region_short == "NS"       & year >= 1994 & year <= 2020) |
+      (region_short == "BS"       & year >= 2004 & year <= 2021) |
+      (region_short == "GOM"      & year >= 1994 & year <= 2020) |
+      (region_short == "NEUS-SS"  & year >= 1994 & year <= 2020) |
+      (region_short == "USWC"     & year >= 2003 & year <= 2018) |
+      (region_short == "BC"       & year >= 2003 & year <= 2019) |
+      (region_short == "GOA"      & year >= 1996 & year <= 2019) |
+      (region_short == "EBS"      & year >= 1994 & year <= 2019)
+  )
+
 # compute slopes per region
 slopes <- temp_summary %>%
   group_by(region_full, region_short) %>%
