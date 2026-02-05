@@ -165,7 +165,7 @@ for (i in seq_len(nrow(extremes))) {
   
   # median
   write_tex(
-    mround(extremes$max_median[i], 2),
+    mround(extremes$max_median[i], 0),
     paste0("Max", oc, "Median")
   )
   
@@ -173,8 +173,8 @@ for (i in seq_len(nrow(extremes))) {
   write_tex(
     paste0(
       "[95\\% CI: ",
-      mround(extremes$max_lower_95[i], 2), ", ",
-      mround(extremes$max_upper_95[i], 2), "]"
+      mround(extremes$max_lower_95[i], 0), ", ",
+      mround(extremes$max_upper_95[i], 0), "]"
     ),
     paste0("Max", oc, "CI")
   )
@@ -187,7 +187,7 @@ for (i in seq_len(nrow(extremes))) {
   
   # median
   write_tex(
-    mround(extremes$min_median[i], 2),
+    mround(extremes$min_median[i], 0),
     paste0("Min", oc, "Median")
   )
   
@@ -195,8 +195,8 @@ for (i in seq_len(nrow(extremes))) {
   write_tex(
     paste0(
       "[95\\% CI: ",
-      mround(extremes$min_lower_95[i], 2), ", ",
-      mround(extremes$min_upper_95[i], 2), "]"
+      mround(extremes$min_lower_95[i], 0), ", ",
+      mround(extremes$min_upper_95[i], 0), "]"
     ),
     paste0("Min", oc, "CI")
   )
