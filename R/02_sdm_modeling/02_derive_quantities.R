@@ -6,7 +6,7 @@ library(furrr)
 
 
 # define paths ------------------------------------------------------------
-models_folder <- here("R/sdm_modeling/fitted")
+models_folder <- here("R/02_sdm_modeling/fitted")
 model_files <- list.files(models_folder, pattern = "\\.rds$", full.names = TRUE)
 
 # define function --------------------------------------------------
@@ -25,10 +25,16 @@ process_model_file <- function(model_file) {
   # load and prepare model ------------------------------------------------
   model <- readRDS(model_file)
   model <- sdmTMB:::reload_model(model)
-  years <- unique(model$data$year)
+  # Determine temporal domain for prediction
+  if (this_region %in% c("BC", "GOA")) {
+    # Continuous RW — predict full span
+    years <- seq(min(model$data$year), max(model$data$year))
+  } else {
+    # Only predict observed years
+    years <- sort(unique(model$data$year))
+  }
   
   # prepare region-specific grid ------------------------------------------
-  
   
   # standardize depth
   region_grid <- grid %>%

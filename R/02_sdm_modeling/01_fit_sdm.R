@@ -60,8 +60,19 @@ process_species_region <- function(i) {
     # Create SPDE mesh for spatial modeling
     spde <- make_mesh(sub, c("X", "Y"), mesh = inla_mesh)
     
-    # Choose spatiotemporal model based on region
-    st_type <- ifelse(this_region == "BC", "rw", "iid")
+    # Regions that should NOT include year and should use RW spatiotemporal structure
+    rw_regions <- c("GOA", "BC")
+    
+    use_rw <- this_region %in% rw_regions
+    
+    # Set spatiotemporal structure
+    st_type <- if (use_rw) "rw" else "iid"
+    
+    # Define full temporal domain
+    full_years <- min(sub$year):max(sub$year)
+    
+    # Identify missing years for RW continuity
+    missing_years <- full_years[!(full_years %in% unique(sub$year))]
     
     # Check if multiple surveys and sufficient months are available
     multi_survey_regions <- c("CBS",'NEUS-SS')
@@ -70,7 +81,12 @@ process_species_region <- function(i) {
     use_survey <- this_region %in% multi_survey_regions
     
     # Define base formula
-    formula <- kg_km2 ~ 0 + as.factor(year) + logdepth + logdepth2
+    if (use_rw) {
+      # No year fixed effect for GOA or BC
+      formula <- kg_km2 ~ 1 + logdepth + logdepth2
+    } else {
+      formula <- kg_km2 ~ 0 + as.factor(year) + logdepth + logdepth2
+    }
     
     # Add random effects to formula based on data structure
     if (use_survey && use_quarter) {
@@ -89,6 +105,7 @@ process_species_region <- function(i) {
       family = tweedie(link = "log"),
       data = sub,
       share_range = TRUE,
+      extra_time = if (use_rw) missing_years else NULL,
       spatial = "on",
       spatiotemporal = st_type
     )

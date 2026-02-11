@@ -10,8 +10,8 @@ library(posterior)
 
 # add loo criterion -------------------------------------------------------
 
-m_stud <- readRDS(here("R/bayesian_trends/fitted/m_stud.rds"))
-m_mvn <- readRDS(here("R/bayesian_trends/fitted/m_mvn.rds"))
+m_stud <- readRDS(here("R/03_bayesian_trends/fitted/m_stud.rds"))
+m_mvn <- readRDS(here("R/03_bayesian_trends/fitted/m_mvn.rds"))
 
 m_stud <- add_criterion(m_stud, c("loo"))
 m_mvn <- add_criterion(m_mvn, c("loo"))
@@ -27,7 +27,7 @@ rownames(loo_df) <- NULL
 # make a lookup table of nicer labels
 model_labels <- c(
   "m_stud" = "Student-t $+$ MVN",
-  "m_mvn"  = "MVN"
+  "m_mvn"  = "Gaussian $+$ MVN"
 )
 
 # map safely
