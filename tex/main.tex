@@ -438,7 +438,7 @@ Model parameters were estimated by maximizing the marginal log-likelihood using 
 
 \noindent
 \textbf{Rationale for the Student-t likelihoods}.
-We first modeled spatial and thermal responses with Gaussian likelihoods but posterior predictive checks indicated heavier tails than expected under normality. We therefore fit an alternative model using Student-t likelihoods, which better accommodates extreme values through an estimated degrees-of-freedom parameter. This specification improved predictive performance, as shown by higher expected log predictive density (ELPD) from leave-one-out cross-validation compared with the Gaussian model (Table~\ref{tab:elpd}; \citep{VehtariLOO2017}). In both cases, correlations among responses were captured by modeling species-specific temporal slopes within regions as following a multivariate normal (MVN) distribution, allowing trends in different outcomes to vary jointly. .
+We first modeled spatial and thermal responses with Gaussian likelihoods but posterior predictive checks indicated heavier tails than expected under normality. We therefore fit an alternative model using Student-t likelihoods, which better accommodates extreme values through an estimated degrees-of-freedom parameter. This specification improved predictive performance, as shown by higher expected log predictive density (ELPD) from leave-one-out cross-validation compared with the Gaussian model (Table~\ref{tab:elpd}; \citep{VehtariLOO2017}). In both cases, correlations among responses were captured by modeling species-specific temporal slopes within regions as following a multivariate normal (MVN) distribution, allowing trends in different outcomes to vary jointly.
 
 \begin{table}[!htbp]
 \centering
