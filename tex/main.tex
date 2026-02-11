@@ -437,8 +437,8 @@ Model parameters were estimated by maximizing the marginal log-likelihood using 
 \subsection*{Appendix B - Additional information on Bayesian trend analysis}\label{sec:B}
 
 \noindent
-\textbf{Rationale for the Student-t likelihood}.
-We first modeled spatial and thermal responses with a multivariate normal (MVN) likelihood because these metrics often covary (e.g., depth shifts co-occurring with changes in geographic range centroids). Posterior predictive checks, however, showed heavier tails than the MVN could capture. We therefore modeled each response with a univariate Student-t likelihood, which better accommodates extreme values. We preserved correlations among responses by modeling group-level effects with a MVN covariance structure, allowing shared variation across responses to be captured explicitly. This specification improved predictive performance, as shown by higher expected log predictive density (ELPD) from leave-one-out cross-validation compared with the MVN model (Table~\ref{tab:elpd}; \citep{VehtariLOO2017}).
+\textbf{Rationale for the Student-t likelihoods}.
+We first modeled spatial and thermal responses with Gaussian likelihoods but posterior predictive checks indicated heavier tails than expected under normality. We therefore fit an alternative model using Student-t likelihoods, which better accommodates extreme values through an estimated degrees-of-freedom parameter. This specification improved predictive performance, as shown by higher expected log predictive density (ELPD) from leave-one-out cross-validation compared with the Gaussian model (Table~\ref{tab:elpd}; \citep{VehtariLOO2017}). In both cases, correlations among responses were captured by modeling species-specific temporal slopes within regions as following a multivariate normal (MVN) distribution, allowing trends in different outcomes to vary jointly. .
 
 \begin{table}[!htbp]
 \centering
