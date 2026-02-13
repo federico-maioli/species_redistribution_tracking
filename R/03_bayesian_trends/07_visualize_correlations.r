@@ -3,7 +3,7 @@ library(tidyverse)
 library(brms)
 
 # read in model
-m <- read_rds(here('R/bayesian_trends/fitted/m_stud.rds'))
+m <- read_rds(here('R/03_bayesian_trends/fitted/m_stud.rds'))
 summary(m)
 
 rho <-

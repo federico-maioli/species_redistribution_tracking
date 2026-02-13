@@ -21,8 +21,8 @@ data <- data |> group_by(region) |> mutate(
   year_c = (year - mean(year, na.rm = TRUE))/10 # center year
 )  |> ungroup() |> 
   group_by(sp_region) |> # std index of abundance, and calculate species-specific anomalies
-  mutate(
-    index_std = scale(index)[, 1]) |> 
+  # mutate(
+  #   index_std = scale(index)[, 1]) |> 
   mutate(across(
     c(cog_y, cog_x, depth_niche, thermal_niche),
     ~ .x - mean(.x, na.rm = TRUE),
@@ -105,7 +105,7 @@ mvn <- brm(
   control = model_control,
   prior = priors_custom,
   backend = "cmdstanr",
-  file = here("R/bayesian_trends/fitted/m_mvn.rds")
+  file = here("R/03_bayesian_trends/fitted/m_mvn.rds")
 )
 
 
@@ -143,9 +143,7 @@ stud <- brm(
   control = model_control,
   prior = priors_custom,
   backend = "cmdstanr",
-  file = here("R/bayesian_trends/fitted/m_stud.rds")
+  file = here("R/03_bayesian_trends/fitted/m_stud.rds")
 )
 
-
-brms::stancode(stud)
 

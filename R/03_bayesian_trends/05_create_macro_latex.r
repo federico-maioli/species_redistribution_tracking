@@ -296,10 +296,25 @@ grid <- read_rds(here('R/data/processed/prediction_grid.rds'))
 # summarize mean temperature per year-region
 temp_summary <- grid %>%
   group_by(year, region_short) %>%
-  summarise(mean_temp = mean(mean_year_temp, na.rm = TRUE), .groups = "drop") 
+  summarise(mean_temp = mean(mean_year_temp, na.rm = TRUE), .groups = "drop")
+
+temp_summary <- temp_summary %>%
+  filter(
+    (region_short == "NIC"      & year >= 1994 & year <= 2019) |
+      (region_short == "CBS"      & year >= 1994 & year <= 2020) |
+      (region_short == "BAL"      & year >= 1999 & year <= 2020) |
+      (region_short == "NS"       & year >= 1994 & year <= 2020) |
+      (region_short == "BS"       & year >= 2004 & year <= 2021) |
+      (region_short == "GOM"      & year >= 1994 & year <= 2020) |
+      (region_short == "NEUS-SS"  & year >= 1994 & year <= 2020) |
+      (region_short == "USWC"     & year >= 2003 & year <= 2018) |
+      (region_short == "BC"       & year >= 2003 & year <= 2019) |
+      (region_short == "GOA"      & year >= 1996 & year <= 2019) |
+      (region_short == "EBS"      & year >= 1994 & year <= 2019)
+  )
 
 # compute slopes per region
-slopes <- temp_summary %>%
+temp_summary <- temp_summary %>%
   group_by(region_short) %>%
   summarise(
     slope_decade = coef(lm(mean_temp ~ year))[2] * 10,
@@ -307,10 +322,11 @@ slopes <- temp_summary %>%
   ) 
 
 
-region_termal_niche_slope <- region %>% filter(outcome == 'thermal') %>% select(region,median_slope)
+region_termal_niche_slope <- region %>% filter(outcome == 'thermal') %>%
+  mutate(region = recode(region, "NEUS" = "NEUS-SS")) %>% select(region,mean_slope)
 
-comb <- slopes %>% left_join(region_termal_niche_slope, by = c('region_short'='region'))
+comb <- temp_summary %>% left_join(region_termal_niche_slope, by = c('region_short'='region'))
 
 # calculate corr
-test_result <- cor.test(comb$slope_decade, comb$median_slope, use = "complete.obs", method = "pearson")
+test_result <- cor.test(comb$slope_decade, comb$mean_slope, use = "complete.obs", method = "pearson")
 

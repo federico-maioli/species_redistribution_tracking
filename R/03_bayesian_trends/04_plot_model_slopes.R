@@ -17,7 +17,7 @@ library(kableExtra)
 #https://commons.wikimedia.org/wiki/Category:It_ain%27t_much,_but_it%27s_honest_work#/media/File:Farmer_meme_with_apostrophe.jpg
 
 # read model ---------------------------------------------------------
-m <- read_rds(here('R/bayesian_trends/fitted/m_stud.rds'))
+m <- read_rds(here('R/03_bayesian_trends/fitted/m_stud.rds'))
 
 # outcome names and pretty labels -----------------------------------
 outcomes <- c("cogyc", "cogxc", "depthnichec", "thermalnichec")

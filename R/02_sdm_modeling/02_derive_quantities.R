@@ -43,7 +43,8 @@ process_model_file <- function(model_file) {
       logdepth = (log(depth) - mean(log(model$data$depth), na.rm = TRUE)) / 
         sd(log(model$data$depth), na.rm = TRUE), # scale by data
       logdepth2 = logdepth^2,
-      area = 16
+      area = 16,
+      cell_id = paste(X,Y,sep='_')
     ) %>%
     #filter(!is.na(month_f)) %>%
     na.omit() %>%
@@ -63,8 +64,8 @@ process_model_file <- function(model_file) {
   gc()
   
   # derive quantities -----------------------------------------------------
-  index <- get_index(pred, area = 16, bias_correct = TRUE) %>%
-    transmute(year, index = log_est, index_se = se)
+  # index <- get_index(pred, area = 16, bias_correct = TRUE) %>%
+  #   transmute(year, index = log_est, index_se = se)
   
   cog <- get_cog(pred, area = 16, format = "wide") %>%
     transmute(
@@ -81,10 +82,34 @@ process_model_file <- function(model_file) {
   thermal_niche <- get_weighted_average(pred, vector = pred$data$mean_temp, area = 16) %>%
     transmute(year, thermal_niche = est, thermal_niche_se = se)
   
+
+# thermal niche with constant density -------------------------------------
+
+  # Extract prediction data
+  pdat <- pred$data %>%
+    mutate(
+      biomass = exp(est) * area
+    )
+  
+  # Compute average biomass per cell across all years
+  pdat <- pdat %>%
+    group_by(cell_id) %>%
+    mutate(avg_density = mean(biomass, na.rm = TRUE)) %>%
+    ungroup()
+  
+  # Compute yearly thermal niche using static density
+  thermal_niche_constant <- pdat %>%
+    group_by(year) %>%
+    summarise(
+      thermal_niche_constant_density =
+        sum(mean_temp * avg_density, na.rm = TRUE) /
+        sum(avg_density, na.rm = TRUE),
+      .groups = "drop"
+    )
+  
   # combine results -------------------------------------------------------
-  out <- index %>%
-    inner_join(cog, by = "year") %>% inner_join(depth_niche, by = "year") %>%
-    inner_join(thermal_niche, by = "year")
+  out <- cog %>% inner_join(depth_niche, by = "year") %>%
+    inner_join(thermal_niche, by = "year") %>% inner_join(thermal_niche_constant, by = "year")
   
   # no longer needed
   # niche <- pred$data %>% mutate(biomass = exp(est + log(pred$data$area))) |> # area expansion
@@ -111,12 +136,10 @@ process_model_file <- function(model_file) {
 plan(multisession, workers = 2)
 
 # Ensure reproducibility
-options(future.seed = TRUE)
-
-set.seed(42)
+#set.seed(42)
 
 # Process models in parallel
-data <- future_map(model_files, process_model_file, .progress = TRUE)
+data <- future_map(model_files, process_model_file, .progress = TRUE, .options = furrr_options(seed = 42))
 
 # Combine all results into a single data frame
 data <- bind_rows(data)
