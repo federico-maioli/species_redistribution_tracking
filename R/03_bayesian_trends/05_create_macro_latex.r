@@ -135,6 +135,20 @@ min_df <- species %>%
 # join by outcome (now tidy: one row per outcome, clear column names)
 extremes <- left_join(max_df, min_df, by = "outcome")
 
+region_lookup <- c(
+  "EBS" = "Eastern Bering Sea",
+  "GOA" = "Gulf of Alaska",
+  "BC" = "British Columbia",
+  "USWC" = "U.S. West Coast",
+  "NEUS-SS" = "Northeast U.S. and Scotian Shelf",
+  "GOM" = "Gulf of Mexico",
+  "BS" = "Barents Sea",
+  "NS" = "North Sea",
+  "CBS" = "Celtic–Biscay Shelf",
+  "BAL" = "Baltic Sea",
+  "NIC" = "Northern Iberian Coast"
+)
+
 extremes <- extremes %>% mutate(
   outcome = case_when(
     outcome == "lat_shift" ~ "lat",
@@ -142,7 +156,8 @@ extremes <- extremes %>% mutate(
     outcome == "depth_shift" ~ "depth",
     outcome == "thermal_shift" ~ "thermal",
     TRUE ~ as.character(outcome)
-  )
+  ),    max_region = region_lookup[max_region],
+  min_region = region_lookup[min_region]
 )
 
 # remove existing file
