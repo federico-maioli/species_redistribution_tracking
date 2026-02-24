@@ -5,6 +5,8 @@ sistent than range shifts in marine species under climate change”.
 
 *Authors: Federico Maioli (fedma@aqua.dtu.dk), Daniël van Denderen, Max Lindmark, Marcel Montanyès, Eric J. Ward, Sean C. Anderson, Martin Lindegren*
 
+An archived version of the repository is available on Zenodo [![DOI](https://zenodo.org/badge/1067761557.svg)](https://doi.org/10.5281/zenodo.18761947)
+
 # Repository structure
 
  - `R/`
@@ -59,4 +61,4 @@ The required processed input data are available in the repository at:
 This allows reproduction of the Bayesian analyses without re-running the full SDM workflow.
 
 
-A complete archived version of the repository is available on Zenodo [![DOI](https://zenodo.org/badge/1067761557.svg)](https://doi.org/10.5281/zenodo.18761947)
+
