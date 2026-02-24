@@ -1315,10 +1315,10 @@ FUNCTION {article}
     }
   if$
   new.block
-  format.url output
+  %%format.url output
   new.block
-  %%  format.doi output
-  format.note output
+  format.doi output
+  %% format.note output
   %%format.eprint output
   %%  format.soft.eprint output
   %%  add.blank
