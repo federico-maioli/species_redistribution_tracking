@@ -38,6 +38,8 @@ R/data/environmental/
 /data/trawl_surveys/fishglob_clean.rds
 # Misc
 *.html
+#fishglob data
+fishglob_clean.rds
 # Fitted models
 R/02_sdm_modelling/fitted/
 R/03_bayesian_trends/fitted/
