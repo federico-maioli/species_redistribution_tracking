@@ -58,4 +58,5 @@ The required processed input data are available in the repository at:
 
 This allows reproduction of the Bayesian analyses without re-running the full SDM workflow.
 
-Alternatively, a complete archived version of the repository, including processed data objects, is available on Figshare [DOI].
+
+A complete archived version of the repository is available on Zenodo [![DOI](https://zenodo.org/badge/1067761557.svg)](https://doi.org/10.5281/zenodo.18761947)
