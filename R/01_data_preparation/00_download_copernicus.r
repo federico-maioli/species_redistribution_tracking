@@ -1,10 +1,13 @@
+library(here)
 # code from https://help.marine.copernicus.eu/en/articles/8638253-how-to-download-data-via-the-copernicus-marine-toolbox-in-r
-
 #first you need to get copernicus marine toolbox executable file https://help.marine.copernicus.eu/en/articles/10750437-copernicus-marine-toolbox-executable-no-installation
 
 path_copernicusmarine <- "/Users/fedma/copernicus/copernicusmarine.cli" # change with you own path!!
+# e.g. path_copernicusmarine <- "C:/Users/username/Downloads/copernicusmarine.exe"
 
-file.exists(path_copernicusmarine) # check it exists
+file.exists(path_copernicusmarine) # check if it exists
+
+output_directory <- here('R/data/environmental/temperature/')
 
 command <- paste(
   shQuote(path_copernicusmarine),
@@ -19,11 +22,17 @@ command <- paste(
   "--maximum-latitude 87",
   "--minimum-depth 0.49402499198913574",
   "--maximum-depth 0.49402499198913574",
-  "-o /Users/fedma/Library/CloudStorage/OneDrive-DanmarksTekniskeUniversitet/postdoc_dtu/species_redistribution_tracking/R/data/environmental/temperature/", # change your path
+  "-o", shQuote(output_directory),
   sep = " "
 )
 
 system(command)
+
+# updated version, no need for installation
+# follow this guide https://help.marine.copernicus.eu/en/articles/10750437-copernicus-marine-toolbox-executable-no-installation
+# https://help.marine.copernicus.eu/en/articles/8638253-how-to-download-data-via-the-copernicus-marine-toolbox-in-r
+
+# dowload the binaries
 
 
 
