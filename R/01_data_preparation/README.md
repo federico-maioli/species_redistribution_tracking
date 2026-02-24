@@ -1,6 +1,14 @@
 # Data preparation
 
-In this directory `data_preparation/` you can find the code to download and prepare the data used in this project. The processed data are saved in `data/processed/`. `data_preparation/00_download_copernicus.R` downloads the temperature data from Copernicus. `data_preparation/01_fishglob_data_prep.R` downloads, prepares the trawl survey data and matches model based temperature data to the trawl survey data. `data_preparation/02_create_prediction_grid.R` prepares the spatiotemporal grids used for predictions.
+The directory `01_data_preparation/` contains the scripts used to download and prepare all datasets required for the project. Because downloading the temperature data requires installation of the Copernicus Marine Toolbox and the preprocessing steps can be time-consuming, you may skip this directory if the processed files are already available in `data/processed/`.
+
+- `01_data_preparation/00_download_copernicus.R` downloads bottom temperature data from Copernicus.
+- `01_data_preparation/01_fishglob_data_prep.R` downloads and prepares the trawl survey data.
+- `01_data_preparation/02_create_prediction_grid.R` creates the spatiotemporal prediction grids and matches temperature data to the survey data.
+
+For a faster workflow, you may start directly from `03_bayesian_trends/`, which runs the hierarchical Bayesian trend analyses using the model-derived distribution metrics saved in `data/processed/`.
+
+# Data
 
 ## Trawl survey data
 
@@ -10,5 +18,4 @@ Maureaud, A.A., Palacios-Abrantes, J., Kitchel, Z. et al. FISHGLOB_data: an inte
 
 ## Temperature data
 
-This is needed for the thermal envelopes models only.
-Temperature data are sourced from [Copernicus](https://data.marine.copernicus.eu/product/GLOBAL_MULTIYEAR_PHY_001_030/description) and can be downloaded using the [Copernicus Marine Toolbox](https://help.marine.copernicus.eu/en/articles/8638253-how-to-download-data-via-the-copernicus-marine-toolbox-in-r). These data are large and we therefore ...
+Temperature data are sourced from [Copernicus](https://data.marine.copernicus.eu/product/GLOBAL_MULTIYEAR_PHY_001_030/description) and can be downloaded using the [Copernicus Marine Toolbox](https://help.marine.copernicus.eu/en/articles/8638253-how-to-download-data-via-the-copernicus-marine-toolbox-in-r).

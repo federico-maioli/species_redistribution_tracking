@@ -32,12 +32,16 @@ vignettes/*.pdf
 Thumbs.db
 # Large data files
 *.nc
-*.rds
+#*.rds
 *.csv
 R/data/environmental/
 /data/trawl_surveys/fishglob_clean.rds
 # Misc
 *.html
+# Fitted models
+R/02_sdm_modelling/fitted/
+R/03_bayesian_trends/fitted/
+R/03_bayesian_trends/fitted/
 # Presentation
 /presentation
 
