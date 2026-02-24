@@ -41,7 +41,6 @@ R/data/environmental/
 # Fitted models
 R/02_sdm_modelling/fitted/
 R/03_bayesian_trends/fitted/
-R/03_bayesian_trends/fitted/
 # Presentation
 /presentation
 
