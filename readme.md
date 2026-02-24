@@ -43,3 +43,19 @@ To reproduce the analysis:
    install.packages("renv")
    renv::restore()
 ```
+
+### **Note**
+
+Downloading environmental data from Copernicus Marine Service may take some time, depending on connection speed. Fitting the species distribution models (`R/02_sdm_modeling/01_fit_sdm.R`) is computationally intensive and may require substantial runtime (approximately overnight on a MacBook M3, 16 GB RAM, 2023 model).
+
+If your primary interest is the Bayesian trend analysis, you may start directly from:
+
+`R/03_bayesian_trends/`
+
+The required processed input data are available in the repository at:
+
+`R/data/processed/derived_quantities_sdm.rds`
+
+This allows reproduction of the Bayesian analyses without re-running the full SDM workflow.
+
+Alternatively, a complete archived version of the repository, including processed data objects, is available on Figshare [DOI].
