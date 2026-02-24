@@ -19,7 +19,7 @@ command <- paste(
   "--maximum-latitude 87",
   "--minimum-depth 0.49402499198913574",
   "--maximum-depth 0.49402499198913574",
-  "-o /Users/fedma/Library/CloudStorage/OneDrive-DanmarksTekniskeUniversitet/postdoc_dtu/species_redistribution_tracking/R/data/environmental/temperature/",
+  "-o /Users/fedma/Library/CloudStorage/OneDrive-DanmarksTekniskeUniversitet/postdoc_dtu/species_redistribution_tracking/R/data/environmental/temperature/", # change your path
   sep = " "
 )
 
