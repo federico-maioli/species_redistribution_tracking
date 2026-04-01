@@ -1,0 +1,144 @@
+\documentclass[9pt,twoside,lineno]{pnas-new}
+% Use the lineno option to display guide line numbers if required.
+
+\templatetype{pnassupportinginfo}
+
+\title{Thermal niche warming is more consistent than range shifts in marine species under climate change}
+\author{F. Maioli, P.\,D. van Denderen, M. Lindmark, M. Montanyès, E.\,J. Ward, S.\,C. Anderson and M. Lindegren}
+\correspondingauthor{Federico Maioli \\E-mail: fedma@aqua.dtu.dk}
+
+\begin{document}
+
+\maketitle
+
+%% Adds the main heading for the SI text. Comment out this line if you do not have any supporting information text.
+%\SItext
+
+
+
+\section*{Supplementary figures and table}\label{sec:supp_figs}
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=.8\textwidth]{output/figures/supp/static_vs_dynamic_niche.png}
+\caption{ Realized versus static thermal-niche warming across regions.
+Mean decadal trends in realized thermal niches are plotted against warming expected under static species distributions (biomass weights held constant through time) for each region. The dashed 1:1 line indicates equal realized and static warming. Points below the line indicate regions where redistribution reduced thermal exposure relative to a fixed distribution (net buffering), whereas points above the line indicate greater realized warming than expected under static distributions. Marine regions: EBS = Eastern Bering Sea, GOA = Gulf of Alaska, BC = British Columbia, USWC = U.S. West Coast, NEUS–SS = Northeast U.S. and Scotian Shelf, GOM = Gulf of Mexico, BS = Barents Sea, NS = North Sea, CBS = Celtic–Biscay Shelf, BAL = Baltic Sea, NIC = Northern Iberian Coast.}\label{fig:static_vs_dynamic_niche}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=1\textwidth]{output/figures/supp/corr_shifts_supp.png}
+\caption{Heatmap of posterior mean correlations ($\rho_r$) between trends in latitude, longitude, depth, and realized thermal niche across regions. Colors indicate the strength and direction of associations.}\label{fig:corr_shifts_supp}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=.9\textwidth]{output/figures/supp/posterior_slopes_supp}
+    \caption{Species-specific trend shifts. Color shows median effect size; more intense colors indicate larger deviations from zero. Points and lines show median and 95\% CI. Marine regions: EBS = Eastern Bering Sea, GOA = Gulf of Alaska, BC = British Columbia, USWC = U.S. West Coast,  NEUS-SS = Northeast U.S. and Scotian Shelf, GOM = Gulf of Mexico, BS = Barents Sea, NS = North Sea, CBS = Celtic–Biscay Shelf,  BAL = Baltic Sea, NIC = Northern Iberian Coast.}
+    \label{fig:posterior_slopes_supp}
+\end{figure}
+
+\clearpage
+
+\subsection*{Appendix A - Additional information on spatiotemporal models}\label{sec:A}
+
+The general form of the spatiotemporal GLMM can be represented as:
+\begin{align}
+    y_{s,t} &\sim \text{Tweedie} \left( \mu_{\mathbf{s},t}, p, \phi \right), \quad 1 < p < 2, \label{eq:1} \\
+    \mu_{s,t} &= \exp \left(\boldsymbol{\beta} \boldsymbol{\text{X}_{\boldsymbol{s},t}}  + \omega_{\boldsymbol{s}} + \epsilon_{\boldsymbol{s},t} \right), \label{eq:2} \\
+    \boldsymbol{\omega} &\sim \operatorname{MVN} \left(\boldsymbol{0}, \boldsymbol{\Sigma}_{\omega} \right), \label{eq:3} \\
+    \boldsymbol{\epsilon}_{t} &\sim \operatorname{MVN} \left(0, \boldsymbol{\Sigma}_{\epsilon} \right), \label{eq:4}
+\end{align}
+where \( y_{\mathbf{s},t} \) represents fish density (kg km\textsuperscript{-2}) at spatial location \( \mathbf{s} \) and time \( t \), \( \mu \) is the expected mean density, and \( p \) and \( \phi \) are the power and dispersion parameters of the Tweedie distribution, respectively. \( \mathbf{X}_{\mathbf{s},t} \) is the design matrix of covariates including year (as a categorical variable) and a second-degree polynomial of log(depth), which helps constrain predictions to biologically plausible magnitudes across the depth gradient. The vector \( \boldsymbol{\beta} \) contains the corresponding fixed-effect coefficients.
+
+Because fish species are not constrained by survey boundaries, and some surveys cover only a small part of the distribution range of species we aggregated multiple surveys into broader regions for modeling when appropriate. Surveys with extensive and clearly defined coverage (e.g., the North Sea IBTS) were modeled independently, while those with contiguous spatial domains and partial overlap in time and space (i.e., surveys conducted in British Columbia, Northeast U.S \& Scotian Shelf and Celtic-Biscay shelf) were combined (Fig \ref{fig:survey}). For regions with multiple surveys, we included survey identity as a fixed effect to control for differences in catchability. We did not apply this correction in British Columbia because surveys there follow harmonized field protocols and are typically analysed jointly \citep[e.g.,][]{Anderson2019BCGroundfish, WardWin2024}. In regions where surveys occur multiple times per year (BAL, NS, NEUS-SS, CBS, GOM), we included quarter as a fixed effect to account for within-year variation in sampling. In cases where a designated sampling period extended across multiple quarters, we used combined categories (e.g., Q2–Q3 or Q3-Q4).
+
+The parameters \( \omega_{\mathbf{s}} \) and \( \epsilon_{\mathbf{s},t} \) (Equations \ref{eq:3}--\ref{eq:4}) represent spatial and spatiotemporal random effects, respectively, both modeled as Gaussian Markov random fields \citep{LindgrenSPDE2011}. The spatial random field is shared across years, and represents static spatial effects such as habitat that are not accounted for by the fixed effects, while the spatiotemporal fields represent interannual spatial variation. We assumed spatiotemporal random fields to be independent across years to capture annual variation in spatial structure. While a first-order autoregressive (AR1) process could have been used to model temporal dependence, we opted for the independent formulation to strike a balance between computational efficiency and model flexibility. This approach allows spatial patterns to vary freely from year to year, accommodating potential non-stationary dynamics in species distributions without imposing strict temporal correlation structures. For British Columbia surveys, which have a biennial sampling structure, we modeled spatiotemporal variation as a random walk process and omitted the independent year fixed effects \citep{WardWin2024, DavidsonDogfish2026}. This modifies Equation \ref{eq:4} into $\epsilon_{\boldsymbol{s},t} \sim  \operatorname{MVN}(\epsilon_{t-1},\boldsymbol{\Sigma}_{\epsilon})$ to allow for flexibility in estimating the spatial and temporal processes in years without data \citep{WardWin2024, DavidsonDogfish2026}.
+
+Latent spatial and spatiotemporal random fields were approximated using a triangulated finite element mesh with a minimum spacing (cutoff) of 20 km, constructed with the \texttt{fmesher} R package \citep{LindgrenFmesher2025}. This cutoff distance represents the smallest allowed distance between two mesh vertices. We assumed a shared range parameter (distance at which points are effectively independent \citep{LindgrenSPDE2011}) between the spatial and spatiotemporal fields, while allowing each field to have its own variance.
+
+Model parameters were estimated by maximizing the marginal log-likelihood using Template Model Builder (TMB; \citep{KristensenTMB2016}), which applies the Laplace approximation to integrate out random effects. Models were fit in R 4.3.3 \citep{RCoreTeam2021} using the \texttt{sdmTMB} package \citep{sdmTMB_2025}, which interfaces matrices from \texttt{fmesher} with TMB to implement the stochastic partial differential equation approach to approximating Gaussian random fields with Gaussian Markov random fields \citep{LindgrenSPDE2011}. Only models with a positive-definite Hessian and a maximum absolute log-likelihood gradient $< 0.001$ with respect to all fixed effects were considered consistent with convergence and used for inference \citep{sdmTMB_2025}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{output/figures/supp/surveys_supp.png}
+    \caption{(a) Regions where multiple surveys were combined. (b) Overlap in survey months within each region.}
+    \label{fig:survey}
+\end{figure}
+
+\newpage
+
+\section*{Appendix B - Additional information on Bayesian trend analysis}\label{sec:B}
+
+\subsection*{Rationale for the Student-t likelihoods}
+
+We first modeled spatial and thermal responses with Gaussian likelihoods but posterior predictive checks indicated heavier tails than expected under normality. We therefore fit an alternative model using Student-t likelihoods, which better accommodates extreme values through an estimated degrees-of-freedom parameter. This specification improved predictive performance, as shown by higher expected log predictive density (ELPD) from leave-one-out cross-validation compared with the Gaussian model (Table~\ref{tab:elpd}; \citep{VehtariLOO2017}). In both cases, correlations among responses were captured by modeling species-specific temporal slopes within regions as following a multivariate normal (MVN) distribution, allowing trends in different outcomes to vary jointly.
+
+\begin{table}[!htbp]
+\centering
+    \caption{Expected log predictive density (ELPD) differences between models. ELPD differences are reported relative to the best-performing model, which is assigned a value of zero. Negative values indicate poorer expected out-of-sample predictive performance. SE denotes the standard error of the ELPD difference}
+    \label{tab:elpd}
+\input{output/tables/supp/table_elpd}
+\end{table}
+
+\subsection*{Hierarchical structure}
+An alternative to our approach is to fit separate models for each species and response. Such models, however, ignore information shared across taxa, regions, and outcomes. By using a hierarchical structure, we applied partial pooling: estimates borrow strength from the full dataset while still allowing region- and species-specific deviations. This shrinkage yields more stable estimates than independent fits (Fig.~\ref{fig:shrinkage_supp}; \citep{McElreath2018}) and allows us to estimate global, regional, and species-level trends within a single unified framework. We modeled correlations among response variables at the regional level because species within the same region experience similar environmental conditions and constraints. This structure captures shared variation in temporal trends among species within regions while allowing species-specific departures from regional patterns.
+
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics[width=1\linewidth]{output/figures/supp/shrinkage_supp.png}
+    \caption{Comparison of hierarchical trend estimates versus separate linear trend fits. Posterior slopes from the full hierarchical model (red) are compared to slopes obtained from independent linear models (blue) fitted to a random subset of 50 species. Partial pooling in the hierarchical model shrinks extreme estimates toward the regional and global mean, producing more stable and biologically plausible trend estimates across species.}
+    \label{fig:shrinkage_supp}
+\end{figure}
+
+\subsection*{Priors specification and validation}
+All priors are summarized in Table~\ref{tab:priors_supp}. Throughout, Normal$(\mu,\sigma)$ and Student-t$(\nu,\mu,\sigma)$ denote distributions with location $\mu$ and dispersion $\sigma$, where $\sigma$ is the standard deviation for the Normal and the scale parameter for the Student-t, and $\nu$ denotes the degrees of freedom. We specified weakly informative priors for global temporal slopes (decade effects) based on published rates of range shifts, depth changes, and ocean warming (Fig.~\ref{fig:priors_supp}a). For latitudinal and longitudinal centroids, we used Normal$(0,50)$ km decade$^{-1}$ priors, accommodating observed shifts of up to ~30 km decade$^{-1}$ in marine taxa \citep{Poloczanska2013Global}. For depth, we applied a Normal$(0,5)$ m decade$^{-1}$ prior, consistent with reported deepening of ~3.6 m decade$^{-1}$ in North Sea demersal fish \citep{Dulvy2008NorthSea}. For thermal niches, we used a Normal$(0,0.5)$ $^\circ$C decade$^{-1}$ prior, encompassing rates observed in rapidly warming shelf seas \citep{Chen2020SST}.
+To model group-level variation in slopes, we assigned truncated Student-t distributions $(0,\infty)$, with three degrees of freedom, allowing substantial but biologically plausible variation. Region-level slope standard deviations followed Student-t$(3,0,30)$ km decade$^{-1}$ priors for spatial centroids, Student-t$(3,0,10)$ m decade$^{-1}$ for depth, and Student-t$(3,0,0.2)$ $^\circ$C decade$^{-1}$ for thermal niches. For species nested within regions, we specified broader priors---Student-t$(3,0,40)$ km decade$^{-1}$, Student-t$(3,0,20)$ m decade$^{-1}$, and Student-t$(3,0,0.4)$ $^\circ$C decade$^{-1}$, respectively.
+These priors were consistent with the empirical variability observed in the data, providing appropriate regularization while remaining flexible enough to capture biologically plausible trends (Fig.~\ref{fig:priors_supp}b–c). All remaining model parameters retained the default priors provided by \texttt{brms} (\citep{Burkner2017brms}; Table~\ref{tab:priors_supp}).
+
+\begin{table}[!htbp]
+\centering
+    \caption{Prior distributions for model parameters. Fixed effects ($\beta$), group-level and standard deviations ($\sigma$), degrees of freedom ($\nu$) for the Student-t distribution, and the correlation matrix of region-level effects ($\mathbf{R}_r$). The source column indicates whether the prior was changed from the default.}
+    \label{tab:priors_supp}
+\input{output/tables/supp/table_priors_supp}
+\end{table}
+
+
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics[width=1\linewidth]{output/figures/supp/priors_supp.png}
+    \caption{Prior specification and validation for temporal trend parameters.
+(a) Priors for global temporal slopes (decade effects) shown relative to literature-reported values (black dashed lines).
+(b) Priors for region-level slope variation compared with empirical distributions from the data (orange dashed lines).
+(c) Priors for species-level slope variation nested within regions compared with empirical distributions (orange dashed lines). Priors are weakly informative and consistent with observed variability, providing regularization without constraining plausible trends.}
+    \label{fig:priors_supp}
+\end{figure}
+
+\subsection*{Model diagnostics}
+Model fit and convergence were assessed using posterior predictive checks (PPCs) and standard MCMC diagnostics. PPCs confirmed that the model captures the central tendency, variability, and distributional shape of the observed data (Fig.~\ref{fig:pp_supp}). Convergence diagnostics indicated $\hat{R} < 1.01$ for all parameters, no divergent transitions, and effective sample sizes $> 400$, confirming reliable posterior sampling (Fig.~\ref{fig:rhat_supp}; \cite{VehtariRhat2021}). One parameter fell slightly below the recommended bulk ESS threshold, but visual inspection of the chains indicated satisfactory mixing (not shown), supporting reliable posterior sampling.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=1\linewidth]{output/figures/supp/pp_supp.png}
+    \caption{Posterior predictive checks for the four outcomes. Observed values ($y$) are compared with simulated datasets drawn from the posterior predictive distribution ($y_{rep}$). Close alignment between the two indicates the model is capturing key features of the data generating process.}
+    \label{fig:pp_supp}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.7\linewidth]{output/figures/supp/rhat_supp.png}
+    \caption{Convergence diagnostics for the hierarchical trend model. Panels show $\hat{R}$, bulk effective sample size (ESS), and tail ESS for all parameters. Yellow regions indicate values outside recommended thresholds.}
+    \label{fig:rhat_supp}
+\end{figure}
+
+
+
+%%% Add this line AFTER all your figures and tables
+\FloatBarrier
+
+\dataset{species_shifts.csv}{Posterior median decadal trends with 95\% Bayesian credible intervals for latitudinal, longitudinal, depth, and realized thermal-niche shifts of demersal fish populations across regions. Latitudinal and longitudinal shifts are expressed in km decade$^{-1}$, depth shifts in m decade$^{-1}$, and thermal-niche shifts in ~$^\circ$C~decade$^{-1}$. Marine regions: EBS = Eastern Bering Sea, GOA = Gulf of Alaska, BC = British Columbia, USWC = U.S. West Coast, NEUS–SS = Northeast U.S. and Scotian Shelf, GOM = Gulf of Mexico, BS = Barents Sea, NS = North Sea, CBS = Celtic–Biscay Shelf, BAL = Baltic Sea, NIC = Northern Iberian Coast.}
+
+\bibliography{tex/supp/references_supp}
+
+\end{document}
