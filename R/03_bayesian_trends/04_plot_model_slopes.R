@@ -902,11 +902,17 @@ supp_table_wide <- supp_table_wide %>%
   )
 
 
-kbl(supp_table_wide, booktabs = T, "latex",escape=FALSE,longtable = T,
-    linesep = "") %>% kable_styling(latex_options = c("repeat_header","striped"), font_size = 7) %>% writeLines( here('output/tables/supp/species_slopes.tex'))
+# kbl(supp_table_wide, booktabs = T, "latex",escape=FALSE,longtable = T,
+#     linesep = "") %>% kable_styling(latex_options = c("repeat_header","striped"), font_size = 7) %>% writeLines( here('output/tables/supp/species_slopes.tex'))
+
+species_summary <- species_summary %>%
+  mutate(across(
+    c(median_slope, mean_slope, lower_95, upper_95),
+    ~ round(.x, 2)
+  ))
 
 # save as rds and csv
 write_rds(species_summary, here('R/data/processed/bayesian_species_trends.rds'))
-write_csv(species_summary, here('output/supp_data/bayesian_species_trends.csv'))
+write_csv(species_summary, here('output/supp_data/species_shifts.csv'))
 
 
