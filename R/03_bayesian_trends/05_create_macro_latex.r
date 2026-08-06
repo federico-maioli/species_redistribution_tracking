@@ -447,10 +447,14 @@ write_tex <- function(x, macro, append = TRUE) {
 for (i in seq_len(nrow(cor_results))) {
   oc <- tools::toTitleCase(cor_results$outcome[i])
 
-  p_str <- if (cor_results$p_value[i] < 0.001) "$<$0.001" else mround(cor_results$p_value[i], 3)
+  r_str <- mround(cor_results$r[i], 2)
+  is_tiny <- cor_results$p_value[i] < 0.001
+  p_str <- if (is_tiny) "$<$0.001" else mround(cor_results$p_value[i], 2)
+  p_math <- if (is_tiny) "< 0.001" else paste0("= ", mround(cor_results$p_value[i], 2))
 
-  write_tex(mround(cor_results$r[i], 2), paste0("Cor", oc, "R"))
-  write_tex(p_str,                       paste0("Cor", oc, "P"))
+  write_tex(r_str, paste0("Cor", oc, "R"))
+  write_tex(p_str, paste0("Cor", oc, "P"))
+  write_tex(paste0("$r = ", r_str, "$, $p ", p_math, "$"), paste0("Cor", oc))
   write_tex(
     paste0("[95\\% CI: ",
            mround(cor_results$ci_low[i], 2), ", ",
