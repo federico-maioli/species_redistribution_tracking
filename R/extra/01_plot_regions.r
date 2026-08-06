@@ -98,7 +98,8 @@ map <- ggplot() +
   geom_text_repel(
     data = survey_regions,
     aes(label = region_short, geometry = geometry),
-    size = 3.4,
+    size = 8 / .pt,
+    family = "sans",
     stat = "sf_coordinates",
     min.segment.length = 0.5,
     seed = 1,
@@ -110,13 +111,14 @@ map <- ggplot() +
   geom_sf_text(
     data = axis_labels_sf,
     aes(label = label),
-    size = 1.5,
+    size = 6 / .pt,
+    family = "sans",
     color = "grey50"
   ) +
-  
+
   scale_fill_manual(values = region_colors, name = "Region") +
   coord_sf(crs = lcc_crs, xlim = c(-5100, 5100), ylim = c(-600, 6100)) +
-  theme_light(base_size = 10) +
+  theme_light(base_size = 8, base_family = "sans") +
   theme(
     legend.position = 'none',
     plot.margin = margin(0, 0, 0, 0),
@@ -169,22 +171,41 @@ temp_summary <- temp_summary %>%
       (region_short == "EBS"      & year >= 1994 & year <= 2019)
   )
 
-# compute slopes per region
+# compute slopes and p-values per region
 slopes <- temp_summary %>%
   group_by(region_full, region_short) %>%
   summarise(
-    slope_decade = coef(lm(mean_temp ~ year))[2] * 10,
+    fit = list(lm(mean_temp ~ year)),
     .groups = "drop"
   ) %>%
   mutate(
+    slope_decade = map_dbl(fit, ~ coef(.x)[2] * 10),
+    p_value      = map_dbl(fit, ~ summary(.x)$coefficients[2, 4]),
+    sig_stars    = case_when(
+      p_value < 0.001 ~ "***",
+      p_value < 0.01  ~ "**",
+      p_value < 0.05  ~ "*",
+      TRUE            ~ ""
+    ),
     slope_label = sprintf("%+.2f", slope_decade),
-    slope_expr = paste0("bold('", slope_label, "'*degree*C~decade^'-1')")
-  )
+    slope_expr  = paste0("bold('", slope_label, "'*degree*C~decade^'-1'~'", sig_stars, "')")
+  ) %>%
+  select(-fit)
 
 # join slope info back
 temp_summary <- temp_summary %>%
-  left_join(slopes %>% select(region_full, region_short, slope_decade, slope_label, slope_expr),
+  left_join(slopes %>% select(region_full, region_short, slope_decade, p_value, slope_label, slope_expr),
             by = c("region_full", 'region_short'))
+
+# compute anomalies relative to each region's mean over its own period
+temp_summary <- temp_summary %>%
+  group_by(region_short) %>%
+  mutate(anomaly = mean_temp - mean(mean_temp, na.rm = TRUE)) %>%
+  ungroup()
+
+# shared x- and y-axis ranges across all regions
+year_range    <- range(temp_summary$year, na.rm = TRUE)
+anomaly_range <- range(temp_summary$anomaly, na.rm = TRUE)
 
 
 # create regional temperature plots --------------------------------------
@@ -193,19 +214,22 @@ regions <- unique(temp_summary$region_short)
 
 region_plots <- map(regions, function(r) {
   data_r <- temp_summary %>% filter(region_short == r)
-  y_breaks <- scales::breaks_extended(n = 5)(range(data_r$mean_temp, na.rm = TRUE))
-  
-  ggplot(data_r, aes(x = year, y = mean_temp)) +
+  y_breaks <- scales::breaks_extended(n = 5)(anomaly_range)
+
+  ggplot(data_r, aes(x = year, y = anomaly)) +
+    geom_hline(yintercept = 0, color = "grey70", linewidth = 0.3, linetype = 2) +
     geom_line(color = region_colors[r], alpha = .9, linewidth = .4) +
     annotate(
       "text",
       x = Inf, y = -Inf,
       label = unique(data_r$slope_expr),
       hjust = 1.05, vjust = -0.4,
-      size = 2.2,
+      size = 6 / .pt,
+      family = "sans",
       colour = "grey30",
       parse = TRUE
     ) +
+    scale_x_continuous(limits = year_range, breaks = scales::breaks_extended(n = 4)) +
     # geom_textsmooth(
     #   aes(label = slope_expr),
     #   method = "lm",
@@ -220,24 +244,25 @@ region_plots <- map(regions, function(r) {
     # ) +
     scale_y_continuous(
       breaks = y_breaks,
-        expand = expansion(mult = c(0.15, 0.02)),
+      limits = anomaly_range,
+      expand = expansion(mult = c(0.15, 0.02)),
       labels = sapply(y_breaks, function(y) as.expression(bquote(.(y)*degree*C)))
     ) +
-    theme_bw(base_size = 7) +
+    theme_bw(base_size = 8, base_family = "sans") +
     labs(
       title = unique(data_r$region_full),
       x = NULL,
       y = NULL
     ) +
     theme(
-      plot.title = element_text(face = "bold", hjust = 0.5, size = 6.5),
+      plot.title = element_text(face = "bold", hjust = 0.5, size = 7),
       axis.ticks = element_line(color = "black"),
       axis.ticks.length = unit(2, "pt"),
-      axis.text = element_text(size = 6.5),
+      axis.text = element_text(size = 6),
       panel.grid.major = element_blank(),
       panel.grid.minor = element_blank(),
-      axis.text.x  = element_text(angle = 45, hjust = 1),
-     # theme(aspect.ratio = 0.4) 
+      axis.text.x  = element_text(angle = 0, hjust = 0.5),
+     # theme(aspect.ratio = 0.4)
      plot.margin = margin(2,2,5,2)
     )
 })
@@ -277,22 +302,26 @@ haul_plot <- ggplot(haul_counts, aes(x = year, y = region_short, fill = n_hauls)
   #                      )) +
   labs(x = NULL, y = NULL,title = "Temporal coverage and sampling intensity") +
   scale_x_continuous(expand = c(0, 0)) +
-  theme_minimal(base_size = 8) +
+  theme_minimal(base_size = 8, base_family = "sans") +
   theme(
     panel.spacing = unit(1.2, "lines"),
     legend.position = "bottom",
     legend.direction = "horizontal",
+    legend.text = element_text(size = 6),
+    legend.title = element_text(size = 6),
+    axis.text.x = element_text(size = 6),
+    axis.text.y = element_text(size = 5.5, margin = margin(r = 2)),
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
-    legend.box.margin = margin(-5, 0, 0, 0),
-    legend.margin = margin(1, 0, 0, 0),
+    legend.box.margin = margin(-4, 0, 0, 0),
+    legend.margin = margin(0, 0, 0, 0),
     plot.margin = margin(0, 5, 0, 5),
     plot.title = element_text(
       size = 7.5,
       hjust = 0.5,
       face = "bold",
       colour = "black",
-      margin = margin(b = 4)
+      margin = margin(b = 3)
     ),
     plot.title.position = "plot"
 )
@@ -309,22 +338,22 @@ MMNNNNNNOO
 
 
 final_plot <- (
-  free(region_plots[['EBS']]) + 
-    free(region_plots[['NEUS-SS']]) + 
-    free(region_plots[['GOM']]) + 
-    free(region_plots[['BS']]) + 
+  free(region_plots[['EBS']]) +
+    free(region_plots[['NEUS-SS']]) +
+    free(region_plots[['GOM']]) +
+    free(region_plots[['BS']]) +
     free(region_plots[['NS']]) +
-    free(region_plots[['GOA']]) + 
-    free(map) + 
-    free(region_plots[['BAL']]) + 
-    free(region_plots[['BC']]) + 
+    free(region_plots[['GOA']]) +
+    free(map) +
+    free(region_plots[['BAL']]) +
+    free(region_plots[['BC']]) +
     free(region_plots[['CBS']]) +
     free(region_plots[['USWC']]) +
-    free(haul_plot) + 
+    free(haul_plot) +
     free(region_plots[['NIC']])
 ) + plot_layout(design = layout)
 
-# 
+#
 # final_plot <- (
 #   region_plots[['EBS']] + region_plots[['NEUS-SS']] + region_plots[['GOM']] + region_plots[['BS']] + region_plots[['NS']] +
 #     region_plots[['GOA']] + map + region_plots[['BAL']] + region_plots[['BC']] + region_plots[['CBS']] +
@@ -337,8 +366,8 @@ final_plot
 # save final plot
 ggsave(
   filename = "output/figures/main/map.png",
-  width = 180,
-  height = 150,
+  width = 178,
+  height = 140,
   dpi = 600,
   units = "mm"
 )

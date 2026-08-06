@@ -1,8 +1,44 @@
 library(here)
 library(tidyverse)
 library(readr)
+library(brms)
+library(tidybayes)
 
 # Read in the trend data
+# read full posterior draws from the fitted model (needed for per-population slopes)
+m <- read_rds(here('R/03_bayesian_trends/fitted/m_stud.rds'))
+
+region_slopes_draws <- m %>%
+  spread_draws(
+    b_cogyc_year_c, b_cogxc_year_c, b_depthnichec_year_c, b_thermalnichec_year_c,
+    r_region__cogyc[region, year_c],
+    r_region__cogxc[region, year_c],
+    r_region__depthnichec[region, year_c],
+    r_region__thermalnichec[region, year_c]
+  )
+
+species_slopes_draws <- m %>%
+  spread_draws(
+    `r_region:species__cogyc`[region_species, year_c],
+    `r_region:species__cogxc`[region_species, year_c],
+    `r_region:species__depthnichec`[region_species, year_c],
+    `r_region:species__thermalnichec`[region_species, year_c]
+  ) %>%
+  mutate(region = sub("_.*", "", region_species))
+
+species_slopes_long <- species_slopes_draws %>%
+  left_join(region_slopes_draws, by = c(".draw", "region", "year_c")) %>%
+  mutate(
+    slope_lat     = b_cogyc_year_c + r_region__cogyc + `r_region:species__cogyc`,
+    slope_lon     = b_cogxc_year_c + r_region__cogxc + `r_region:species__cogxc`,
+    slope_depth   = b_depthnichec_year_c + r_region__depthnichec + `r_region:species__depthnichec`,
+    slope_thermal = b_thermalnichec_year_c + r_region__thermalnichec + `r_region:species__thermalnichec`
+  ) %>%
+  select(.draw, region, region_species, starts_with("slope_")) %>%
+  pivot_longer(cols = starts_with("slope_"),
+               names_to = "outcome", names_prefix = "slope_",
+               values_to = "full_slope")
+
 global <- readRDS(here('R/data/processed/bayesian_global_trends.rds')) %>%  mutate(
   outcome = case_when(
     outcome == "cogyc" ~ "lat",
@@ -218,6 +254,46 @@ for (i in seq_len(nrow(extremes))) {
 }
 
 
+# median |slope| across populations + signed 95% spread -------------------
+
+# per-population posterior median slope
+pop_medians <- species_slopes_long %>%
+  group_by(outcome, region_species) %>%
+  summarise(pop_median = median(full_slope, na.rm = TRUE), .groups = "drop")
+
+magnitude_summary <- pop_medians %>%
+  filter(outcome %in% c("lat", "lon", "depth")) %>%
+  group_by(outcome) %>%
+  summarise(
+    median_abs = median(abs(pop_median), na.rm = TRUE),
+    q2p5       = quantile(pop_median, 0.025, na.rm = TRUE),
+    q97p5      = quantile(pop_median, 0.975, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+print(magnitude_summary)
+
+out_file <- "output/values/bayesian_trend_analysis/species_magnitude.tex"
+unlink(out_file)
+
+write_tex <- function(x, macro, append = TRUE) {
+  paste0("\\newcommand{\\", macro, "}{", x, "}") |>
+    write_lines(out_file, append = append)
+}
+
+for (i in seq_len(nrow(magnitude_summary))) {
+  oc <- tools::toTitleCase(magnitude_summary$outcome[i])
+
+  write_tex(mround(magnitude_summary$median_abs[i], 1), paste0(oc, "MedAbs"))
+  write_tex(
+    paste0("[",
+           mround(magnitude_summary$q2p5[i], 1), ", ",
+           mround(magnitude_summary$q97p5[i], 1), "]"),
+    paste0(oc, "SignedRange")
+  )
+}
+
+
 # proportion ----------------------------------------------------
 
 prop_by_outcome <- species %>%
@@ -302,9 +378,7 @@ for (i in seq_len(nrow(prop_by_outcome_dir))) {
   write_tex(paste0(mround(row$prop_sig,0), "\\%"), macro_name)
 }
 
-# thermal niche warming in pace with local warming ------------------------
-
-# get regional slopes
+# correlations of regional temperature trend with each outcome ------------
 
 grid <- read_rds(here('R/data/processed/prediction_grid.rds'))
 
@@ -328,20 +402,60 @@ temp_summary <- temp_summary %>%
       (region_short == "EBS"      & year >= 1994 & year <= 2019)
   )
 
-# compute slopes per region
+# compute regional decadal temperature slopes
 temp_summary <- temp_summary %>%
   group_by(region_short) %>%
   summarise(
     slope_decade = coef(lm(mean_temp ~ year))[2] * 10,
     .groups = "drop"
-  ) 
+  )
 
+# correlation of regional temperature trend with each outcome's regional slope
+cor_results <- map_dfr(c("lat", "lon", "depth", "thermal"), function(oc) {
+  region_slope <- region %>%
+    filter(outcome == oc) %>%
+    mutate(region = recode(region, "NEUS" = "NEUS-SS")) %>%
+    select(region, mean_slope)
 
-region_termal_niche_slope <- region %>% filter(outcome == 'thermal') %>%
-  mutate(region = recode(region, "NEUS" = "NEUS-SS")) %>% select(region,mean_slope)
+  comb_oc <- temp_summary %>%
+    left_join(region_slope, by = c("region_short" = "region"))
 
-comb <- temp_summary %>% left_join(region_termal_niche_slope, by = c('region_short'='region'))
+  ct <- cor.test(comb_oc$slope_decade, comb_oc$mean_slope,
+                 use = "complete.obs", method = "pearson")
 
-# calculate corr
-test_result <- cor.test(comb$slope_decade, comb$mean_slope, use = "complete.obs", method = "pearson")
+  tibble(
+    outcome = oc,
+    r       = unname(ct$estimate),
+    p_value = ct$p.value,
+    df      = unname(ct$parameter),
+    ci_low  = ct$conf.int[1],
+    ci_high = ct$conf.int[2]
+  )
+})
+
+print(cor_results)
+
+# write LaTeX macros
+out_file <- "output/values/bayesian_trend_analysis/temp_correlations.tex"
+unlink(out_file)
+
+write_tex <- function(x, macro, append = TRUE) {
+  paste0("\\newcommand{\\", macro, "}{", x, "}") |>
+    write_lines(out_file, append = append)
+}
+
+for (i in seq_len(nrow(cor_results))) {
+  oc <- tools::toTitleCase(cor_results$outcome[i])
+
+  p_str <- if (cor_results$p_value[i] < 0.001) "$<$0.001" else mround(cor_results$p_value[i], 3)
+
+  write_tex(mround(cor_results$r[i], 2), paste0("Cor", oc, "R"))
+  write_tex(p_str,                       paste0("Cor", oc, "P"))
+  write_tex(
+    paste0("[95\\% CI: ",
+           mround(cor_results$ci_low[i], 2), ", ",
+           mround(cor_results$ci_high[i], 2), "]"),
+    paste0("Cor", oc, "CI")
+  )
+}
 
