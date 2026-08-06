@@ -132,6 +132,34 @@ Model fit and convergence were assessed using posterior predictive checks (PPCs)
     \label{fig:rhat_supp}
 \end{figure}
 
+\begin{table*}[t!]
+\centering
+\caption{Correspondence between the model notation in the main text and the objects in the analysis code. The model is fitted with \texttt{brms::brm()}; the fitting script is in \texttt{R/03\_bayesian\_trends/} of the analysis repository (\url{https://github.com/federico-maioli/species_redistribution_tracking}, archived at \url{https://doi.org/10.5281/zenodo.18761947}).}
+\label{table:code_mapping}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}p{2.4cm}p{5.6cm}p{6.4cm}@{}}
+\toprule
+Symbol & Definition in text & Object in code \\
+\midrule
+$i$ & Observation: one species--region--year combination & A row of \texttt{data} \\
+$j$ & Response index, $j = 1,\dots,4$ & The four \texttt{bf()} terms \\
+$y^{(1)}_i$ & Latitudinal centroid & \texttt{cog\_y\_c} \\
+$y^{(2)}_i$ & Longitudinal centroid & \texttt{cog\_x\_c} \\
+$y^{(3)}_i$ & Depth centroid & \texttt{depth\_niche\_c} \\
+$y^{(4)}_i$ & Mean occupied bottom temperature & \texttt{thermal\_niche\_c} \\
+$\tau^{(j)}_i$ & Standard error carried from the spatiotemporal models & \texttt{cog\_y\_se}, \texttt{cog\_x\_se}, \texttt{depth\_niche\_se}, \texttt{thermal\_niche\_se}, passed via \texttt{se(..., sigma = TRUE)} \\
+$\sigma^{(j)}$ & Response-specific residual scale & Estimated because \texttt{sigma = TRUE} \\
+$\nu^{(j)}$ & Degrees of freedom & \texttt{family = student()} \\
+$\mathrm{decade}_i$ & Sampling year, centred within species--region and rescaled to decades & \texttt{year\_c} \\
+$\beta^{(j)}$ & Global slope & Population-level term \texttt{0 + year\_c} \\
+$\beta^{(j)}_{\text{reg}[r]}$ & Region-level deviation & \texttt{(0 + year\_c | region)} \\
+$\sigma^{(j)}_{\text{reg}}$ & SD of region-level deviations & \texttt{sd(region)} in the \texttt{brms} summary \\
+$\beta^{(j)}_{\text{reg:sp}[r,s]}$ & Species-within-region deviation & \texttt{(0 + year\_c | ID | gr(region:species, by = region))} \\
+$\mathbf{S}_r$ & Region-specific SDs of species-level deviations & \texttt{sd(region:species)}, made region-specific by \texttt{by = region} \\
+$\mathbf{R}_r$ & Region-specific correlations among responses & \texttt{cor(region:species)}. The shared identifier \texttt{ID} is an arbitrary label that tells \texttt{brms} to model the species-within-region slopes of the four responses jointly, as correlated random effects; \texttt{by = region} allows these correlations to differ among regions \\
+\bottomrule
+\end{tabular*}
+\end{table*}
 
 
 %%% Add this line AFTER all your figures and tables

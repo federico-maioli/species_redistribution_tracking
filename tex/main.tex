@@ -75,7 +75,7 @@ This design separates three questions that are usually run together. Do the move
 \centering
 \includegraphics[width=.9\textwidth]{output/figures/main/map.png}
 \caption{Overview of survey coverage and bottom temperature trends.
-The central map shows the regions included in the analysis, with colored polygons indicating region extents. The tile plot summarizes the number of hauls per region by year. Surrounding panels display regional trends in mean bottom temperature over time; bold values indicate the estimated decadal rate of temperature change.}\label{fig:map}
+The central map shows the regions included in the analysis, with colored polygons indicating region extents. The tile plot summarizes the number of hauls per region by year. Surrounding panels display regional trends in mean bottom temperature anomalies, expressed relative to the regional mean over the study period; bold values give the estimated decadal rate of change, and asterisks denote the significance of the corresponding linear trend ($^{*}p<0.05$, $^{**}p<0.01$, $^{***}p<0.001$).}\label{fig:map}
 \end{figure*}
 
 \section*{Results}
@@ -112,12 +112,14 @@ Shifts are shown for latitude, longitude, depth, and mean occupied bottom temper
 Marine regions: EBS = Eastern Bering Sea, GOA = Gulf of Alaska, BC = British Columbia, USWC = U.S. West Coast, NEUS-SS = Northeast U.S. and Scotian Shelf, GOM = Gulf of Mexico, BS = Barents Sea, NS = North Sea, CBS = Celtic–Biscay Shelf, BAL = Baltic Sea, NIC = Northern Iberian Coast.
 }
 \end{figure*}
-\subsection*{Species show heterogeneous spatial shifts but widespread warming of occupied temperatures}
+\subsection*{Heterogeneous shifts among populations, but widespread warming of occupied temperatures}
 \input{output/values/bayesian_trend_analysis/species_slopes}
 \input{output/values/bayesian_trend_analysis/prop_signif}
+\input{output/values/bayesian_trend_analysis/species_magnitude}
 \input{output/values/bayesian_trend_analysis/prop_signif_by_dir}
-At the population level, spatial shifts were highly variable in both direction and magnitude (Supplementary Data S1, Supplementary Fig. S3). About \LatPerc{} of the 226 populations shifted in latitude, with northward and southward movements occurring in similar proportions (Fig.~\ref{fig:prop_significant}a). The most extreme northward shift was seen in \MaxLatSpecies{} in \MaxLatRegion{} (\MaxLatMedian{}~km~decade$^{-1}$ \MaxLatCI{}), and the largest southward in \MinLatSpecies{} in \MinLatRegion{} (\MinLatMedian{}~km~decade$^{-1}$ \MinLatCI{}). Longitudinal shifts occurred in 40\% of species, with \LonWestingPerc{} moving westward and \LonEastingPerc{} eastward; the strongest eastward and westward shifts were \MaxLonSpecies{} in \MaxLonRegion{} (\MaxLonMedian{}~km~decade$^{-1}$ \MaxLonCI{}) and \MinLonSpecies{} in \MinLonRegion{} (\MinLonMedian{}~km~decade$^{-1}$ \MinLonCI{}), respectively. Depth shifts were less frequent, with \DepthDeepeningPerc{} of species moving deeper and \DepthShallowingPerc{} shallower. The strongest deepening occurred in \MaxDepthSpecies{} in \MaxDepthRegion{} (\MaxDepthMedian{}~m~decade$^{-1}$ \MaxDepthCI{}), and the greatest shallowing in \MinDepthSpecies{} in \MinDepthRegion{} (\MinDepthMedian{}~m~decade$^{-1}$ \MinDepthCI{}). 
-In contrast, most species experienced warming in the temperatures they occupied (\ThermalPerc{}), led by \MaxThermalSpecies{} in \MaxThermalRegion{} (\MaxThermalMedian{}~$^\circ$C~decade$^{-1}$ \MaxThermalCI{}), with only three species showing signs of cooling.
+At the population level, spatial shifts were highly variable in both direction and magnitude (Supplementary Data S1, Supplementary Fig. S3). Across the 226 populations, the median absolute rate of change was \LatMedAbs{}~km~decade$^{-1}$ in latitude, \LonMedAbs{}~km~decade$^{-1}$ in longitude and \DepthMedAbs{}~m~decade$^{-1}$ in depth. About \LatPerc{} of populations shifted in latitude, with northward and southward movements occurring in similar proportions (Fig.~\ref{fig:prop_significant}a). The most extreme northward shift was seen in \MaxLatSpecies{} in \MaxLatRegion{} (\MaxLatMedian{}~km~decade$^{-1}$ \MaxLatCI{}), and the largest southward in \MinLatSpecies{} in \MinLatRegion{} (\MinLatMedian{}~km~decade$^{-1}$ \MinLatCI{}). Longitudinal shifts occurred in \LonPerc{} of populations, with \LonWestingPerc{} moving westward and \LonEastingPerc{} eastward; the strongest eastward and westward shifts were \MaxLonSpecies{} in \MaxLonRegion{} (\MaxLonMedian{}~km~decade$^{-1}$ \MaxLonCI{}) and \MinLonSpecies{} in \MinLonRegion{} (\MinLonMedian{}~km~decade$^{-1}$ \MinLonCI{}), respectively. Depth shifts were less frequent, with \DepthDeepeningPerc{} of populations moving deeper and \DepthShallowingPerc{} shallower. The strongest deepening occurred in \MaxDepthSpecies{} in \MaxDepthRegion{} (\MaxDepthMedian{}~m~decade$^{-1}$ \MaxDepthCI{}), and the greatest shallowing in \MinDepthSpecies{} in \MinDepthRegion{} (\MinDepthMedian{}~m~decade$^{-1}$ \MinDepthCI{}).
+
+In contrast, most populations experienced warming in the temperatures they occupied (\ThermalPerc{}), led by \MaxThermalSpecies{} in \MaxThermalRegion{} (\MaxThermalMedian{}~$^\circ$C~decade$^{-1}$ \MaxThermalCI{}), with only three showing signs of cooling.
 
 \section*{Discussion}
 
@@ -244,15 +246,15 @@ y_{i}^{(j)} \sim \operatorname{Student\text{-}t}
 \mu_{i}^{(j)}, 
 \sqrt{(\sigma^{(j)})^{2} + (\tau^{(j)}_{i})^{2}}
 \right),
-\qquad j=1,\dots,4, 
+\qquad j=1,\dots,4 \label{eq:likelihood}
 \\
 \mu_{i}^{(j)} =
 \beta^{(j)} \cdot \text{decade}_{i}
 + \beta_{\text{reg}[r[i]]}^{(j)} \cdot \text{decade}_{i}
-+ \beta_{\text{reg:sp}[r[i],s[i]]}^{(j)} \cdot \text{decade}_{i}\label{eq:linearpred},
++ \beta_{\text{reg:sp}[r[i],s[i]]}^{(j)} \cdot \text{decade}_{i} \label{eq:linearpred}
 \\
 \beta_{\text{reg}[r]}^{(j)} \sim 
-\operatorname{N}\!\left(0,\sigma_{\text{reg}}^{(j)}\right),
+\operatorname{N}\!\left(0,\sigma_{\text{reg}}^{(j)}\right) \label{eq:regionslope}
 \\
 \begin{bmatrix}
 \beta_{\text{reg:sp}[r,s]}^{(1)} \\
@@ -265,7 +267,7 @@ y_{i}^{(j)} \sim \operatorname{Student\text{-}t}
 \mathbf{0},\,
 \mathbf{S}_{r}\,\mathbf{R}_{r}\,\mathbf{S}_{r}
 \right),
-\qquad \text{for each species}~s~\text{in region}~r
+\qquad \text{for each species}~s~\text{in region}~r \label{eq:mvn}
 \\
 \mathbf{S}_{r} =
 \begin{bmatrix}
@@ -273,7 +275,7 @@ y_{i}^{(j)} \sim \operatorname{Student\text{-}t}
 0 & \sigma^{(2)}_{\text{reg:sp},r} & 0 & 0 \\
 0 & 0 & \sigma^{(3)}_{\text{reg:sp},r} & 0 \\
 0 & 0 & 0 & \sigma^{(4)}_{\text{reg:sp},r}
-\end{bmatrix},
+\end{bmatrix} \label{eq:sdmatrix}
 \\
 \mathbf{R}_{r} =
 \begin{bmatrix}
@@ -281,11 +283,11 @@ y_{i}^{(j)} \sim \operatorname{Student\text{-}t}
 \rho_{12,r} & 1 & \rho_{23,r} & \rho_{24,r} \\
 \rho_{13,r} & \rho_{23,r} & 1 & \rho_{34,r} \\
 \rho_{14,r} & \rho_{24,r} & \rho_{34,r} & 1
-\end{bmatrix}.
+\end{bmatrix} \label{eq:corrmatrix}
 \end{gather}
 \noindent Here, each observation $i$ is a single species--region--year combination: one annual value of a given metric for one population ([N] observations in total). Each observation carries a region index $r[i]$ and a species index $s[i]$, and $\mathrm{decade}_i$ denotes its sampling year, mean-centred within the species--region combination and rescaled to decades. The response $y^{(j)}_i$ is the value of metric $j$ for observation $i$, with $j$ indexing the latitudinal centroid, longitudinal centroid, depth centroid and mean occupied bottom temperature (Table~\ref{table:derived_quantities}); $\tau^{(j)}_i$ is the corresponding standard error propagated from the spatiotemporal models, $\sigma^{(j)}$ a response-specific residual scale parameter, and $\nu^{(j)}$ the degrees of freedom. The linear predictor $\mu^{(j)}_i$ (Eq.~\ref{eq:linearpred}) models temporal trends as varying slopes, with a global effect of time $\beta^{(j)}$, region-specific deviations $\beta^{(j)}_{\text{reg}[r]}$, and species-specific deviations nested within region $\beta^{(j)}_{\text{reg:sp}[r,s]}$.
 Species-level slope deviations were modelled jointly across responses using a MVN distribution with region-specific covariance matrices $\boldsymbol{\Sigma_r} = \mathbf{S}_{r}\mathbf{R}_{r}\,\mathbf{S}_{r}$. This structure allows temporal trends in different response variables to be correlated among species within the same region, as controlled by $\mathbf{R}_{r}$, while allowing these correlation patterns and the magnitude of response-specific variability to differ among regions.
-Priors were weakly informative and guided by published rates of range shifts, depth changes, and ocean warming (Supplementary Appendix B). We fit models in R using the \texttt{brms} package \citep{burkner_brms_2017}, which interfaces with Stan via \texttt{rstan} \citep{stan2024,stan_development_team_rstan_2024}. Each model ran with four Markov chain Monte Carlo (MCMC) chains of 4,000 iterations, discarding the first 2,000 as warm-up. The remaining 2,000 samples per chain (8,000 total post–warm-up draws) formed the posterior distribution. Consistency with convergence was confirmed by $\hat{R} < 1.01$, absence of divergent transitions, and effective sample sizes $> 400$ for all key parameters \citep{vehtari_rank-normalization_2021}, as detailed in Supplementary Appendix B.
+Priors were weakly informative and guided by published rates of range shifts, depth changes, and ocean warming (Supplementary Appendix B). We fit models in R using the \texttt{brms} package \citep{burkner_brms_2017}, which interfaces with Stan via \texttt{rstan} \citep{stan2024,stan_development_team_rstan_2024}. Supplementary Appendix B Table~S3 maps each term in Eqs.~\ref{eq:likelihood}--\ref{eq:corrmatrix} to the corresponding object in the fitting code. Each model ran with four Markov chain Monte Carlo (MCMC) chains of 4,000 iterations, discarding the first 2,000 as warm-up. The remaining 2,000 samples per chain (8,000 total post–warm-up draws) formed the posterior distribution. Consistency with convergence was confirmed by $\hat{R} < 1.01$, absence of divergent transitions, and effective sample sizes $> 400$ for all key parameters \citep{vehtari_rank-normalization_2021}, as detailed in Supplementary Appendix B.
 }
 
 \showmatmethods{} % Display the Materials and Methods section
