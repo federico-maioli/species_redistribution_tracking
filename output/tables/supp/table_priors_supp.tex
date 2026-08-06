@@ -6,27 +6,27 @@ Prior & Parameter & Coefficient & Group & Response & Source\\
 LKJ(1) & $\mathbf{R}_{r}$ &  &  &  & default\\
 Normal(0, 50) & $\beta$ & decade &  & lat centroid & user\\
 Normal(0, 50) & $\beta$ & decade &  & lon centroid & user\\
-Normal(0, 5) & $\beta$ & decade &  & depth niche & user\\
-Normal(0, 0.5) & $\beta$ & decade &  & thermal niche & user\\
+Normal(0, 5) & $\beta$ & decade &  & depth & user\\
+Normal(0, 0.5) & $\beta$ & decade &  & occupied temperature & user\\
 Gamma(2, 0.1) & $\nu$ &  &  & lat centroid & default\\
 Gamma(2, 0.1) & $\nu$ &  &  & lon centroid & default\\
-Gamma(2, 0.1) & $\nu$ &  &  & depth niche & default\\
-Gamma(2, 0.1) & $\nu$ &  &  & thermal niche & default\\
+Gamma(2, 0.1) & $\nu$ &  &  & depth & default\\
+Gamma(2, 0.1) & $\nu$ &  &  & occupied temperature & default\\
 Student-t(3, 0, 31) & $\sigma$ &  &  & lat centroid & default\\
 Student-t(3, 0, 27.9) & $\sigma$ &  &  & lon centroid & default\\
-Student-t(3, 0, 3.9) & $\sigma$ &  &  & depth niche & default\\
-Student-t(3, 0, 2.5) & $\sigma$ &  &  & thermal niche & default\\
+Student-t(3, 0, 3.9) & $\sigma$ &  &  & depth & default\\
+Student-t(3, 0, 2.5) & $\sigma$ &  &  & occupied temperature & default\\
 Student-t(3, 0, 30) & $\sigma$ & decade & region & lat centroid & user\\
 Student-t(3, 0, 30) & $\sigma$ & decade & region & lon centroid & user\\
-Student-t(3, 0, 10) & $\sigma$ & decade & region & depth niche & user\\
-Student-t(3, 0, 0.2) & $\sigma$ & decade & region & thermal niche & user\\
+Student-t(3, 0, 10) & $\sigma$ & decade & region & depth & user\\
+Student-t(3, 0, 0.2) & $\sigma$ & decade & region & occupied temperature & user\\
 Student-t(3, 0, 40) & $\sigma$ & decade & region:species & lat centroid & user\\
 Student-t(3, 0, 40) & $\sigma$ & decade & region:species & lon centroid & user\\
-Student-t(3, 0, 20) & $\sigma$ & decade & region:species & depth niche & user\\
-Student-t(3, 0, 0.4) & $\sigma$ & decade & region:species & thermal niche & user\\
+Student-t(3, 0, 20) & $\sigma$ & decade & region:species & depth & user\\
+Student-t(3, 0, 0.4) & $\sigma$ & decade & region:species & occupied temperature & user\\
 Student-t(3, 0, 31) & $\sigma$ &  &  & lat centroid & default\\
 Student-t(3, 0, 27.9) & $\sigma$ &  &  & lon centroid & default\\
-Student-t(3, 0, 3.9) & $\sigma$ &  &  & depth niche & default\\
-Student-t(3, 0, 2.5) & $\sigma$ &  &  & thermal niche & default\\
+Student-t(3, 0, 3.9) & $\sigma$ &  &  & depth & default\\
+Student-t(3, 0, 2.5) & $\sigma$ &  &  & occupied temperature & default\\
 \bottomrule
 \end{tabular}

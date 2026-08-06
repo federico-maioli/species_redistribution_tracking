@@ -25,7 +25,7 @@ outcomes_pretty <- c(
   "**Latitudinal shift<br>(km decade<sup>-1</sup>)**",
   "**Longitudinal shift<br>(km decade<sup>-1</sup>)**",
   "**Depth shift<br>(m decade<sup>-1</sup>)**",
-  "**Thermal niche shift<br>(°C decade<sup>-1</sup>)**"
+  "**Occupied temperature change<br>(°C decade<sup>-1</sup>)**"
 )
 
 # color scales ------------------------------------------------------
@@ -90,14 +90,15 @@ for (i in seq_along(outcomes)) {
     scale_x_continuous(limits = c(lims$xlim_low, lims$xlim_high), breaks = scales::pretty_breaks(n = 3)) +
     scale_y_discrete(expand = c(0, 0.05)) +
     labs(title = outcome_title, x = NULL, y = NULL) +
-    theme_minimal(base_size = 12) +
+    theme_minimal(base_size = 8, base_family = "sans") +
     theme(
       legend.position = "none",
-      plot.title = ggtext::element_markdown(hjust = 0.5, size = 10),
+      plot.title = ggtext::element_markdown(hjust = 0.5, size = 7, family = "sans"),
       panel.grid = element_blank(),
       axis.ticks.x = element_line(color = "black", size = 0.3),
       axis.ticks.length.x = unit(2, "pt"),
-      axis.text.y = element_text(face = "bold"),#  axis.text.x = element_text(angle = 45, hjust = 1),
+      axis.text = element_text(size = 7),
+      axis.text.y = element_text(face = "bold", size = 7),
      plot.margin = margin(5, 9, 5, 9)
     )
   global_plot_list[[i]] <- p
@@ -162,14 +163,14 @@ for (i in seq_along(outcomes)) {
     scale_x_continuous(breaks = scales::pretty_breaks(n = 4)) +
     coord_cartesian(xlim = c(lims$xlim_low, lims$xlim_high)) +
     labs(x = NULL, y = "Region") +
-    theme_bw(base_size = 12) +
+    theme_bw(base_size = 8, base_family = "sans") +
     theme(panel.grid = element_blank(), legend.position = "none",
           axis.ticks = element_line(color = "black", size = 0.3),
           axis.ticks.length = unit(2, "pt"),
-          #panel.spacing = unit(200, "lines"),
+          axis.title = element_text(size = 8),
+          axis.text = element_text(size = 7),
           plot.margin = margin(5, 9, 5, 9),
-          #axis.text.x = element_text(angle = 45, hjust = 1),
-          axis.text.y = element_text(face = "bold") )
+          axis.text.y = element_text(face = "bold", size = 7) )
   region_plot_list[[outcome_name]] <- p
 }
 
@@ -197,12 +198,12 @@ cowplot::plot_grid(
   p_global, p_region,
   align = "v", ncol = 1, axis = 'l',
   rel_heights = c(1,2.3),
-  labels = c("a", "b"), label_size = 14
+  labels = c("a", "b"), label_size = 10, label_fontfamily = "sans"
 )
 
 ggsave(
   here('output/figures/main/posterior_slopes.png'),
-  width = 180,
+  width = 178,
   height = 140,
   dpi = 600,
   units = "mm",
@@ -330,12 +331,14 @@ for (i in seq_along(outcomes)) {
     coord_cartesian(xlim = c(lims$xlim_low, lims$xlim_high)) +
     facet_grid(region ~ ., scales = "free", space = "free", switch = "y") +
     labs(title = outcome_title, x = "Posterior estimate", y = "Species") +
-    theme_minimal(base_size = 9) +
+    theme_minimal(base_size = 8, base_family = "sans") +
     theme(
       strip.placement = "outside",
-      plot.title = ggtext::element_markdown(hjust = 0.5, size = 8),
-      strip.text.y.left = element_text(angle = 0, size = 5),
+      plot.title = ggtext::element_markdown(hjust = 0.5, size = 7, family = "sans"),
+      strip.text.y.left = element_text(angle = 0, size = 6),
       axis.text.y = element_text(size = 3),
+      axis.text.x = element_text(size = 7),
+      axis.title  = element_text(size = 8),
       panel.spacing.y = unit(0.1, "cm"),
       strip.background = element_rect(fill = "white", color = NA),
       plot.background = element_rect(fill = "white", color = NA),
@@ -364,7 +367,7 @@ p_species_supp
 # save
 ggsave(
   here('output/figures/supp/posterior_slopes_supp.png'),
-  width = 180,
+  width = 178,
   height = 240,
   dpi = 600,
   units = "mm",
@@ -541,14 +544,14 @@ summary_data <- summary_data %>%
                                 "cogyc" = "Latitude",
                                 "cogxc" = "Longitude",
                                 "depthnichec" = "Depth",
-                                "thermalnichec" = "Thermal niche"))
+                                "thermalnichec" = "Occupied temp."))
 
 summary_data_overall <- summary_data_overall %>%
   mutate(outcome_label = recode(outcome,
                                 "cogyc" = "Latitude",
                                 "cogxc" = "Longitude",
                                 "depthnichec" = "Depth",
-                                "thermalnichec" = "Thermal niche"))
+                                "thermalnichec" = "Occupied temp."))
 
 # bind region + overall
 summary_data <- bind_rows(summary_data, summary_data_overall)
@@ -570,7 +573,7 @@ direction_map <- list(
   "Latitude"      = c("Northing", "Southing", "Not significant"),
   "Longitude"     = c("Easting", "Westing", "Not significant"),
   "Depth"         = c("Deepening", "Shallowing", "Not significant"),
-  "Thermal niche" = c("Warming", "Cooling", "Not significant")
+  "Occupied temp." = c("Warming", "Cooling", "Not significant")
 )
 
 direction_map_tidy <- tibble(
@@ -589,7 +592,7 @@ color_palette <- c(
   "Deepening" = "#003C8F", "Shallowing" = "#A6CEE3",
   "Warming"  = "#B2182B", "Cooling" = "#2166AC",
   "NS_Latitude" = "grey80", "NS_Longitude" = "grey80",
-  "NS_Depth" = "grey80", "NS_Thermal niche" = "grey80"
+  "NS_Depth" = "grey80", "NS_Occupied temp." = "grey80"
 )
 
 # create NS-unique category + ordering
@@ -607,8 +610,8 @@ df <- summary_data_filtered %>%
                                                 c("Southing", "NS_Latitude", "Northing")),
       outcome_label == "Longitude"     ~ factor(direction_label_unique,
                                                 c("Westing", "NS_Longitude", "Easting")),
-      outcome_label == "Thermal niche" ~ factor(direction_label_unique,
-                                                c("Cooling", "NS_Thermal niche", "Warming"))
+      outcome_label == "Occupied temp." ~ factor(direction_label_unique,
+                                                c("Cooling", "NS_Occupied temp.", "Warming"))
     )
   )
 
@@ -618,7 +621,7 @@ n_empty <- 2
 df_spaced <- df %>%
   mutate(
     outcome_label = factor(outcome_label,
-                           levels = c("Latitude", "Longitude", "Depth", "Thermal niche"))
+                           levels = c("Latitude", "Longitude", "Depth", "Occupied temp."))
   ) %>%
   arrange(region, outcome_label, direction_label_unique) %>%
   group_by(region, outcome_label) %>%
@@ -675,17 +678,15 @@ plot_region_circular <- function(region_name) {
         ),
         angle = angle, hjust = hjust
       ),
-      vjust = .5, size = ifelse(
-        region_name == "Across regions",
-        3.2, 2.4
-      )
+      vjust = .5, family = "sans",
+      size = ifelse(region_name == "Across regions", 8 / .pt, 6 / .pt)
     ) +
     coord_polar() +
     ylim(ifelse(
         region_name == "Across regions",
         -.4, -.8
       ), max(df_region$proportion, na.rm = TRUE) + 0.05) +
-    theme_minimal(base_size = 8) +
+    theme_minimal(base_size = 8, base_family = "sans") +
     theme(
       axis.text = element_blank(),
       axis.title = element_blank(),
@@ -716,9 +717,10 @@ plot_region_circular <- function(region_name) {
         "Across\nregions",
         gsub("-", "-\n", region_name)
       ),
-      size = 3,
+      size = 8 / .pt,
+      family = "sans",
       fontface = "bold"
-    ) 
+    )
   #+ ggtitle(region_name)
 }
 
@@ -728,7 +730,7 @@ plot_list <- setNames(lapply(regions, plot_region_circular), regions)
 
 # custom legend 
 legend_data <- tibble(
-  outcome_label = rep(c("Latitude", "Longitude", "Depth", "Thermal niche"), each = 3),
+  outcome_label = rep(c("Latitude", "Longitude", "Depth", "Occupied temp."), each = 3),
   direction_label = c("South", "n.s.", "North",
                       "West", "n.s.", "East",
                       "Shallow", "n.s.", "Deep",
@@ -736,7 +738,7 @@ legend_data <- tibble(
 ) %>%
   mutate(outcome_label = factor(
     outcome_label,
-    levels = c("Latitude", "Longitude", "Depth", "Thermal niche")
+    levels = c("Latitude", "Longitude", "Depth", "Occupied temp.")
   ))
 
 legend_spaced <- legend_data %>%
@@ -771,18 +773,16 @@ legend_plot <- ggplot(legend_spaced, aes(factor(id), value, fill = direction_lab
   scale_fill_manual(values = legend_colors, na.value = NA) +
   coord_polar() +
   ylim(-0.6, .7) +
-  theme_void() +
+  theme_void(base_family = "sans") +
   theme(
     plot.margin = margin(0, 0, 12, 0),
     legend.position = "none",
    panel.border = element_rect(color = "grey40", fill = NA, linewidth = 0.2),
-    #plot.background = element_rect(fill = 'antiquewhite')
   ) +
-  #labs(title = "Legend") +
   geom_text(
     data = legend_spaced %>% filter(!is.na(direction_label)),
     aes(label = direction_label, angle = angle, hjust = hjust ),
-    vjust = .5, size = 2.5#, fontface = "bold"
+    vjust = .5, size = 7 / .pt, family = "sans"
   ) +
   geom_segment(
     data = base_data_leg,
@@ -793,15 +793,16 @@ legend_plot <- ggplot(legend_spaced, aes(factor(id), value, fill = direction_lab
     data = base_data_leg,
     aes(x = title, y = -0.08, label = outcome_label),
     inherit.aes = FALSE,
-    size = 2.6
+    size = 7 / .pt,
+    family = "sans"
   )  + annotate(
     "text",
     x = Inf,
     y = Inf,
     label = "Direction of change by dimension",
-   # hjust = 1.1,   # pull slightly left
-    vjust = -.8,   # pull slightly down
-    size = 3.1,
+    vjust = -.8,
+    size = 8 / .pt,
+    family = "sans",
     fontface = "bold",
     colour = "black"
   )
@@ -832,8 +833,8 @@ a_legend <- cowplot::plot_grid(
   p_a,
   legend_plot,
   ncol = 1,
-  #rel_heights = c(1, 1),
-  labels = c('a')
+  labels = c('a'),
+  label_size = 10, label_fontfamily = "sans"
 )
 
 final_plot <- cowplot::plot_grid(
@@ -841,14 +842,15 @@ final_plot <- cowplot::plot_grid(
   p_b,
   ncol = 2,
   rel_widths = c(1, 1.5),
-  labels = c("", "b")
+  labels = c("", "b"),
+  label_size = 10, label_fontfamily = "sans"
 )
 
 final_plot
 
 ggsave(
   here("output/figures/main/prop_significant.png"),
-  width = 180, height = 150,
+  width = 178, height = 150,
   dpi = 600, units = "mm", bg = "white"
 )
 

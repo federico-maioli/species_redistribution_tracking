@@ -62,12 +62,12 @@ all_slopes$outcome <- recode(
   all_slopes$outcome,
   lat_shift = "Latitudinal centroid",
   lon_shift = "Longitudinal centroid",
-  depth_shift = "Depth niche",
-  thermal_shift = "Thermal niche",
+  depth_shift = "Depth",
+  thermal_shift = "Occupied temperature",
   cog_y_c = "Latitudinal centroid",
   cog_x_c = "Longitudinal centroid",
-  depth_niche_c = "Depth niche",
-  thermal_niche_c = "Thermal niche"
+  depth_niche_c = "Depth",
+  thermal_niche_c = "Occupied temperature"
 )
 
 # force order
@@ -75,8 +75,8 @@ all_slopes$outcome <- factor(
   all_slopes$outcome,
   levels = c("Latitudinal centroid",
              "Longitudinal centroid",
-             "Depth niche",
-             "Thermal niche")
+             "Depth",
+             "Occupied temperature")
 )
 
 model_colors <- c("lm" = "#2c7fb8", "Bayesian GLMM" = "#f03b20")  # blue & orange
@@ -105,7 +105,7 @@ ggplot(subsampled_slopes, aes(
     alpha = 0.9
   ) +
   facet_wrap(~outcome, scales = "free", ncol = 1) +
-  theme_bw(base_size = 12) +
+  theme_bw(base_size = 8, base_family = "sans") +
   scale_color_manual(values = model_colors) +
   ggstats::geom_stripped_rows(
    data = subsampled_slopes,
@@ -120,20 +120,24 @@ ggplot(subsampled_slopes, aes(
   theme(
     axis.text.x = element_blank(),
     axis.ticks.x = element_blank(),
+    axis.text.y = element_text(size = 7),
+    axis.title  = element_text(size = 8),
     legend.position = "bottom",
+    legend.text = element_text(size = 7),
+    legend.title = element_text(size = 8),
     panel.spacing = unit(1, "lines"),
     strip.background = element_rect(fill = "white", color = NA),
     panel.background = element_rect(fill = "white", color = NA),
     plot.background = element_rect(fill = "white", color = NA),
     panel.grid = element_blank(),
-    strip.text = element_text(face = "bold")
+    strip.text = element_text(face = "bold", size = 8)
   ) +
   coord_flip()
 
-# save plot 
+# save plot
 ggsave(
   here('output/figures/supp/shrinkage_supp.png'),
-  width = 180,
+  width = 178,
   height = 190,
   dpi = 600,
   units = "mm",

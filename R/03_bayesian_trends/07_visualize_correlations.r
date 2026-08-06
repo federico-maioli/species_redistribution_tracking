@@ -61,7 +61,7 @@ nice_labels <- c(
   "cogyc"          = "Latitude",
   "cogxc"          = "Longitude",
   "depthnichec"    = "Depth",
-  "thermalnichec"  = "Thermal niche"
+  "thermalnichec"  = "Occupied temp."
 )
 
 rho <- rho %>%
@@ -77,28 +77,28 @@ rho %>%
             by = c("left_label", "right_label", "Estimate", "Est.Error", "Q2.5", "Q97.5", "label", "region", 'region_full')) %>%
   ggplot(aes(x = left_label, y = right_label)) +
   geom_tile(aes(fill = Estimate)) +
-  geom_text(aes(label = label), size = 3, family = "Helvetica") + #label
+  geom_text(aes(label = label), size = 7 / .pt, family = "sans") + #label
   scale_fill_gradient2(expression(rho),
                        low = "#59708b", mid = "#FCF9F0", high = "#A65141",
                        midpoint = 0, limits = c(-1, 1)) +
   scale_x_discrete(NULL, expand = c(0, 0)) +
   scale_y_discrete(NULL, expand = c(0, 0)) +
-  #coord_equal() +
-  facet_wrap(~ region_full, ncol = 3) + 
-  theme_minimal(base_size = 9) +
+  facet_wrap(~ region_full, ncol = 3) +
+  theme_minimal(base_size = 8, base_family = "sans") +
   theme(
     panel.grid = element_blank(),
     panel.background = element_blank(),
     strip.text = element_text(face = "bold", size = 7),
     axis.ticks = element_blank(),
-    axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
-    legend.text = element_text(size = 10),
-    legend.title = element_text(size = 10)
+    axis.text = element_text(size = 7),
+    axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1, size = 7),
+    legend.text = element_text(size = 7),
+    legend.title = element_text(size = 8)
   )
 
 ggsave(
   filename = "output/figures/supp/corr_shifts_supp.png",
-  width = 180,
+  width = 178,
   height = 160,
   dpi = 600,
   units = "mm"

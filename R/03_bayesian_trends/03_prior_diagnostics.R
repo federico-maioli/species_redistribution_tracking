@@ -7,6 +7,8 @@ library(patchwork)
 #library(cowplot)
 library(knitr)
 
+theme_set(theme_bw(base_size = 8, base_family = "sans"))
+
 # print priors  ----------------------------------------------------------
 
 fit <- read_rds(here('R/03_bayesian_trends/fitted/m_stud.rds'))
@@ -37,8 +39,8 @@ clean_priors <- prior_summary(fit) %>% as.data.frame() %>%
     resp = case_when(
       resp == "cogxc" ~ "lat centroid",
       resp == "cogyc" ~ "lon centroid",
-      resp == "depthnichec" ~ "depth niche",
-      resp == "thermalnichec" ~ "thermal niche",
+      resp == "depthnichec" ~ "depth",
+      resp == "thermalnichec" ~ "occupied temperature",
       TRUE ~ resp
     )
   ) %>%
@@ -90,8 +92,8 @@ priors_meta <- tibble::tibble(
   resp_label = c(
     "beta^{lat~centroid}",
     "beta^{lon~centroid}",
-    "beta^{depth~niche}",
-    "beta^{thermal~niche}"
+    "beta^{depth}",
+    "beta^{occupied~temperature}"
   )
 )
 
@@ -110,18 +112,20 @@ p1 = ggplot(priors_df, aes(
   stat_halfeye(normalize = "xy", color = "steelblue4", fill = "steelblue1",alpha=.7) +
   geom_vline(aes(xintercept = vline), colour = "black", linetype = "dashed", size = .6) +
   geom_text(aes(x = vline, y = 0.25, label = paper),
-            color = "black", angle = 90, vjust = -0.6, hjust = 0, size = 3) +
+            color = "black", angle = 90, vjust = -0.6, hjust = 0,
+            size = 7 / .pt, family = "sans") +
   facet_wrap(~prior, scales = "free") + scale_y_discrete(labels = function(x) parse(text = x)) +
   labs(
     x = NULL,
     y = NULL
-  ) + theme_bw() + theme(
+  ) + theme_bw(base_size = 8, base_family = "sans") + theme(
     strip.background = element_rect(fill = "white", color = NA),
     panel.background = element_rect(fill = "white", color = NA),
     plot.background = element_rect(fill = "white", color = NA),
     panel.grid = element_blank(),
-    strip.text = element_text(face = "bold")
-  ) 
+    strip.text = element_text(face = "bold", size = 8),
+    axis.text = element_text(size = 7)
+  )
 
 p1
 
@@ -202,8 +206,8 @@ priors_meta <- tibble::tibble(
   resp_label = c(
     "beta['region']^{lat~centroid}",
     "beta['region']^{lon~centroid}",
-    "beta['region']^{depth~niche}",
-    "beta['region']^{thermal~niche}"
+    "beta['region']^{depth}",
+    "beta['region']^{occupied~temperature}"
   )
 )
 
@@ -241,13 +245,14 @@ p2 = ggplot(priors_df, aes(
   labs(
     x = NULL,
     y = NULL
-  )  + theme_bw() + theme(
+  )  + theme_bw(base_size = 8, base_family = "sans") + theme(
     strip.background = element_rect(fill = "white", color = NA),
     panel.background = element_rect(fill = "white", color = NA),
     plot.background = element_rect(fill = "white", color = NA),
     panel.grid = element_blank(),
-    strip.text = element_text(face = "bold")
-  ) 
+    strip.text = element_text(face = "bold", size = 8),
+    axis.text = element_text(size = 7)
+  )
 
 p2
 
@@ -306,8 +311,8 @@ priors_meta <- tibble::tibble(
   resp_label = c(
     "beta['region:species']^{lat~centroid}",
     "beta['region:species']^{lon~centroid}",
-    "beta['region:species']^{depth~niche}",
-    "beta['region:species']^{thermal~niche}"
+    "beta['region:species']^{depth}",
+    "beta['region:species']^{occupied~temperature}"
   )
 )
 
@@ -341,16 +346,17 @@ p3 = ggplot(priors_df, aes(
   labs(
     x = NULL,
     y = NULL
-  ) + theme_bw() + theme(
+  ) + theme_bw(base_size = 8, base_family = "sans") + theme(
     strip.background = element_rect(fill = "white", color = NA),
     panel.background = element_rect(fill = "white", color = NA),
     plot.background = element_rect(fill = "white", color = NA),
     panel.grid = element_blank(),
-    strip.text = element_text(face = "bold")
-  ) 
+    strip.text = element_text(face = "bold", size = 8),
+    axis.text = element_text(size = 7)
+  )
 
 combined <- (p1 / p2 /p3) & plot_annotation(tag_levels = 'a') &
-  theme(plot.tag = element_text(size = 12, face='bold'))
+  theme(plot.tag = element_text(size = 10, face = 'bold', family = "sans"))
 
 #ggdraw(combined) +
 #  draw_line(x = c(0, 1), y = c(0.67, 0.67), color = "gray90", size = 0.5) +
@@ -360,8 +366,7 @@ combined
 
 ggsave(
   here('output/figures/supp/priors_supp.png'),
-  #plot = pp_plot,  
-  width = 180,  
+  width = 178,
   height = 180,
   dpi = 600,
   units = "mm"

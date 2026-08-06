@@ -53,26 +53,29 @@ region_summary <- slopes %>%
     .groups = "drop"
   )
 
-ggplot(region_summary, 
+ggplot(region_summary,
        aes(x = mean_static, y = mean_realized, label = region)) +
   geom_abline(slope = 1, intercept = 0, linetype = "dashed", colour = "grey40") +
-  geom_point(size = 3) +
-  geom_text(nudge_y = 0.03, size = 3) +
+  geom_point(size = 1.8) +
+  geom_text(nudge_y = 0.03, size = 7 / .pt, family = "sans") +
   scale_x_continuous(
     breaks = scales::pretty_breaks(n = 6)
   ) +
   scale_y_continuous(
     breaks = scales::pretty_breaks(n = 6)) +
   labs(
-    x = expression("Static thermal-niche trend (" * degree * "C decade"^{-1} * ")"),
-    y = expression("Realized thermal-niche trend (" * degree * "C decade"^{-1} * ")"),
+    x = expression("Static occupied-temperature trend (" * degree * "C decade"^{-1} * ")"),
+    y = expression("Realized occupied-temperature trend (" * degree * "C decade"^{-1} * ")"),
   ) +
-  theme_light()
+  theme_light(base_size = 8, base_family = "sans") +
+  theme(
+    axis.title = element_text(size = 8),
+    axis.text  = element_text(size = 7)
+  )
 
 ggsave(
   here('output/figures/supp/static_vs_dynamic_niche.png'),
-  #plot = pp_plot,  
-  width = 180,  
+  width = 178,
   height = 110,
   dpi = 600,
   units = "mm"

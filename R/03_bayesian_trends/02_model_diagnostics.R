@@ -7,6 +7,11 @@ library(knitr)
 library(patchwork)
 library(bayesplot)
 library(posterior)
+library(ggtext)
+
+# PNAS-style default theme
+theme_set(theme_bw(base_size = 8, base_family = "sans"))
+bayesplot::bayesplot_theme_set(bayesplot::theme_default(base_size = 8, base_family = "sans"))
 
 # add loo criterion -------------------------------------------------------
 
@@ -69,19 +74,21 @@ xlim_thermalnichec <- range(m_stud$data$thermal_niche_c, na.rm = TRUE)
 # now make posterior predictive checks using those limits
 pp_cogyc <- pp_check(m_stud, resp = "cogyc", ndraws = 100,  size = 1.3) + xlim(xlim_cogyc) + ggtitle('**Latitudinal centroid (km)**')
 pp_cogxc <- pp_check(m_stud, resp = "cogxc", ndraws = 100, size = 1.3) + xlim(xlim_cogxc) + ggtitle('**Longitudinal centroid (km)**') 
-pp_depthnichec <- pp_check(m_stud, resp = "depthnichec", ndraws = 100,size = 1.3) + xlim(xlim_depthnichec) + ggtitle('**Depth niche (m)**')
-pp_thermalnichec <- pp_check(m_stud, resp = "thermalnichec", ndraws = 100, size = 1.3) + xlim(xlim_thermalnichec) + ggtitle('**Thermal niche (\u00B0C)**')
+pp_depthnichec <- pp_check(m_stud, resp = "depthnichec", ndraws = 100,size = 1.3) + xlim(xlim_depthnichec) + ggtitle('**Depth (m)**')
+pp_thermalnichec <- pp_check(m_stud, resp = "thermalnichec", ndraws = 100, size = 1.3) + xlim(xlim_thermalnichec) + ggtitle('**Occupied temperature (\u00B0C)**')
 
 # combine plots
 pp_plot <- (pp_cogyc | pp_cogxc) / (pp_depthnichec | pp_thermalnichec) +
-plot_layout(guides = 'collect') & theme(legend.position = 'bottom')
+plot_layout(guides = 'collect') &
+  theme(legend.position = 'bottom',
+        plot.title = ggtext::element_markdown(size = 8, family = "sans"),
+        text = element_text(size = 7, family = "sans"))
 
 pp_plot
 
 ggsave(
   here('output/figures/supp/pp_supp.png'),
-  #plot = pp_plot,  
-  width = 180,  
+  width = 178,
   height = 140,
   dpi = 600,
   units = "mm"
@@ -143,14 +150,16 @@ p_tail <- ggplot(summary_df, aes(y = reorder(variable, -ess_tail), x = ess_tail)
     axis.ticks.x = element_blank()
   )
 
-p_diag <- p_rhat / p_bulk / p_tail + plot_layout(axes = "collect")
+p_diag <- p_rhat / p_bulk / p_tail + plot_layout(axes = "collect") &
+  theme(plot.title = ggtext::element_markdown(size = 8, family = "sans"),
+        axis.title = element_text(size = 8),
+        axis.text  = element_text(size = 7))
 
-p_diag 
+p_diag
 
 ggsave(
   here('output/figures/supp/rhat_supp.png'),
-  #plot = pp_plot,  
-  width = 180,  
+  width = 178,
   height = 190,
   dpi = 600,
   units = "mm"
