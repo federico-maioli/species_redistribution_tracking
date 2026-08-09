@@ -7,7 +7,6 @@
 \usepackage{enumitem}
 \usepackage{hyperref}
 \usepackage{parskip}
-\usepackage{mdframed}
 
 % ----- Colors -----
 \definecolor{revcolor}{RGB}{0,0,0}        % reviewer text: black
@@ -23,13 +22,10 @@
 % ----- Reviewer comment block -----
 \newcommand{\reviewer}[1]{\par\medskip\noindent\textcolor{revcolor}{#1}\par}
 
-% ----- Author reply block (colored, boxed) -----
+% ----- Author reply block (blue text, no box) -----
 \newenvironment{reply}
-{\par\smallskip\begin{mdframed}[linecolor=replycolor,linewidth=0.6pt,
-   backgroundcolor=replycolor!5,leftmargin=0pt,rightmargin=0pt,
-   innertopmargin=6pt,innerbottommargin=6pt]%
-   \color{replycolor}\textbf{Response:}\ }
-{\end{mdframed}\par\medskip}
+{\par\smallskip\begingroup\color{replycolor}\noindent\textbf{Response:}\ }
+{\endgroup\par\medskip}
 
 \title{Response to Reviewers}
 \author{Maioli et al.}
