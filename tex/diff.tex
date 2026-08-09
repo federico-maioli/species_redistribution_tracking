@@ -1,13 +1,9 @@
 \RequirePackage{shellesc}
 \ShellEscape{
 latexdiff
---append-textcmd=title
---append-textcmd=significancestatement
---append-textcmd=author
---append-textcmd=affil
---append-textcmd=leadauthor
+--allow-spaces
 --append-textcmd=matmethods
---append-textcmd=bibliography
+--preamble=diff_preamble.tex
 main_old.tex main.tex > main-d.tex
 }
 \input{main-d}
