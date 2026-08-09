@@ -1,5 +1,11 @@
+% .cls, .sty and .bst live in PNAS_stuff/. The bundled `latexmkrc` prepends
+% `./PNAS_stuff//` to TEXINPUTS/BSTINPUTS/BIBINPUTS so `latexmk` (default on
+% Overleaf) finds them. If you compile with plain `pdflatex`, either run
+% latexmk instead, or set the environment variables yourself.
 \documentclass[9pt,twocolumn,twoside]{pnas-new}
 % Use the lineno option to display guide line numbers if required.
+
+\graphicspath{{PNAS_stuff/}{../../output/figures/main/}{../../output/figures/supp/}}
 
 \articletype{ECOLOGY}%%%% Article topic/classification
 
@@ -70,21 +76,21 @@ Marine species can respond to warming in multiple ways, including shifts in lati
 
 \begin{figure*}[h]
 \centering
-\includegraphics[width=1\textwidth]{output/figures/main/map.png}
+\includegraphics[width=1\textwidth]{../../output/figures/main/map.png}
 \caption{Overview of survey coverage and bottom temperature trends.
 The central map shows the regions included in the analysis, with colored polygons indicating region extents. The tile plot summarizes the number of hauls per region by year. Surrounding panels display regional trends in mean bottom temperature anomalies, expressed relative to the regional mean over the study period; bold values give the estimated decadal rate of change, and asterisks denote the significance of the corresponding linear trend ($^{*}p<0.05$, $^{**}p<0.01$, $^{***}p<0.001$).}\label{fig:map}
 \end{figure*}
 
 \section*{Results}
 
-\input{output/values/bayesian_trend_analysis/global_slopes}
+\input{../../output/values/bayesian_trend_analysis/global_slopes}
 
 \subsection*{Limited net spatial shifts, but consistent warming of occupied temperatures}
 Overall, we detected no consistent directional shifts in either latitude or longitude across species and regions, as 95\% credible intervals (CIs) greatly overlapped zero (Fig. \ref{fig:posterior_slopes}a). This lack of net spatial redistribution reflects opposing species responses, with similar proportions of species shifting in opposite directions when aggregated across regions (Fig.~\ref{fig:prop_significant}a). The posterior median global slope ($\beta_{\text{decade}}$) for latitudinal change was \LatMedian{} km~decade$^{-1}$ \LatCI{}, and for longitudinal change \LonMedian{} km~decade$^{-1}$ \LonCI{}. The depth centroid increased slightly over time, although uncertainty remained high (\DepthMedian{} m~decade$^{-1}$ \DepthCI{}), while mean occupied bottom temperature increased consistently across species and regions (\ThermalMedian{} $^\circ$C~decade$^{-1}$ \ThermalCI{}). 
 
 \begin{figure*}[t!]
 \centering
-\includegraphics[width=1\textwidth]{output/figures/main/posterior_slopes.png}
+\includegraphics[width=1\textwidth]{../../output/figures/main/posterior_slopes.png}
 \caption{\label{fig:posterior_slopes}Trends in distributional shifts of demersal fish species, shown from left to right for latitudinal centroid, longitudinal centroid, depth centroid, and mean occupied bottom temperature. Points and horizontal lines indicate posterior medians and 95\% Bayesian credible intervals of decadal trends.
 (a) Global posterior slopes across all regions.
 (b) Region-specific posterior slopes.
@@ -93,9 +99,9 @@ Marine regions:  EBS = Eastern Bering Sea, GOA = Gulf of Alaska, BC = British Co
 \end{figure*}
 
 \subsection*{Weak regional trends, but coherent responses within some regions}
-\input{output/values/bayesian_trend_analysis/region_slopes}
-\input{output/values/rho_values}
-\input{output/values/bayesian_trend_analysis/temp_correlations}
+\input{../../output/values/bayesian_trend_analysis/region_slopes}
+\input{../../output/values/rho_values}
+\input{../../output/values/bayesian_trend_analysis/temp_correlations}
 At the regional scale, posterior slopes for spatial shifts varied in direction and were generally small and uncertain, offering limited evidence for consistent changes in mean latitude, longitude, or depth within regions (Fig.~\ref{fig:posterior_slopes}b). Among spatial dimensions, depth showed the most consistent---though still modest---signals, with slight increases in mean depth along the U.S. West Coast (USWC; \DepthUSWCMedian{}~m~decade$^{-1}$ \DepthUSWCCI{}) and the Northeast U.S. and Scotian Shelf (NEUS–SS; \DepthNEUSMedian{}~m~decade$^{-1}$ \DepthNEUSCI{}). Although regional slopes were weak, many species within some regions shifted in the same direction (Fig.~\ref{fig:prop_significant}b). In the Eastern Bering Sea (EBS), 64\% of species moved northward, with a similar proportion in the North Sea (NS; 60\%), whereas 75\% of species in the Baltic Sea (BAL) shifted southward. Depth shifts were also directionally consistent within some regions, with many species deepening in the Northeast U.S. and Scotian Shelf (39\%) and British Columbia (BC; 31\%), while relatively few shifted shallower. Depth shifts were absent or rare in other regions, with no supported changes in the Northern Iberian Coast (NIC) and only 3\% of species shifting depth in the Celtic–Biscay Shelf (CBS).
 
 To isolate the effect of redistribution on thermal exposure, we contrasted trends in mean occupied bottom temperature with warming expected under static species distributions. Across most regions, observed and static warming were similar, suggesting that redistribution had limited net influence on thermal exposure (Supplementary Fig. S1).
@@ -106,7 +112,7 @@ Spatial shifts along different axes also co-varied in other regions. For example
 
 \begin{figure*}[t!]
 \centering
-\includegraphics[width=1\textwidth]{output/figures/main/prop_significant.png}
+\includegraphics[width=1\textwidth]{../../output/figures/main/prop_significant.png}
 \caption{\label{fig:prop_significant}Proportion of species with supported shifts over time.
 (a) Across-region summary. (b) Regional patterns by marine region.
 Results are shown for latitude, longitude, depth, and mean occupied bottom temperature (occupied temp.). Bars indicate the proportion of populations with supported trends ($\geq 95\%$ of the posterior distribution excluding zero); remaining responses were not supported (n.s.).
@@ -116,18 +122,17 @@ Marine regions: EBS = Eastern Bering Sea, GOA = Gulf of Alaska, BC = British Col
 
 
 \subsection*{Spatial shifts did not scale with regional warming, but occupied temperatures did}
-\input{output/values/bayesian_trend_analysis/warming_group_slopes}
-\input{output/values/bayesian_trend_analysis/temp_correlations}
+\input{../../output/values/bayesian_trend_analysis/warming_group_slopes}
 
 Bottom temperature increased significantly in five of the eleven regions---British Columbia, the U.S. West Coast, the Northeast U.S. and Scotian Shelf, the North Sea and the Baltic Sea (Fig.~\ref{fig:map}). Populations in these regions experienced considerably greater warming of occupied temperature than those elsewhere (\WarmGrpWarmThermalMedian{}~$^\circ$C~decade$^{-1}$ \WarmGrpWarmThermalCI{} versus \WarmGrpNonWarmThermalMedian{} \WarmGrpNonWarmThermalCI{}; posterior difference \WarmGrpDiffThermalMedian{} \WarmGrpDiffThermalCI{}; Supplementary Fig.~S3), confirming that the two groups differed in the climate signal they experienced. Spatial trends, by contrast, were similar between groups. Latitudinal trends were \WarmGrpWarmLatMedian{}~km~decade$^{-1}$ \WarmGrpWarmLatCI{} in warming regions and \WarmGrpNonWarmLatMedian{} \WarmGrpNonWarmLatCI{} elsewhere (difference \WarmGrpDiffLatMedian{} \WarmGrpDiffLatCI{}), and longitudinal trends were \WarmGrpWarmLonMedian{} \WarmGrpWarmLonCI{} and \WarmGrpNonWarmLonMedian{} \WarmGrpNonWarmLonCI{}, respectively (difference \WarmGrpDiffLonMedian{} \WarmGrpDiffLonCI{}). Depth showed the only suggestive difference, with greater deepening in regions that warmed (\WarmGrpWarmDepthMedian{}~m~decade$^{-1}$ \WarmGrpWarmDepthCI{} versus \WarmGrpNonWarmDepthMedian{} \WarmGrpNonWarmDepthCI{}; difference \WarmGrpDiffDepthMedian{} \WarmGrpDiffDepthCI{}; Supplementary Fig.~S3c), although this interval also included zero.
 
 Treating regional warming as a continuous gradient gave the same picture (Supplementary Fig.~S3). Across the eleven regions, trends in occupied temperature closely followed regional bottom-temperature trends (Pearson \CorThermal{}), whereas trends in latitude, longitude and depth showed no detectable scaling (\CorLat{}, \CorLatCI{}; \CorLon{}, \CorLonCI{}; \CorDepth{}, \CorDepthCI{}), with depth again the strongest of the three and in the direction expected under warming.
 
 \subsection*{Populations moved substantially, but in opposing directions}
-\input{output/values/bayesian_trend_analysis/species_slopes}
-\input{output/values/bayesian_trend_analysis/prop_signif}
-\input{output/values/bayesian_trend_analysis/species_magnitude}
-\input{output/values/bayesian_trend_analysis/prop_signif_by_dir}
+\input{../../output/values/bayesian_trend_analysis/species_slopes}
+\input{../../output/values/bayesian_trend_analysis/prop_signif}
+\input{../../output/values/bayesian_trend_analysis/species_magnitude}
+\input{../../output/values/bayesian_trend_analysis/prop_signif_by_dir}
 At the population level, spatial shifts were highly variable in both direction and magnitude (Supplementary Data S1, Supplementary Fig. S4). Across the 226 populations, the median absolute rate of change was \LatMedAbs{}~km~decade$^{-1}$ in latitude, \LonMedAbs{}~km~decade$^{-1}$ in longitude and \DepthMedAbs{}~m~decade$^{-1}$ in depth. About \LatPerc{} of populations shifted in latitude, with northward and southward movements occurring in similar proportions (Fig.~\ref{fig:prop_significant}a). The most extreme northward shift was seen in \MaxLatSpecies{} in \MaxLatRegion{} (\MaxLatMedian{}~km~decade$^{-1}$ \MaxLatCI{}), and the largest southward in \MinLatSpecies{} in \MinLatRegion{} (\MinLatMedian{}~km~decade$^{-1}$ \MinLatCI{}). Longitudinal shifts occurred in \LonPerc{} of populations, with \LonWestingPerc{} moving westward and \LonEastingPerc{} eastward; the strongest eastward and westward shifts were \MaxLonSpecies{} in \MaxLonRegion{} (\MaxLonMedian{}~km~decade$^{-1}$ \MaxLonCI{}) and \MinLonSpecies{} in \MinLonRegion{} (\MinLonMedian{}~km~decade$^{-1}$ \MinLonCI{}), respectively. Depth shifts were less frequent, with \DepthDeepeningPerc{} of populations moving deeper and \DepthShallowingPerc{} shallower. The strongest deepening occurred in \MaxDepthSpecies{} in \MaxDepthRegion{} (\MaxDepthMedian{}~m~decade$^{-1}$ \MaxDepthCI{}), and the greatest shallowing in \MinDepthSpecies{} in \MinDepthRegion{} (\MinDepthMedian{}~m~decade$^{-1}$ \MinDepthCI{}).
 
 In contrast, most populations experienced warming in the temperatures they occupied (\ThermalPerc{}), led by \MaxThermalSpecies{} in \MaxThermalRegion{} (\MaxThermalMedian{}~$^\circ$C~decade$^{-1}$ \MaxThermalCI{}), with only three showing signs of cooling.
