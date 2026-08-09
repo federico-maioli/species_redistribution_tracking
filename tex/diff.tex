@@ -1,15 +1,21 @@
-\RequirePackage{shellesc}
+\documentclass{article}
+
+\usepackage{shellesc}
+
+\begin{document}
+
 \ShellEscape{
-latexdiff
---append-textcmd=title
---append-textcmd=significancestatement
---append-textcmd=author
---append-textcmd=affil
---append-textcmd=leadauthor
---append-textcmd=matmethods
---append-textcmd=bibliography
-main_old.tex main.tex > main-d.tex
+
+  latexdiff
+
+    --append-textcmd=title
+
+    --append-textcmd=leadauthor
+
+    --append-textcmd=matmethods
+
+    main_old.tex main.tex > main_d.tex
+
 }
-\input{main-d}
-\documentclass{dummy}
-\title{Demonstrating latexdiff}
+
+\end{document}
