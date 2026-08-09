@@ -1,15 +1,9 @@
-\RequirePackage{shellesc}
-\ShellEscape{
-latexdiff
---append-textcmd=title
---append-textcmd=significancestatement
---append-textcmd=author
---append-textcmd=affil
---append-textcmd=leadauthor
---append-textcmd=matmethods
---append-textcmd=bibliography
-main_old.tex main.tex > main-d.tex
-}
-\input{main-d}
-\documentclass{dummy}
-\title{Demonstrating latexdiff}
+% To build a coloured revision diff between main_old.tex (previous submission)
+% and main.tex (current revision), run:
+%
+%   ./make_diff.sh
+%
+% from this directory. That script runs latexdiff with the flags that keep
+% both added and deleted content inside PNAS's \matmethods{} block (which
+% otherwise silently loses one side of the diff), and then compiles
+% main-d.tex to main-d.pdf via latexmk.
