@@ -24,7 +24,7 @@
 
 % ----- Author reply block (blue text, no box) -----
 \newenvironment{reply}
-{\par\smallskip\begingroup\color{replycolor}\noindent\textbf{Response:}\ }
+{\par\smallskip\begingroup\color{replycolor}\noindent\textbf{R:}\ }
 {\endgroup\par\medskip}
 
 \title{Response to Reviewers}
@@ -35,132 +35,81 @@
 
 \maketitle
 
-\noindent We thank the reviewers for their careful and constructive comments.
-Below, reviewer comments are shown in \textcolor{revcolor}{black} and our
-responses in \textcolor{replycolor}{blue}.
+\noindent We thank the reviewers for their constructive comments.
+Below, reviewer comments are shown in \textcolor{revcolor}{black} and our responses in \textcolor{replycolor}{blue}.
 
 %==================================================================
 \section*{Reviewer \#1}
 %==================================================================
 
-\subsection*{AI Disclosure}
-\reviewer{I did not use AI software during preparation of this review.}
-
 \subsection*{General Comments}
 
-\reviewer{In the manuscript by Maioli et al. presents a new analysis of previously
-compiled and analyzed bottom trawl data from the northern Atlantic and Pacific
-oceans to study evidence for spatial range shifts in marine species. The article
-is well written and the analysis is appropriately sophisticated and accounts for
-many of the problems inherent in complex spatio-temporal and data integration
-analyses.}
-
-\reviewer{In terms of novelty, the analysis leans into recent calls (e.g.,
-Fredston et al. 2025, \textit{Trends in Ecology and Evolution}) to examine range
-shifts across multiple dimensions and follows along similar analyses previously
-done over large spatial scales with terrestrial organisms (e.g., Neate-Clegg et
-al. 2024, \textit{Nature Ecology and Evolution} [uncited]). The present manuscript
-is thus laudable for considering latitude and depth shifts simultaneously, yet
-still fails to account for many other dimensions or ways that species can track
-thermal niches, including aquatic microclimates (Lawlor et al. 2024, \textit{Nature
-Reviews Earth \& Environment}) and phenology (Fredston et al. 2025; Neate-Clegg et
-al. 2024). As other authors have shown, species are tracking thermal niches
-simultaneously in many dimensions, and while the present manuscript accounts for 2
-major axes, it is far from exhaustive or complete. Thus, all discussions of
-tracking (or not) of thermal niches must include this rather considerable caveat.}
+\reviewer{In the manuscript by Maioli et al. presents a new analysis of previously compiled and analyzed bottom trawl data from the northern Atlantic and Pacific oceans to study evidence for spatial range shifts in marine species. The article is well written and the analysis is appropriately sophisticated and accounts for many of the problems inherent in complex spatio-temporal and data integration analyses.}
 
 \begin{reply}
-We included this point in the introduction.
+We thank the reviewer for the positive assessment of the manuscript, and address the specific points below.
 \end{reply}
 
-\reviewer{Relatedly, my biggest concern with this manuscript is the way that
-population-level trends are aggregated to larger scales. My understanding is that
-this is done hierarchically, such that you have, for example, a fish species
-represented in 5 regions, each with its own variety of spatial shifts, and then a
-hierarchical component looks to see if there is an ``average'' shift happening
-across all those regions. While this hierarchical method makes sense in many
-contexts, it can be problematic in the context of measuring range shifts, as
-species are not fully contained within single regions, such that single-region
-analyses of ``range shifts'' can be highly biased by both false positives and
-negatives. This problem (which is pervasive within the range shift literature) is
-of growing concern and recognition, and is only discussed partly by Lawlor et al.
-(2024) and in this preprint by Fredston
-(\url{https://ecoevorxiv.org/repository/view/7383/}). While region-specific
-heterogeneity may be ``truth'', what would make me more confident in the results
-would be if a secondary analysis were done, where species (across all sampled
-areas) are the unit of analysis, and all data for each species are aggregated into
-a single range shift metric per species. While such an analysis would still have
-many issues -- e.g., measuring range shifts from discontinuous spatial data (Li et
-al. 2025, \textit{Plants} [14:2]) -- at least there would be less bias from what we
-expect to be considerable region-specific `noise'.}
+\reviewer{In terms of novelty, the analysis leans into recent calls (e.g., Fredston et al. 2025, \textit{Trends in Ecology and Evolution}) to examine range shifts across multiple dimensions and follows along similar analyses previously done over large spatial scales with terrestrial organisms (e.g., Neate-Clegg et al. 2024, \textit{Nature Ecology and Evolution} [uncited]). The present manuscript is thus laudable for considering latitude and depth shifts simultaneously, yet
+still fails to account for many other dimensions or ways that species can track thermal niches, including aquatic microclimates (Lawlor et al. 2024, \textit{Nature Reviews Earth \& Environment}) and phenology (Fredston et al. 2025; Neate-Clegg et al. 2024). As other authors have shown, species are tracking thermal niches simultaneously in many dimensions, and while the present manuscript accounts for 2 major axes, it is far from exhaustive or complete. Thus, all discussions of tracking (or not) of thermal niches must include this rather considerable caveat.}
 
 \begin{reply}
-it is  part of the paper is to find regional fingerprints which couldn't be reached without separating into region. Second survey integration is a real deal. different surveys different countries, they sample in different time gear have different catchabilities. While we put some effort in aggrageting survey when data allowed (e.g. similar survey protocolos, overlapping areas) combining across bigger area would encounter several problems like space x catchability confounding. We think one the values of this paper is precisely that, combine what we could combine rather than aggragating disparate data. We discuss that in 565 620. 
+We agree, and have added a paragraph to the Discussion (lines 714–727) setting out what our data cannot resolve. Briefly, it notes that species can also moderate their thermal exposure through fine-scale thermal structure within a location, through vertical position and activity between surveys, and through phenological shifts in when they occupy an area, and it explains why bottom-trawl surveys cannot capture these. Neate-Clegg et al. (2024) and Lawlor et al. (2024) are now cited there.
+
+Following this comment and Reviewer 2's related points, we have also reframed the paper more broadly. We no longer claim to quantify thermal niche tracking, or to measure how movement along different dimensions trades off to achieve it. The paper now states only that we estimate movement along three physical axes and the thermal consequence of that movement, and statements about thermal exposure are qualified accordingly throughout.
 \end{reply}
 
-\reviewer{Finally, I worry the framing of the conclusions relative to the thermal
-niche (e.g., line 419--425). The study finds that most species are not `keeping up'
-perfectly with shifting isotherms (a result that has been demonstrated broadly
-before many times, e.g. Chen et al. 2011 \textit{Science}). The authors then
-conclude that ``realized thermal niches are dynamic and adaptive under climate
+\reviewer{Relatedly, my biggest concern with this manuscript is the way that population-level trends are aggregated to larger scales. My understanding is that this is done hierarchically, such that you have, for example, a fish species represented in 5 regions, each with its own variety of spatial shifts, and then a hierarchical component looks to see if there is an ``average'' shift happening across all those regions. While this hierarchical method makes sense in many contexts, it can be problematic in the context of measuring range shifts, as species are not fully contained within single regions, such that single-region analyses of ``range shifts'' can be highly biased by both false positives and negatives. This problem (which is pervasive within the range shift literature) is of growing concern and recognition, and is only discussed partly by Lawlor et al. (2024) and in this preprint by Fredston (\url{https://ecoevorxiv.org/repository/view/7383/}). While region-specific heterogeneity may be ``truth'', what would make me more confident in the results would be if a secondary analysis were done, where species (across all sampled areas) are the unit of analysis, and all data for each species are aggregated into a single range shift metric per species. While such an analysis would still have many issues -- e.g., measuring range shifts from discontinuous spatial data (Li et
+al. 2025, \textit{Plants} [14:2]) -- at least there would be less bias from what we expect to be considerable region-specific `noise'.}
+
+\begin{reply}
+We agree that species are not contained within survey regions, and that this is a genuine limitation of region-based estimates.
+
+We have not, however, pooled species across all sampled areas, for two reasons. The first is that regional structure is part of what the paper sets out to measure. Whether responses cohere within regions, and whether regional signals combine across basins, is one of our central questions, and collapsing each species to a single metric would remove the level at which most of the signal we detect actually sits.
+
+The second is that combining across regions is not a neutral operation. The surveys differ in country, timing, gear and catchability, and although we pooled surveys wherever protocols and spatial coverage allowed (Supplemntary Appendix A), extending that pooling across the full domain would confound spatial pattern with survey identity. A single species-level metric would therefore trade region-specific noise for a bias we could not model. We regard combining only what can defensibly be combined, rather than aggregating disparate data, as one of the contributions of this analysis (lines 43–47)
+
+We do accept the underlying point, and now state it explicitly: our estimates describe distributional change within the sampled domain rather than change in species' ranges as a whole (lines 731–740).
+\end{reply}
+
+\reviewer{Finally, I worry the framing of the conclusions relative to the thermal niche (e.g., line 419--425). The study finds that most species are not `keeping up' perfectly with shifting isotherms (a result that has been demonstrated broadly before many times, e.g. Chen et al. 2011 \textit{Science}). The authors then conclude that ``realized thermal niches are dynamic and adaptive under climate
 change''. I support the term ``dynamic'' but it remains unclear what the
-consequences are of ``dynamic realized thermal niches.'' There is considerable
-debate about what the realized thermal niche even means, particularly when applied
-simply to populations and not full species. There is no evidence (here, at least),
-that a dynamic realized niche is ``adaptive'', particularly as the study only
-monitors occurrence of species, not demography. This section should be revised.}
+consequences are of ``dynamic realized thermal niches.'' There is considerable debate about what the realized thermal niche even means, particularly when applied simply to populations and not full species. There is no evidence (here, at least), that a dynamic realized niche is ``adaptive'', particularly as the study only monitors occurrence of species, not demography. This section should be revised.}
 
 \begin{reply}
-foloowing yours and rev 2 suggestions we avoid the word thermal niche and simply refer to the mean temperature occupied by a species.
+We agree. Occurrence and biomass data cannot support a claim that a change in occupied temperature is adaptive, and we have removed the sentence. The passage now reports only that most populations experienced rising temperatures in the habitats they occupied, and that redistribution rarely provided full thermal compensation (lines 489-495), alongside a comparison with a single-system analysis reporting similar variability among species (lines 495–498).
+
+Following this comment and Reviewer 2's, we have also removed "niche" from the paper. The two metrics are now "depth centroid" and "mean occupied bottom temperature", which is what they are — biomass-weighted means, with no claim about niche breadth or limits.
 \end{reply}
 
 \subsection*{Line Edits}
 
-\reviewer{\textbf{133.} You need more explanation of why horizontal (longitudinal?)
-shifts may expected. Presumably that would be shifts from off-shore to near-shore,
-which could impact things like SST, but is ``horizontal'' the appropriate
-dimension? For example, if it's the western Atlantic versus eastern Pacific,
-offshore-to-nearshore is either E-W or W-E.}
+\reviewer{\textbf{133.} You need more explanation of why horizontal (longitudinal?) shifts may expected. Presumably that would be shifts from off-shore to near-shore, which could impact things like SST, but is ``horizontal'' the appropriate dimension? For example, if it's the western Atlantic versus eastern Pacific, offshore-to-nearshore is either E-W or W-E.}
 
 \begin{reply}
-horizontal are latitudinal and longitudinal (see below). as we have substatntial restructing of the intoduciton this part is no more present
+We have removed ``horizontal'' throughout and now refer to latitudinal and longitudinal change separately. The Results show why this matters: latitudinal and longitudinal shifts were positively associated in the Gulf of Mexico and negatively associated in British Columbia and the U.S. West Coast, reflecting coast-parallel movement whose expression in longitude depends on the orientation of the coast (lines 225--233). This is also why we report the two axes separately rather than combining them into a single horizontal measure.
 \end{reply}
 
-\reviewer{\textbf{142.} Ah, perhaps you're defining ``horizontal'' as either
-longitudinal or latitudinal? I'm not sure that's the best term -- at least I'm
-finding it confusing (especially since this single dimension is then analyzed later
-as two dimensions, lat and lon).}
+\reviewer{\textbf{142.} Ah, perhaps you're defining ``horizontal'' as either longitudinal or latitudinal? I'm not sure that's the best term -- at least I'm finding it confusing (especially since this single dimension is then analyzed later as two dimensions, lat and lon).}
 
 \begin{reply}
-Yes, we used horizontal as latitude and longitude following e.g. Gruenburg et al. 2025
-\textit{Nature Climate Change}, we now removed many of this wording and we spell out lat and lon. where it remained we mate that explicit line
+Agreed, and the term is gone. We now refer to latitudinal and longitudinal change throughout, see point above.
 \end{reply}
 
-\reviewer{\textbf{145.} I dislike claims of `novel' without first doing an
-extensive literature review. Yes, `multi-dimensional response' papers are rare, but
-they are not absent from the literature (e.g., Neate-Clegg et al. 2025). The impact
-of this work is not lessened by simply saying, ``Unlike some previous
+\reviewer{\textbf{145.} I dislike claims of `novel' without first doing an extensive literature review. Yes, `multi-dimensional response' papers are rare, but they are not absent from the literature (e.g., Neate-Clegg et al. 2025). The impact of this work is not lessened by simply saying, ``Unlike some previous
 efforts\ldots, our approach allows\ldots''}
 
 \begin{reply}
-we removed novel from the sentence
+We have removed the word and no longer make a novelty claim.
 \end{reply}
 
-\reviewer{\textbf{679.} Your methods imply here, if I'm following them correctly,
-that you estimated range shifts not from data or models directly, but by projecting
-data onto space, and quantifying range shifts that way? If so, doesn't that mean
-that your range shifts are potentially based substantially on extrapolation (or
-interpolation), particularly to areas with unsampled environmental variable
-combinations? In other words, it seems your method is akin to measuring range
-shifts from projecting (complex spatio-temporal) SDMs across space and time and
-measuring range shifts from those projections? Such a method seems very
-susceptible to false positives (which I strongly feel has been shown before in the
-literature, but not sure of the reference).}
+\reviewer{\textbf{679.} Your methods imply here, if I'm following them correctly, that you estimated range shifts not from data or models directly, but by projecting data onto space, and quantifying range shifts that way? If so, doesn't that mean that your range shifts are potentially based substantially on extrapolation (or interpolation), particularly to areas with unsampled environmental variable combinations? In other words, it seems your method is akin to measuring range shifts from projecting (complex spatio-temporal) SDMs across space and time and measuring range shifts from those projections? Such a method seems very susceptible to false positives (which I strongly feel has been shown before in the literature, but not sure of the reference).}
 
 \begin{reply}
-We do compute distributional metrics from model-based predictions, but this does not involve extrapolation. Our prediction grid is restricted to the surveyed footprint of each region (both space and time), and grid-cell covariates span only the range of depths and temperatures observed there. We predict within the sampled domain, not into novel environmental space.
 
-Model-based estimation tends to reduce rather than introduce this bias. Raw metrics are sensitive to changes in the spatial distribution of sampling effort over time, which can produce apparent centroid shifts in the absence of real redistribution; estimating the underlying density field first accounts for this and yields less biased centre-of-gravity estimates than design-based alternatives (Thorson et al. 2016, ref 40).
+Our species distribution models contain no environmental covariates other than depth. Year enters as a factor, survey identity and quarter as fixed effects where appropriate, and spatial and spatiotemporal variation is captured by random fields estimated within the survey domain. Bottom temperature is not a predictor; it is used only afterwards, to compute the temperature occupied by the predicted biomass. There is therefore no environment–response function along which the model could extrapolate into unsampled covariate combinations.
+
+Predictions are made on a fixed 4 × 4 km grid covering each surveyed region, identical in every year, so differences between years reflect changes in estimated density within the same domain rather than projection into new areas. Where the random fields are weakly informed by data they shrink toward the mean, which biases estimated trends toward zero rather than generating spurious shifts — so the design is conservative with respect to the false positives the reviewer describes.
 \end{reply}
 
 %==================================================================
@@ -168,247 +117,164 @@ Model-based estimation tends to reduce rather than introduce this bias. Raw metr
 %==================================================================
 
 \subsection*{Comments on Significance Statement}
-\reviewer{This is one of my favorite parts of the draft. It is well written and
-accurate.}
+\reviewer{This is one of my favorite parts of the draft. It is well written and accurate.}
+
+\begin{reply}
+    We thank the reviewer for these comments. Since the significance statement was the part found to reflect the analysis accurately, we used its wording as the guide when revising the manuscript.
+\end{reply}
 
 \subsection*{Comments}
 
-\reviewer{This paper revisits several core findings in marine global change biology
-in the past 20 years---specifically, that species are deepening and shifting
-geographically in response to climate change. They bring new methods to bear on
-this question, and in particular, substantial advances in both how the survey data
-used to answer this question are treated as well as statistical modeling that
-parses out species- and regional-level variation from temporal trends much better
+\reviewer{This paper revisits several core findings in marine global change biology in the past 20 years---specifically, that species are deepening and shifting geographically in response to climate change. They bring new methods to bear on this question, and in particular, substantial advances in both how the survey data used to answer this question are treated as well as statistical modeling that parses out species- and regional-level variation from temporal trends much better
 than past attempts.}
 
-\reviewer{Before I get into the paper I want to commend the authors on the
-accessibility and documentation of their data and code. In papers that hinge on
-statistical modeling it's critical for reviewers to actually read the code and
-understand its concordance with the paper, and too often I see authors obscure
-their data and code to prevent exactly this level of scrutiny. This clearly took a
-lot of work to organize so nicely on GitHub and it should not go unrecognized.}
+\reviewer{Before I get into the paper I want to commend the authors on the accessibility and documentation of their data and code. In papers that hinge on statistical modeling it's critical for reviewers to actually read the code and understand its concordance with the paper, and too often I see authors obscure their data and code to prevent exactly this level of scrutiny. This clearly took a lot of work to organize so nicely on GitHub and it should not go unrecognized.}
 
-\reviewer{Here's my summary (and correct me if I'm wrong) of the methods and
-results:}
+\begin{reply}
+    We are glad the data and code were useful.
+\end{reply}
+
+\reviewer{Here's my summary (and correct me if I'm wrong) of the methods and results:}
 
 \reviewer{%
 \begin{enumerate}
-    \item The authors started with a large database synthesizing bottom-trawl
-    survey records of marine fishes, pooling surveys where they could and
-    accounting for variation between them when they couldn't.
-    \item They then fitted species distribution models (one species at a time) to
-    turn these observation points into annual estimates of biomass density over
-    space, with associated uncertainty.
-    \item In a hierarchical framework that propagated this uncertainty and also
-    allowed for correlations both among species within a region and among response
-    variables for a given species, they tested whether four metrics derived from
-    the SDMs were changing over time:
+    \item The authors started with a large database synthesizing bottom-trawl survey records of marine fishes, pooling surveys where they could and accounting for variation between them when they couldn't.
+    \item They then fitted species distribution models (one species at a time) to turn these observation points into annual estimates of biomass density over space, with associated uncertainty.
+    \item In a hierarchical framework that propagated this uncertainty and also allowed for correlations both among species within a region and among response variables for a given species, they tested whether four metrics derived from the SDMs were changing over time:
     \begin{enumerate}
         \item Latitude of centroid (center of gravity, AKA weighted mean, of the SDM)
         \item Longitude of centroid
         \item Mean biomass-weighted depth
         \item Biomass-weighted mean of annual mean sea bottom temperature occupied
     \end{enumerate}
-    \item They find (with a colossal dataset and decades of data) that none of the
-    first three response variables are changing significantly over time at the
-    global (well, Northeast Pacific / North Atlantic) scale; and most of them
-    aren't even changing significantly over time at the regional scale.
-    \item This result implies that fish species are on average (but not necessarily
-    individually) sitting in place while the oceans warm, which means the mean
-    temperature they occupy is getting hotter.
+    \item They find (with a colossal dataset and decades of data) that none of the first three response variables are changing significantly over time at the global (well, Northeast Pacific / North Atlantic) scale; and most of them aren't even changing significantly over time at the regional scale. 
+    \item This result implies that fish species are on average (but not necessarily individually) sitting in place while the oceans warm, which means the mean temperature they occupy is getting hotter.
 \end{enumerate}}
 
+\reviewer{Hopefully, readers of this manuscript will appreciate that while calculating metrics of change without first modeling spatiotemporal patterns in the data sometimes leads to greater statistical significance, that approach (which I am guilty of, earlier in my career!) also makes it impossible to disentangle observation and process error. Additionally, because all the response variables are
+averages, they are by definition quite insensitive to outliers. In other words, using SDMs and mean response variables probably made it harder to find big significant results here, which is a feature---not a bug---of this approach. The authors set up this analysis to test ``if we control for everything else, do we still see big range or depth shifts in the biggest-ever dataset used to test this?'' and the answer is no.}
+
+\reviewer{I have some minor notes on methods and documentation, and some line edits, below. But at a high level, I have no issues with the modeling approach used here. I do have some issues with the framing of the text, so let me start there.}
+
+\reviewer{The Introduction makes it sound like the authors are tackling the very important and emergent question of simultaneously modeling species' responses to environmental change along multiple possible gradients to fully quantify their degree of thermal niche tracking (sensu Neate-Clegg et al. 2024 \textit{Nature Ecology and Evolution} and Fredston et al. 2025 \textit{TREE}). But this isn't what the paper does at all. The models in this paper can't quantify the degree to which
+shifts along one dimension (depth vs longitude vs latitude) are trading off against one another to achieve climate tracking in sum. Which is fine---this paper does something else, which is equally cool and just different---but I think the Introduction and really the whole paper need substantial reframing.}
+
 \begin{reply}
+We have reframed the Introduction and the rest of the manuscript to clarify the scope and contribution of the study as the reviewer suggested. 
+
+We have also removed claims that our models quantify trade-offs among movement along different dimensions and no longer use ``tracking'' to characterize our results. The title, abstract, and Discussion have been revised accordingly. See points below.
+\end{reply}
+
+\reviewer{For example, the second paragraph of the Introduction (lines 51--61) set up the knowledge gap this paper will fill as [to paraphrase] ``perhaps species aren't uniformly marching towards the poles!'' This is a strawman argument that is over a decade out of date, and it doesn't do the models in this paper justice. The models in the paper also can't really quantify the degree to which fish are responding coherently to warming (L58--61), because they aren't actually quantifying thermal niche tracking over time.}
+
+\begin{reply}
+The strawman is gone. The second paragraph of the Introduction now concerns the evidence base rather than the expectation (lines 43--52). The same framing appeared at the opening of the Discussion and in the concluding paragraph, and has been removed from both.
 
 \end{reply}
 
-\reviewer{Hopefully, readers of this manuscript will appreciate that while
-calculating metrics of change without first modeling spatiotemporal patterns in the
-data sometimes leads to greater statistical significance, that approach (which I am
-guilty of, earlier in my career!) also makes it impossible to disentangle
-observation and process error. Additionally, because all the response variables are
-averages, they are by definition quite insensitive to outliers. In other words,
-using SDMs and mean response variables probably made it harder to find big
-significant results here, which is a feature---not a bug---of this approach. The
-authors set up this analysis to test ``if we control for everything else, do we
-still see big range or depth shifts in the biggest-ever dataset used to test
-this?'' and the answer is no.}
-
-\reviewer{I have some minor notes on methods and documentation, and some line
-edits, below. But at a high level, I have no issues with the modeling approach used
-here. I do have some issues with the framing of the text, so let me start there.}
-
-\reviewer{The Introduction makes it sound like the authors are tackling the very
-important and emergent question of simultaneously modeling species' responses to
-environmental change along multiple possible gradients to fully quantify their
-degree of thermal niche tracking (sensu Neate-Clegg et al. 2024 \textit{Nature
-Ecology and Evolution} and Fredston et al. 2025 \textit{TREE}). But this isn't what
-the paper does at all. The models in this paper can't quantify the degree to which
-shifts along one dimension (depth vs longitude vs latitude) are trading off against
-one another to achieve climate tracking in sum. Which is fine---this paper does
-something else, which is equally cool and just different---but I think the
-Introduction and really the whole paper need substantial reframing.}
-
-\reviewer{For example, the second paragraph of the Introduction (lines 51--61) set
-up the knowledge gap this paper will fill as [to paraphrase] ``perhaps species
-aren't uniformly marching towards the poles!'' This is a strawman argument that is
-over a decade out of date, and it doesn't do the models in this paper justice. The
-models in the paper also can't really quantify the degree to which fish are
-responding coherently to warming (L58--61), because they aren't actually
-quantifying thermal niche tracking over time.}
+\reviewer{To expand on that point, I was puzzled by the use of ``niche'' to describe a scalar mean of means. The niche, by definition, is something with a spread or a breadth; niche theory has never suggested that species occupy only a single degree-Celsius temperature. Thermal niches in global change biology are usually defined by their endpoints and often studied in terms of whether past, present, and future habitats are inside or outside of the niche (some relevant
+papers: La Sorte and Jetz 2012 \textit{Journal of Animal Ecology}; Early and Sax 2014 \textit{Global Ecology and Biogeography}; Godsoe 2010 \textit{Oikos}; Chevalier et al. 2024 \textit{Nature Ecology and Evolution}; Socolar et al. 2017 \textit{PNAS}; this is a random sample and there is no need to cite any/all of them, but I'm including them to underscore that this interpretation of what ``niche'' means is not just my own). This paper does not need to be about niches (and in my
+opinion, it isn't). I would edit out the word and just replace it with ``Depth centroid'' and ``Mean temperature occupied'' or whatever more descriptive terms the authors choose. I would also change the title, which fails to capture the core results of the paper. (Actually, the only part of the paper which I think is worded in a way that reflects the analysis is the significance statement, which is great.)}
 
 \begin{reply}
-The reviewer is right that we ran two claims together, and we have separated them.
-One is whether species move coherently — whether species in a region share a direction, and whether regional patterns add up across basins. Our model does estimate this. It splits each trend into a global effect, a regional deviation and a species deviation, so how much of the variation is shared is itself a measure of coherence. Figure 3 shows the same thing more directly, as the proportion of species moving the same way. The Introduction now attaches this claim to the model, rather than thermal tracking.
-The other is tracking. A species keeping up with its isotherm would stay at the same temperature; the fishes here did not, and the temperatures they occupy rose (well, 60\% of them). That is a measure of tracking, in degrees rather than kilometres. Comparing it with a static distribution then shows how much of the rise came from the water warming rather than from where the fish were.
-What we cannot do is say how any compensation was divided between latitude, longitude and depth, or judge movement against the distance an isotherm actually travelled. We have cut the sentences that implied otherwise. The Introduction now says only that we estimate whether movement along the different axes is coordinated, and what it did to the temperatures species occupy.
+We agree. A niche has breadth, and what we estimate is a single density-weighted mean of the temperatures a population occupies --- one summary of that distribution, not the distribution itself. Calling it a niche claimed more than the analysis supports.
+
+We have removed the word from the paper. ``Depth niche'' is now ``depth centroid'' and ``thermal niche'' is now ``mean occupied bottom temperature'', following the reviewer's suggestion. The change runs through the title, abstract, main text, Table 1, all figure labels and the supplement.
+
+We have also retitled the paper ``Marine fishes occupy warmer waters without net redistribution''. We were glad the significance statement reads well, and have used it as the guide for wording the rest.
 \end{reply}
 
-\reviewer{To expand on that point, I was puzzled by the use of ``niche'' to
-describe a scalar mean of means. The niche, by definition, is something with a
-spread or a breadth; niche theory has never suggested that species occupy only a
-single degree-Celsius temperature. Thermal niches in global change biology are
-usually defined by their endpoints and often studied in terms of whether past,
-present, and future habitats are inside or outside of the niche (some relevant
-papers: La Sorte and Jetz 2012 \textit{Journal of Animal Ecology}; Early and Sax
-2014 \textit{Global Ecology and Biogeography}; Godsoe 2010 \textit{Oikos};
-Chevalier et al. 2024 \textit{Nature Ecology and Evolution}; Socolar et al. 2017
-\textit{PNAS}; this is a random sample and there is no need to cite any/all of them,
-but I'm including them to underscore that this interpretation of what ``niche''
-means is not just my own). This paper does not need to be about niches (and in my
-opinion, it isn't). I would edit out the word and just replace it with ``Depth
-centroid'' and ``Mean temperature occupied'' or whatever more descriptive terms the
-authors choose. I would also change the title, which fails to capture the core
-results of the paper. (Actually, the only part of the paper which I think is worded
-in a way that reflects the analysis is the significance statement, which is great.)}
+\reviewer{So, how should these results be framed? I would present this paper by saying that past attempts to quantify the true degree to which species are shifting latitudinally, longitudinally, and in depth were limited---in their geographical scope, their data volume, and their simplistic statistical approaches. So we are lacking strong tests of the hypotheses about thermal tracking in marine systems set up by Sunday et al. 2012 \textit{Nature Climate Change}, Burrows et al. 2011
+\textit{Science}, and others. Further, estimated rates of shifts usually come from meta-analyses of published studies (Lenoir et al. 2020, Poloczanska et al. 2013)---not from directly analyzing synthesized datasets---and those are rife with confounding variables and methodological issues (see Brown et al. 2016
+\textit{Global Change Biology}, from the same team as Poloczanska et al., or Lawlor et al. 2024, from the same group as Lenoir et al.). No one has recently brought updated data or statistics to the question ``How fast are marine fishes actually shifting or deepening?'' and in my opinion that is the great contribution of this paper, which finds that actually they aren't consistently doing either (although individual species often move a lot), and because the oceans are warming so too are the temperatures where these fishes hang out.}
 
 \begin{reply}
-We agree. A niche has breadth, and what we estimate is a single density-weighted mean of the temperatures a population occupies — one summary of that distribution, not the distribution itself. Calling it a niche claimed more than the analysis supports.
-
-We have removed the word from the paper. "Depth niche" is now "depth centroid" and "thermal niche" is now "mean occupied bottom temperature", following the reviewer's suggestion. The change runs through the title, abstract, main text, Table 1, all figure labels and the supplement.
-
-We have also retitled the paper "[NEW TITLE]", which states what we found rather than the framework we used. We were glad the significance statement reads well, and have used it as the guide for wording the rest.
+We are grateful for this suggestion; it is close to how the paper now reads. The changes are set out in our responses above, and include the point taken directly from this comment.
 \end{reply}
 
-\reviewer{So, how should these results be framed? I would present this paper by
-saying that past attempts to quantify the true degree to which species are shifting
-latitudinally, longitudinally, and in depth were limited---in their geographical
-scope, their data volume, and their simplistic statistical approaches. So we are
-lacking strong tests of the hypotheses about thermal tracking in marine systems set
-up by Sunday et al. 2012 \textit{Nature Climate Change}, Burrows et al. 2011
-\textit{Science}, and others. Further, estimated rates of shifts usually come from
-meta-analyses of published studies (Lenoir et al. 2020, Poloczanska et al.
-2013)---not from directly analyzing synthesized datasets---and those are rife with
-confounding variables and methodological issues (see Brown et al. 2016
-\textit{Global Change Biology}, from the same team as Poloczanska et al., or Lawlor
-et al. 2024, from the same group as Lenoir et al.). No one has recently brought
-updated data or statistics to the question ``How fast are marine fishes actually
-shifting or deepening?'' and in my opinion that is the great contribution of this
-paper, which finds that actually they aren't consistently doing either (although
-individual species often move a lot), and because the oceans are warming so too are
-the temperatures where these fishes hang out.}
-
-\reviewer{As a proud author of two FISHGLOB-based studies with null results that
-also disproved beautiful hypotheses (Fredston et al. 2023 \textit{Nature} and
-Kitchel et al. 2025 \textit{PLOS Climate}), I understand that it's hard to write
-global change papers around the finding that nothing changed. But my opinion is that
-it's absolutely critical to write and publish these papers, particularly in an
-instance with such careful modeling (and I give PNAS kudos for sending this out for
-review). Of course, the authors probably can imagine other framings that would suit
-this paper too, but my key point is that the current framing both sells the actual
-results short and is a bit misleading.}
-
-\reviewer{The last issue I will raise is the choice to frame this around climate
-change responses when many of the focal regions did not warm in the study interval.
-It would be strange if the authors had found consistent directional shifts in half
-of these regions, where mean sea bottom temperatures were relatively constant (see
-Fig. 1). There is no mention of these regional differences in warming in the paper,
-which likely have a huge impact on the results. The authors might want to, for
-example, report and interpret results separately by whether the region cooled,
-warmed, or neither.}
+\reviewer{As a proud author of two FISHGLOB-based studies with null results that also disproved beautiful hypotheses (Fredston et al. 2023 \textit{Nature} and Kitchel et al. 2025 \textit{PLOS Climate}), I understand that it's hard to write global change papers around the finding that nothing changed. But my opinion is that it's absolutely critical to write and publish these papers, particularly in an instance with such careful modeling (and I give PNAS kudos for sending this out for review). Of course, the authors probably can imagine other framings that would suit this paper too, but my key point is that the current framing both sells the actual results short and is a bit misleading.}
 
 \begin{reply}
-We have made the regional differences in warming explicit. Figure 1 now reports each region's bottom-temperature trend with a credible interval, and the text states which regions warmed and by how much.
+We agree, and hope the revised framing does the results more justice.  
+\end{reply}
 
-We would also argue the variation is useful rather than a problem. Regions that warmed little provide the contrast that lets us ask whether responses scale with warming — and they do. Trends in occupied temperature follow local warming rates closely across regions ($\rho$ = 0.92), and the three regions with no detectable warming of occupied temperature are among those where bottom temperatures changed least. The paper does not treat all regions as though they experienced the same climate signal.
+\reviewer{The last issue I will raise is the choice to frame this around climate change responses when many of the focal regions did not warm in the study interval. It would be strange if the authors had found consistent directional shifts in half of these regions, where mean sea bottom temperatures were relatively constant (see
+Fig. 1). There is no mention of these regional differences in warming in the paper, which likely have a huge impact on the results. The authors might want to, for example, report and interpret results separately by whether the region cooled, warmed, or neither.}
 
-Following the reviewer's suggestion, we now report results separately for regions that warmed over the study period and those that did not. [RESULT.] We have added this to the Results and revised the Discussion accordingly.
+\begin{reply}
+We agree this needed addressing, and it is now reported throughout. Figure~1 shows the significance of each regional bottom-temperature trend: five of the eleven regions warmed significantly (British Columbia, the U.S. West Coast, the Northeast U.S. and Scotian Shelf, the North Sea and the Baltic Sea).
 
-We agree the regional differences in warming needed to be addressed and they are now reported explicitly. Rather than grouping regions by whether their warming trend was significant, which dichotomises a continuous quantity and depends on statistical power, we examined whether responses scale with regional warming rate directly. Displacement showed no detectable scaling (latitude r = −0.38, longitude r = −0.10, depth r = 0.50, all intervals spanning zero), whereas occupied temperature closely followed local warming (r = 0.92), as expected. The absence of scaling indicates our conclusions are not an artefact of including regions with little warming.
+We have added a Results subsection reporting responses in relation to regional warming (lines 235--309). Following the reviewer's suggestion, we compare region-level trends between the five warming regions and the six others, and we additionally treat regional warming as a continuous gradient across all eleven (Supplementary Fig S2). Populations in warming regions experienced considerably greater warming of occupied temperature than those elsewhere (0.30 versus 0.08~$^{\circ}$C~decade$^{-1}$; difference 0.23 [95\% CI: 0.17, 0.28]), confirming that the two groups did differ in the climate signal they experienced. Spatial trends, by contrast, were similar between groups and showed no detectable scaling with regional warming rate. Depth was the only dimension suggesting a difference, with greater deepening in regions that warmed, although that interval also included zero. 
+Accounting for these differences does not change our conclusions: weak net redistribution is equally evident in the regions that warmed, so the overall result does not depend on the inclusion of regions where little warming occurred.
 \end{reply}
 
 \subsection*{Line and minor edits, in no particular order}
 
-\reviewer{The Discussion should probably address why the authors didn't quantify
-concordance of biotic shifts with climate velocities, an approach that was invented
-to deal with regionally-divergent patterns in redistribution (Pinsky et al. 2013
+\reviewer{The Discussion should probably address why the authors didn't quantify concordance of biotic shifts with climate velocities, an approach that was invented to deal with regionally-divergent patterns in redistribution (Pinsky et al. 2013
 \textit{Science}).}
 
 \begin{reply}
-
+We have added a paragraph to the Discussion addressing this (lines 699--713). Briefly, we tracked the mean temperature each population occupied through time, which requires no expectation to be specified for where or how fast a species should move, and additionally compared these trends with those expected under spatially fixed distributions. We agree that comparing the shifts estimated here against local climate velocities, horizontal and vertical, would be a natural extension of this work, and we now say so explicitly.
 \end{reply}
 
-\reviewer{The Discussion (or Introduction) should also be sure to differentiate
-this paper from others using the FISHGLOB dataset, notably Gruenburg et al. 2025
-\textit{Nature Climate Change}.}
+\reviewer{The Discussion (or Introduction) should also be sure to differentiate this paper from others using the FISHGLOB dataset, notably Gruenburg et al. 2025 \textit{Nature Climate Change}.}
 
 \begin{reply}
+Gruenburg et al. (2025) is now discussed in two places. In the Discussion we note that steep vertical temperature gradients mean modest changes in depth can offset substantial warming (lines 568--618); and in the paragraph on climate velocity we position their vertical extension of that approach relative to our own (lines 699--712). The differentiation is therefore made through engagement with their result rather than as a standalone comparison, which we felt read better in context.
 
+We have also cited other analyses using this compilation where they bear on our argument: Kitchel et al. (2025) where we discuss heterogeneous responses producing weak aggregate signals (lines 640-644)
 \end{reply}
 
-\reviewer{Nowhere in the paper does it say the actual year range of the data, which
-should be included!}
+\reviewer{Nowhere in the paper does it say the actual year range of the data, which should be included!}
 
 \begin{reply}
-
+Added. The Introduction now states that the surveys were sampled between 1994 and 2021 (line 128), and the same range is given in the Methods where the surveys are described (lines 767--769).
 \end{reply}
 
-\reviewer{Fig. 1 should show the significance of the plus/minus temperature change
-rates printed in the panels, and/or report a credible interval, since I suspect
-some (many?) overlap with zero.}
+\reviewer{Fig. 1 should show the significance of the plus/minus temperature change rates printed in the panels, and/or report a credible interval, since I suspect some (many?) overlap with zero.}
 
 \begin{reply}
-
+Added. Figure~1 now marks the significance of each regional trend with asterisks. This is now reported in the Results and forms the basis of the new analysis of responses in relation to regional warming (lines 235--309).
 \end{reply}
 
-\reviewer{In a sentence about marine species tracking temperature change, why cite a
-paper about birds (ref 6)?}
+\reviewer{In a sentence about marine species tracking temperature change, why cite a paper about birds (ref 6)?}
 
 \begin{reply}
-
+Removed. 
 \end{reply}
 
-\reviewer{It's not clear what ``net coherent redistribution signal'' means; I would
-either define this term, or edit it out and replace it with a descriptive sentence.}
+\reviewer{It's not clear what ``net coherent redistribution signal'' means; I would either define this term, or edit it out and replace it with a descriptive sentence.}
 
 \begin{reply}
-
+We have edited it out, as suggested. The Introduction now states the question descriptively---whether the movements of individual populations share a direction within regions and combine into a consistent signal across ocean basins (lines 148--156)---and the phrase no longer appears in the manuscript.
 \end{reply}
 
 \reviewer{A rationale should be included for the 15-year cutoff for dataset length.}
 
 \begin{reply}
-
+Added to the Methods (lines 766--768).
 \end{reply}
 
-\reviewer{In the equations and text around them, ``observation $i$'' is not defined,
-which makes it hard to understand the equations.}
+\reviewer{In the equations and text around them, ``observation $i$'' is not defined, which makes it hard to understand the equations.}
 
 \begin{reply}
-
+Defined. Each observation $i$ is now stated to be a single species--region--year combination (line 855).
 \end{reply}
 
-\reviewer{I would appreciate a table in the SI articulating the correspondence
-between terms in equations in the text and named objects in the code. I know it's
-impossible to fully describe models in text, and I often go look at the code to
-figure out what really happened, but here it was hard to map them onto one
-another---for example, is \texttt{decade\_i} in the paper the same as
-\texttt{years\_c} in the code (or \texttt{years\_c} times ten, or something else)?
-Table 1 in this Supplement is an example of what I mean:
-\url{https://github.com/afredston/mid_atlantic_forecasts/blob/main/09_supplement.pdf}.}
+\reviewer{I would appreciate a table in the SI articulating the correspondence between terms in equations in the text and named objects in the code. I know it's impossible to fully describe models in text, and I often go look at the code to figure out what really happened, but here it was hard to map them onto one another---for example, is \texttt{decade\_i} in the paper the same as \texttt{years\_c} in the code (or \texttt{years\_c} times ten, or something else)? Table 1 in this Supplement is an example of what I mean: \url{https://github.com/afredston/mid_atlantic_forecasts/blob/main/09_supplement.pdf}.}
 
 \begin{reply}
-
+Added, following the example given (Appendix B Supplementary Table~S3).
 \end{reply}
+
+
+\section*{Additional changes}
+Beyond the points raised by the reviewers, we have made the following changes.
+\begin{itemize}
+\item Figure~1 now presents regional bottom-temperature trends as anomalies on common $x$ and $y$ scales, so that differences in warming among regions can be compared directly.
+\item We now report the median absolute rate of change across populations, which quantifies the magnitude of movement underlying the near-zero net trends.
+\item Results subsection headings have been reworded to state the finding of each section more directly.
+\item We identified and corrected two conflicting uses of notation in the equations. In Table~1, $i$ denoted a grid cell while in the model equations it denoted an observation; the table now uses $c$ for grid cells. Separately, $s$ denoted both the species index and the observation-level standard error, which is now written $\tau$.
+\end{itemize}
 
 \end{document}
