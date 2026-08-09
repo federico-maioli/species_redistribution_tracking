@@ -1,10 +1,8 @@
-% .cls, .sty and .bst live in PNAS_stuff/. The bundled `latexmkrc` prepends
-% `./PNAS_stuff//` to TEXINPUTS/BSTINPUTS/BIBINPUTS so `latexmk` (default on
-% Overleaf) finds them. If you compile with plain `pdflatex`, either run
-% latexmk instead, or set the environment variables yourself.
 \documentclass[9pt,twocolumn,twoside]{pnas-new}
 % Use the lineno option to display guide line numbers if required.
 
+% PNAS logos and template .bbl files live in PNAS_stuff/; figures live under
+% output/figures/{main,supp}/ at the project root.
 \graphicspath{{PNAS_stuff/}{../../output/figures/main/}{../../output/figures/supp/}}
 
 \articletype{ECOLOGY}%%%% Article topic/classification

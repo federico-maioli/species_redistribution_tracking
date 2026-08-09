@@ -1,3 +1,0 @@
-$ENV{'TEXINPUTS'} = './PNAS_stuff//:' . ($ENV{'TEXINPUTS'} // '');
-$ENV{'BSTINPUTS'} = './PNAS_stuff//:' . ($ENV{'BSTINPUTS'} // '');
-$ENV{'BIBINPUTS'} = './PNAS_stuff//:' . ($ENV{'BIBINPUTS'} // '');
