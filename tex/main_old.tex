@@ -305,10 +305,9 @@ longitudinal centroid, depth niche or thermal niche (Table \ref{table:derived_qu
 Species-level slope deviation were modelled jointly across responses using a MVN distribution with region-specific covariance matrices $\boldsymbol{\Sigma_r} = \mathbf{S}_{r}\mathbf{R}_{r}\,\mathbf{S}_{r}$. This structure allows temporal trends in different response variables to be correlated among species within the same region, as controlled by $\mathbf{R}_{r}$, while allowing these correlation patterns and the magnitude of response-specific variability to differ among regions.
 
 Priors were weakly informative and guided by published rates of range shifts, depth changes, and ocean warming (Supplementary Appendix B). We fit models in R using the \texttt{brms} package \citep{burkner_brms_2017}, which interfaces with Stan via \texttt{rstan} \citep{stan2024,stan_development_team_rstan_2024}. Each model ran with four Markov chain Monte Carlo (MCMC) chains of 4,000 iterations, discarding the first 2,000 as warm-up. The remaining 2,000 samples per chain (8,000 total post–warm-up draws) formed the posterior distribution. Consistency with convergence was confirmed by $\hat{R} < 1.01$, absence of divergent transitions, and effective sample sizes $> 400$ for all key parameters \citep{vehtari_rank-normalization_2021}, as detailed in Supplementary Appendix B.
-
 }
 
-\showmatmethods{} % Display the Materials and Methods section
+\showmatmethods{} 
 
 \dataavail{Fish biomass data were obtained from standardized, fishery-independent bottom-trawl surveys compiled by FISHGLOB (\url{https://fishglob.sites.ucsc.edu/}). Bottom temperature data were extracted from the Copernicus Marine Environment Monitoring Service (CMEMS) Global Ocean Physics Reanalysis (\url{https://data.marine.copernicus.eu/product/GLOBAL_MULTIYEAR_PHY_001_030/description}). Bathymetric data were sourced from GEBCO (\url{https://www.gebco.net}).
 All code used to perform the analyses and generate the figures is available at \url{https://github.com/federico-maioli/species_redistribution_tracking} and archived on Zenodo \url{https://doi.org/10.5281/zenodo.18761947}.}
