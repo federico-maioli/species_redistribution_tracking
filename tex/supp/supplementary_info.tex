@@ -1,4 +1,7 @@
+% PNAS class, style and logo files live in PNAS_stuff/
+\makeatletter\def\input@path{{PNAS_stuff/}{./}}\makeatother
 \documentclass[9pt,twoside,lineno]{pnas-new}
+\graphicspath{{./}{PNAS_stuff/}}
 % Use the lineno option to display guide line numbers if required.
 
 \templatetype{pnassupportinginfo}
@@ -21,27 +24,27 @@
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=.8\textwidth]{output/figures/supp/static_vs_dynamic_niche.png}
+\includegraphics[width=.8\textwidth]{../../output/figures/supp/static_vs_dynamic_niche.png}
 \caption{ Realized versus static thermal-niche warming across regions.
 Mean decadal trends in realized thermal niches are plotted against warming expected under static species distributions (biomass weights held constant through time) for each region. The dashed 1:1 line indicates equal realized and static warming. Points below the line indicate regions where redistribution reduced thermal exposure relative to a fixed distribution (net buffering), whereas points above the line indicate greater realized warming than expected under static distributions. Marine regions: EBS = Eastern Bering Sea, GOA = Gulf of Alaska, BC = British Columbia, USWC = U.S. West Coast, NEUS–SS = Northeast U.S. and Scotian Shelf, GOM = Gulf of Mexico, BS = Barents Sea, NS = North Sea, CBS = Celtic–Biscay Shelf, BAL = Baltic Sea, NIC = Northern Iberian Coast.}\label{fig:static_vs_dynamic_niche}
 \end{figure}
 
 \begin{figure}
 \centering
-\includegraphics[width=1\textwidth]{output/figures/supp/corr_shifts_supp.png}
+\includegraphics[width=1\textwidth]{../../output/figures/supp/corr_shifts_supp.png}
 \caption{Heatmap of posterior mean correlations ($\rho_r$) between trends in latitude, longitude, depth, and realized thermal niche across regions. Colors indicate the strength and direction of associations.}\label{fig:corr_shifts_supp}
 \end{figure}
 
 \begin{figure}
 \centering
-\includegraphics[width=1\textwidth]{output/figures/supp/warming_group_slopes.png}
+\includegraphics[width=1\textwidth]{../../output/figures/supp/warming_group_slopes.png}
 \caption{Region-averaged posterior slopes for (a) latitudinal shift, (b) longitudinal shift, (c) depth shift and (d) change in mean occupied bottom temperature. Left plots show posterior densities and 95\% credible intervals for regions with a significant bottom-temperature trend (warming, $n = 5$: BC, USWC, NEUS-SS, NS, BAL; red), for those without (non-warming, $n = 6$: EBS, GOA, GOM, BS, CBS, NIC; blue), and for their difference (grey); regions are weighted equally and differences computed within draws. Right plots show each region's posterior median slope against its bottom-temperature trend ($^{\circ}$C decade$^{-1}$), with a fitted linear regression (solid line) and the Pearson correlation and $p$-value. Region codes: BC, British Columbia; USWC, U.S. West Coast; NEUS-SS, Northeast U.S. and Scotian Shelf; NS, North Sea; BAL, Baltic Sea; EBS, Eastern Bering Sea; GOA, Gulf of Alaska; GOM, Gulf of Mexico; BS, Barents Sea; CBS, Celtic--Biscay Shelf; NIC, Northern Iberian Coast.}
 \end{figure}
 
 
 \begin{figure}
 \centering
-\includegraphics[width=.9\textwidth]{output/figures/supp/posterior_slopes_supp}
+\includegraphics[width=.9\textwidth]{../../output/figures/supp/posterior_slopes_supp}
     \caption{Species-specific trend shifts. Color shows median effect size; more intense colors indicate larger deviations from zero. Points and lines show median and 95\% CI. Marine regions: EBS = Eastern Bering Sea, GOA = Gulf of Alaska, BC = British Columbia, USWC = U.S. West Coast,  NEUS-SS = Northeast U.S. and Scotian Shelf, GOM = Gulf of Mexico, BS = Barents Sea, NS = North Sea, CBS = Celtic–Biscay Shelf,  BAL = Baltic Sea, NIC = Northern Iberian Coast.}
     \label{fig:posterior_slopes_supp}
 \end{figure}
@@ -69,7 +72,7 @@ Model parameters were estimated by maximizing the marginal log-likelihood using 
 
 \begin{figure}
     \centering
-    \includegraphics[width=1\linewidth]{output/figures/supp/surveys_supp.png}
+    \includegraphics[width=1\linewidth]{../../output/figures/supp/surveys_supp.png}
     \caption{(a) Regions where multiple surveys were combined. (b) Overlap in survey months within each region.}
     \label{fig:survey}
 \end{figure}
@@ -86,7 +89,7 @@ We first modeled spatial and thermal responses with Gaussian likelihoods but pos
 \centering
     \caption{Expected log predictive density (ELPD) differences between models. ELPD differences are reported relative to the best-performing model, which is assigned a value of zero. Negative values indicate poorer expected out-of-sample predictive performance. SE denotes the standard error of the ELPD difference}
     \label{tab:elpd}
-\input{output/tables/supp/table_elpd}
+\input{../../output/tables/supp/table_elpd}
 \end{table}
 
 \subsection*{Hierarchical structure}
@@ -94,7 +97,7 @@ An alternative to our approach is to fit separate models for each species and re
 
 \begin{figure}[!htbp]
     \centering
-    \includegraphics[width=1\linewidth]{output/figures/supp/shrinkage_supp.png}
+    \includegraphics[width=1\linewidth]{../../output/figures/supp/shrinkage_supp.png}
     \caption{Comparison of hierarchical trend estimates versus separate linear trend fits. Posterior slopes from the full hierarchical model (red) are compared to slopes obtained from independent linear models (blue) fitted to a random subset of 50 species. Partial pooling in the hierarchical model shrinks extreme estimates toward the regional and global mean, producing more stable and biologically plausible trend estimates across species.}
     \label{fig:shrinkage_supp}
 \end{figure}
@@ -108,13 +111,13 @@ These priors were consistent with the empirical variability observed in the data
 \centering
     \caption{Prior distributions for model parameters. Fixed effects ($\beta$), group-level and standard deviations ($\sigma$), degrees of freedom ($\nu$) for the Student-t distribution, and the correlation matrix of region-level effects ($\mathbf{R}_r$). The source column indicates whether the prior was changed from the default.}
     \label{tab:priors_supp}
-\input{output/tables/supp/table_priors_supp}
+\input{../../output/tables/supp/table_priors_supp}
 \end{table}
 
 
 \begin{figure}[!htbp]
     \centering
-    \includegraphics[width=1\linewidth]{output/figures/supp/priors_supp.png}
+    \includegraphics[width=1\linewidth]{../../output/figures/supp/priors_supp.png}
     \caption{Prior specification and validation for temporal trend parameters.
 (a) Priors for global temporal slopes (decade effects) shown relative to literature-reported values (black dashed lines).
 (b) Priors for region-level slope variation compared with empirical distributions from the data (orange dashed lines).
@@ -127,14 +130,14 @@ Model fit and convergence were assessed using posterior predictive checks (PPCs)
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=1\linewidth]{output/figures/supp/pp_supp.png}
+    \includegraphics[width=1\linewidth]{../../output/figures/supp/pp_supp.png}
     \caption{Posterior predictive checks for the four outcomes. Observed values ($y$) are compared with simulated datasets drawn from the posterior predictive distribution ($y_{rep}$). Close alignment between the two indicates the model is capturing key features of the data generating process.}
     \label{fig:pp_supp}
 \end{figure}
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.7\linewidth]{output/figures/supp/rhat_supp.png}
+    \includegraphics[width=0.7\linewidth]{../../output/figures/supp/rhat_supp.png}
     \caption{Convergence diagnostics for the hierarchical trend model. Panels show $\hat{R}$, bulk effective sample size (ESS), and tail ESS for all parameters. Yellow regions indicate values outside recommended thresholds.}
     \label{fig:rhat_supp}
 \end{figure}
@@ -174,6 +177,6 @@ $\mathbf{R}_r$ & Region-specific correlations among responses & \texttt{cor(regi
 
 \dataset{species_shifts.csv}{Summary of estimated spatial and thermal shifts for demersal fish species across regions. Latitudinal (\textit{lat\_shift}) and longitudinal (\textit{lon\_shift}) shifts are expressed in km decade$^{-1}$, depth shifts (\textit{depth\_shift}) in m decade$^{-1}$, and thermal shifts (\textit{thermal\_shift}) in $^\circ$C decade$^{-1}$. Columns include: \textit{outcome} (type of shift), \textit{region} (study area), \textit{species} (scientific name), \textit{sp\_id} (species identifier), \textit{median\_slope} and \textit{mean\_slope} (rates of change), \textit{lower\_95} and \textit{upper\_95} (95\% credible interval bounds), \textit{significant} (whether the credible interval excludes zero), and \textit{direction\_label} (direction of change; e.g., Northing, Westing, Shallowing, Cooling, or Not significant). Marine regions: EBS = Eastern Bering Sea; GOA = Gulf of Alaska; BC = British Columbia; USWC = U.S. West Coast; NEUS--SS = Northeast U.S. and Scotian Shelf; GOM = Gulf of Mexico; BS = Barents Sea; NS = North Sea; CBS = Celtic--Biscay Shelf; BAL = Baltic Sea; NIC = Northern Iberian Coast.}
 
-\bibliography{tex/supp/references_supp}
+\bibliography{references_supp}
 
 \end{document}

@@ -1,0 +1,18 @@
+# LaTeX build artifacts
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+*.toc
+*.lof
+*.lot
+*.spl
+*.run.xml
+*.bcf
+# Compiled PDFs (keep the PNAS logo, which is a source asset)
+*.pdf
+!**/PNAS_stuff/PNAS_Logo.pdf

@@ -1,6 +1,9 @@
+% PNAS class, style and logo files live in PNAS_stuff/
+\makeatletter\def\input@path{{PNAS_stuff/}{./}}\makeatother
 \documentclass[9pt,twocolumn,twoside]{pnas-new}
+\graphicspath{{./}{PNAS_stuff/}}
 %DIF LATEXDIFF DIFFERENCE FILE
-%DIF DEL main_old.tex   Mon Aug 10 09:26:26 2026
+%DIF DEL main_old.tex   Sun Aug  9 23:59:46 2026
 %DIF ADD main.tex       Mon Aug 10 01:31:04 2026
 % Use the lineno option to display guide line numbers if required.
 
@@ -171,16 +174,16 @@ Using spatiotemporal }\DIFdelend \DIFaddbegin \DIFadd{).
 
 \begin{figure*}[h]
 \centering
-\DIFdelbeginFL %DIFDELCMD < \includegraphics[width=.9\textwidth]{output/figures/main/map.png}
+\DIFdelbeginFL %DIFDELCMD < \includegraphics[width=.9\textwidth]{../../output/figures/main/map.png}
 %DIFDELCMD < %%%
-\DIFdelendFL \DIFaddbeginFL \includegraphics[width=1\textwidth]{output/figures/main/map.png}
+\DIFdelendFL \DIFaddbeginFL \includegraphics[width=1\textwidth]{../../output/figures/main/map.png}
 \DIFaddendFL \caption{Overview of survey coverage and bottom temperature trends.
 The central map shows the regions included in the analysis, with colored polygons indicating region extents. The tile plot summarizes the number of hauls per region by year. Surrounding panels display regional trends in mean bottom temperature \DIFaddbeginFL \DIFaddFL{anomalies, expressed relative to the regional mean }\DIFaddendFL over \DIFdelbeginFL \DIFdelFL{time}\DIFdelendFL \DIFaddbeginFL \DIFaddFL{the study period}\DIFaddendFL ; bold values \DIFdelbeginFL \DIFdelFL{indicate }\DIFdelendFL \DIFaddbeginFL \DIFaddFL{give }\DIFaddendFL the estimated decadal rate of \DIFdelbeginFL \DIFdelFL{temperature }\DIFdelendFL change\DIFaddbeginFL \DIFaddFL{, and asterisks denote the significance of the corresponding linear trend ($^{*}p<0.05$, $^{**}p<0.01$, $^{***}p<0.001$)}\DIFaddendFL .}\label{fig:map}
 \end{figure*}
 
 \section*{Results}
 
-\input{output/values/bayesian_trend_analysis/global_slopes}
+\input{../../output/values/bayesian_trend_analysis/global_slopes}
 
 \subsection*{Limited net spatial shifts, but consistent \DIFdelbegin \DIFdel{niche }\DIFdelend warming \DIFaddbegin \DIFadd{of occupied temperatures}\DIFaddend }
 \DIFdelbegin %DIFDELCMD < 
@@ -190,9 +193,9 @@ The central map shows the regions included in the analysis, with colored polygon
 
 \begin{figure*}[t!]
 \centering
-\DIFdelbeginFL %DIFDELCMD < \includegraphics[width=.8\textwidth]{output/figures/main/posterior_slopes.png}
+\DIFdelbeginFL %DIFDELCMD < \includegraphics[width=.8\textwidth]{../../output/figures/main/posterior_slopes.png}
 %DIFDELCMD < %%%
-\DIFdelendFL \DIFaddbeginFL \includegraphics[width=1\textwidth]{output/figures/main/posterior_slopes.png}
+\DIFdelendFL \DIFaddbeginFL \includegraphics[width=1\textwidth]{../../output/figures/main/posterior_slopes.png}
 \DIFaddendFL \caption{\label{fig:posterior_slopes}Trends in distributional shifts of demersal fish species, shown from left to right for latitudinal \DIFaddbeginFL \DIFaddFL{centroid}\DIFaddendFL , longitudinal \DIFaddbeginFL \DIFaddFL{centroid}\DIFaddendFL , depth \DIFaddbeginFL \DIFaddFL{centroid}\DIFaddendFL , and \DIFdelbeginFL \DIFdelFL{thermal niche dimensions}\DIFdelendFL \DIFaddbeginFL \DIFaddFL{mean occupied bottom temperature}\DIFaddendFL . Points and horizontal lines indicate posterior medians and 95\% Bayesian credible intervals of decadal trends.
 (a) Global posterior slopes across all regions.
 (b) Region-specific posterior slopes.
@@ -204,11 +207,11 @@ Marine regions:  EBS = Eastern Bering Sea, GOA = Gulf of Alaska, BC = British Co
 \DIFdelbegin %DIFDELCMD < 
 
 %DIFDELCMD < %%%
-\DIFdelend \input{output/values/bayesian_trend_analysis/region_slopes}
+\DIFdelend \input{../../output/values/bayesian_trend_analysis/region_slopes}
 \DIFdelbegin %DIFDELCMD < 
 
 %DIFDELCMD < %%%
-\DIFdelend \input{output/values/rho_values}
+\DIFdelend \input{../../output/values/rho_values}
 
 At the regional scale, posterior slopes for spatial shifts varied in direction and were generally small and uncertain, offering limited evidence for consistent changes in mean latitude, longitude, or depth within regions (Fig.~\ref{fig:posterior_slopes}b). Among spatial dimensions, depth showed the most consistent---though still modest---signals, with slight increases in mean depth along the U.S. West Coast (USWC; \DepthUSWCMedian{}~m~decade$^{-1}$ \DepthUSWCCI{}) and the Northeast U.S. and Scotian Shelf (NEUS–SS; \DepthNEUSMedian{}~m~decade$^{-1}$ \DepthNEUSCI{}). Although regional slopes were weak, many species within some regions shifted in the same direction (Fig.~\ref{fig:prop_significant}b). In the Eastern Bering Sea (EBS), 64\% of species moved northward, with a similar proportion in the North Sea (NS; 60\%), whereas 75\% of species in the Baltic Sea (BAL) shifted southward. Depth shifts were also directionally consistent within some regions, with many species deepening in the Northeast U.S. and Scotian Shelf (39\%) and British Columbia (BC; 31\%), while relatively few shifted shallower. Depth shifts were absent or rare in other regions, with no \DIFdelbegin \DIFdel{significant changes detected }\DIFdelend \DIFaddbegin \DIFadd{supported changes }\DIFaddend in the Northern Iberian Coast (NIC) and only 3\% of species shifting depth in the Celtic–Biscay Shelf (CBS).
 
@@ -226,9 +229,9 @@ At the regional scale, posterior slopes for spatial shifts varied in direction a
 
 \begin{figure*}[t!]
 \centering
-\DIFdelbeginFL %DIFDELCMD < \includegraphics[width=.9\textwidth]{output/figures/main/prop_significant.png}
+\DIFdelbeginFL %DIFDELCMD < \includegraphics[width=.9\textwidth]{../../output/figures/main/prop_significant.png}
 %DIFDELCMD < %%%
-\DIFdelendFL \DIFaddbeginFL \includegraphics[width=1\textwidth]{output/figures/main/prop_significant.png}
+\DIFdelendFL \DIFaddbeginFL \includegraphics[width=1\textwidth]{../../output/figures/main/prop_significant.png}
 \DIFaddendFL \caption{\label{fig:prop_significant}Proportion of species with supported shifts over time.
 (a) Across-region summary. (b) Regional patterns by marine region.
 \DIFdelbeginFL \DIFdelFL{Shifts }\DIFdelendFL \DIFaddbeginFL \DIFaddFL{Results }\DIFaddendFL are shown for latitude, longitude, depth, and \DIFdelbeginFL \DIFdelFL{thermal niche}\DIFdelendFL \DIFaddbeginFL \DIFaddFL{mean occupied bottom temperature (occupied temp}\DIFaddendFL .\DIFaddbeginFL \DIFaddFL{). }\DIFaddendFL Bars indicate the proportion of \DIFdelbeginFL \DIFdelFL{species }\DIFdelendFL \DIFaddbeginFL \DIFaddFL{populations }\DIFaddendFL with supported \DIFdelbeginFL \DIFdelFL{shifts }\DIFdelendFL \DIFaddbeginFL \DIFaddFL{trends }\DIFaddendFL ($\geq 95\%$ of the posterior distribution excluding zero); remaining responses \DIFdelbeginFL \DIFdelFL{are non-significant }\DIFdelendFL \DIFaddbeginFL \DIFaddFL{were not supported }\DIFaddendFL (n.s.).
@@ -238,8 +241,8 @@ Marine regions: EBS = Eastern Bering Sea, GOA = Gulf of Alaska, BC = British Col
 
 
 \subsection*{\DIFdelbegin \DIFdel{Species show heterogeneous spatial }\DIFdelend \DIFaddbegin \DIFadd{Spatial }\DIFaddend shifts \DIFdelbegin \DIFdel{but niche }\DIFdelend \DIFaddbegin \DIFadd{did not scale with regional }\DIFaddend warming\DIFdelbegin \DIFdel{is widespread}\DIFdelend \DIFaddbegin \DIFadd{, but occupied temperatures did}\DIFaddend }
-\DIFaddbegin \input{output/values/bayesian_trend_analysis/warming_group_slopes}
-\input{output/values/bayesian_trend_analysis/temp_correlations}
+\DIFaddbegin \input{../../output/values/bayesian_trend_analysis/warming_group_slopes}
+\input{../../output/values/bayesian_trend_analysis/temp_correlations}
 \DIFaddend 
 
 \DIFaddbegin \DIFadd{Bottom temperature increased significantly in five of the eleven regions---British Columbia, the U.S. West Coast, the Northeast U.S. and Scotian Shelf, the North Sea and the Baltic Sea (Fig.~\ref{fig:map}). Populations in these regions experienced considerably greater warming of occupied temperature than those elsewhere (}\WarmGrpWarmThermalMedian{}\DIFadd{~$^\circ$C~decade$^{-1}$ }\WarmGrpWarmThermalCI{} \DIFadd{versus }\WarmGrpNonWarmThermalMedian{} \WarmGrpNonWarmThermalCI{}\DIFadd{; posterior difference }\WarmGrpDiffThermalMedian{} \WarmGrpDiffThermalCI{}\DIFadd{; Supplementary Fig.~S3), confirming that the two groups differed in the climate signal they experienced. Spatial trends, by contrast, were similar between groups. Latitudinal trends were }\WarmGrpWarmLatMedian{}\DIFadd{~km~decade$^{-1}$ }\WarmGrpWarmLatCI{} \DIFadd{in warming regions and }\WarmGrpNonWarmLatMedian{} \WarmGrpNonWarmLatCI{} \DIFadd{elsewhere (difference }\WarmGrpDiffLatMedian{} \WarmGrpDiffLatCI{}\DIFadd{), and longitudinal trends were }\WarmGrpWarmLonMedian{} \WarmGrpWarmLonCI{} \DIFadd{and }\WarmGrpNonWarmLonMedian{} \WarmGrpNonWarmLonCI{}\DIFadd{, respectively (difference }\WarmGrpDiffLonMedian{} \WarmGrpDiffLonCI{}\DIFadd{). Depth showed the only suggestive difference, with greater deepening in regions that warmed (}\WarmGrpWarmDepthMedian{}\DIFadd{~m~decade$^{-1}$ }\WarmGrpWarmDepthCI{} \DIFadd{versus }\WarmGrpNonWarmDepthMedian{} \WarmGrpNonWarmDepthCI{}\DIFadd{; difference }\WarmGrpDiffDepthMedian{} \WarmGrpDiffDepthCI{}\DIFadd{; Supplementary Fig.~S3c), although this interval also included zero.
@@ -249,10 +252,10 @@ Marine regions: EBS = Eastern Bering Sea, GOA = Gulf of Alaska, BC = British Col
 }
 
 \subsection*{\DIFadd{Populations moved substantially, but in opposing directions}}
-\DIFaddend \input{output/values/bayesian_trend_analysis/species_slopes}
-\input{output/values/bayesian_trend_analysis/prop_signif}
-\DIFaddbegin \input{output/values/bayesian_trend_analysis/species_magnitude}
-\DIFaddend \input{output/values/bayesian_trend_analysis/prop_signif_by_dir}
+\DIFaddend \input{../../output/values/bayesian_trend_analysis/species_slopes}
+\input{../../output/values/bayesian_trend_analysis/prop_signif}
+\DIFaddbegin \input{../../output/values/bayesian_trend_analysis/species_magnitude}
+\DIFaddend \input{../../output/values/bayesian_trend_analysis/prop_signif_by_dir}
 \DIFdelbegin %DIFDELCMD < 
 
 %DIFDELCMD < %%%
@@ -736,12 +739,15 @@ longitudinal centroid, depth niche or thermal niche (Table \ref{table:derived_qu
 . Each model ran with four Markov chain Monte Carlo (MCMC) chains of 4,000 iterations, discarding the first 2,000 as warm-up. The remaining 2,000 samples per chain (8,000 total post–warm-up draws) formed the posterior distribution. Consistency with convergence was confirmed by $\hat{R} < 1.01$, absence of divergent transitions, and effective sample sizes $> 400$ for all key parameters \mbox{%DIFAUXCMD
 \citep{vehtari_rank-normalization_2021}}\hskip0pt%DIFAUXCMD
 , as detailed in Supplementary Appendix B.
-}}
+}%DIFDELCMD < 
+
+%DIFDELCMD < %%%
+}
 %DIFAUXCMD
 %DIFDELCMD < 
 
 %DIFDELCMD < %%%
-\DIFdelend \showmatmethods{} %DIF >  Display the Materials and Methods section
+\DIFdelend \showmatmethods{} % Display the Materials and Methods section
 
 \dataavail{Fish biomass data were obtained from standardized, fishery-independent bottom-trawl surveys compiled by FISHGLOB (\url{https://fishglob.sites.ucsc.edu/}). Bottom temperature data were extracted from the Copernicus Marine Environment Monitoring Service (CMEMS) Global Ocean Physics Reanalysis (\url{https://data.marine.copernicus.eu/product/GLOBAL_MULTIYEAR_PHY_001_030/description}). Bathymetric data were sourced from GEBCO (\url{https://www.gebco.net}).
 All code used to perform the analyses and generate the figures is available at \url{https://github.com/federico-maioli/species_redistribution_tracking} and archived on Zenodo \url{https://doi.org/10.5281/zenodo.18761947}.}
@@ -762,5 +768,7 @@ All code used to perform the analyses and generate the figures is available at \
 
 % Bibliography
 \bibliography{references}
+
+\bibsplit[22]
 
 \end{document}
