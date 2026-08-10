@@ -1,8 +1,11 @@
-# Build from this folder. PNAS class/style/bst/logo files live in PNAS_stuff/,
-# so point kpathsea at it for LaTeX (.cls/.sty/.ldf) and BibTeX (.bst/.bib).
+# Build from this folder. The PNAS class, styles and logos live in PNAS_stuff/
+# and are found via \input@path / \graphicspath set in the .tex preamble.
+# pnas-new.bst must stay HERE, next to the .tex: BibTeX is a separate program
+# that only searches the current directory and BSTINPUTS, and does not honour
+# \input@path. The paths below are belt-and-braces for non-standard invocations.
 $do_cd = 1;
 $ENV{'TEXINPUTS'} = './PNAS_stuff//:' . ($ENV{'TEXINPUTS'} // '');
-$ENV{'BSTINPUTS'} = './PNAS_stuff//:' . ($ENV{'BSTINPUTS'} // '');
+$ENV{'BSTINPUTS'} = './:./PNAS_stuff//:' . ($ENV{'BSTINPUTS'} // '');
 $ENV{'BIBINPUTS'} = './:./PNAS_stuff//:' . ($ENV{'BIBINPUTS'} // '');
 $pdf_mode = 1;
-$bibtex_use = 2;
+$bibtex_use = 1.5;
