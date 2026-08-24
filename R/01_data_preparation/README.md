@@ -2,7 +2,7 @@
 
 The directory `01_data_preparation/` contains the scripts used to download and prepare all datasets required for the project. Because downloading the temperature data requires installation of the Copernicus Marine Toolbox and the preprocessing steps can be time-consuming, you may skip this directory if the processed files are already available in `data/processed/`.
 
-- `01_data_preparation/00_download_copernicus.R` downloads bottom temperature data from Copernicus.
+- `01_data_preparation/00_download_copernicus.r` downloads bottom temperature data from Copernicus.
 - `01_data_preparation/01_fishglob_data_prep.R` downloads and prepares the trawl survey data.
 - `01_data_preparation/02_create_prediction_grid.R` creates the spatiotemporal prediction grids and matches temperature data to the survey data.
 

@@ -88,7 +88,7 @@ for (i in seq_along(outcomes)) {
     ) +
     fill_gradients[[outcome_name]] +
     scale_x_continuous(limits = c(lims$xlim_low, lims$xlim_high), breaks = scales::pretty_breaks(n = 3)) +
-    scale_y_discrete(expand = c(0, 0.05)) +
+    scale_y_discrete(expand = expansion(add = c(0.12, 0.05))) +
     labs(title = outcome_title, x = NULL, y = NULL) +
     theme_minimal(base_size = 8, base_family = "sans") +
     theme(
@@ -158,9 +158,10 @@ for (i in seq_along(outcomes)) {
     ggplot(aes(x = slope, y = region, fill = slope)) +
     ggstats::geom_stripped_rows(aes(y = region), odd = "grey90", even = 'white' , alpha = 0.2) +
     geom_vline(xintercept = 0, linetype = "dashed", size = 0.3, alpha = .3) +
-    stat_pointinterval(aes(color = median_slope), .width = 0.95, point_size = 1.6, interval_size = 0.9, show.legend = FALSE) +
+    stat_pointinterval(aes(color = median_slope), .width = 0.95, point_size = 1.1, interval_size = 0.7, show.legend = FALSE) +
     col_gradients[[outcome_name]] +
     scale_x_continuous(breaks = scales::pretty_breaks(n = 4)) +
+    scale_y_discrete(expand = expansion(add = 0.4)) +
     coord_cartesian(xlim = c(lims$xlim_low, lims$xlim_high)) +
     labs(x = NULL, y = "Region") +
     theme_bw(base_size = 8, base_family = "sans") +
@@ -169,7 +170,7 @@ for (i in seq_along(outcomes)) {
           axis.ticks.length = unit(2, "pt"),
           axis.title = element_text(size = 8),
           axis.text = element_text(size = 7),
-          plot.margin = margin(5, 9, 5, 9),
+          plot.margin = margin(2, 9, 2, 9),
           axis.text.y = element_text(face = "bold", size = 7) )
   region_plot_list[[outcome_name]] <- p
 }
@@ -197,14 +198,14 @@ write_rds(summary_region_slopes, here('R/data/processed/bayesian_region_trends.r
 cowplot::plot_grid(
   p_global, p_region,
   align = "v", ncol = 1, axis = 'l',
-  rel_heights = c(1,2.3),
+  rel_heights = c(1,1.9),
   labels = c("a", "b"), label_size = 10, label_fontfamily = "sans"
 )
 
 ggsave(
   here('output/figures/main/posterior_slopes.png'),
   width = 178,
-  height = 140,
+  height = 95,
   dpi = 600,
   units = "mm",
   bg = "white"

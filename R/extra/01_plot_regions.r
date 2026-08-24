@@ -250,7 +250,8 @@ region_plots <- map(regions, function(r) {
     ) +
     theme_bw(base_size = 8, base_family = "sans") +
     labs(
-      title = unique(data_r$region_full),
+      # pad one-line titles so every panel keeps the same plotting height
+      title = str_replace(unique(data_r$region_full), "^(?![^\n]*\n)", "\n"),
       x = NULL,
       y = NULL
     ) +
