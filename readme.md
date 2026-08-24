@@ -1,7 +1,6 @@
 # Project Overview
 
-This repository contains all analyses and manuscript files for the study “Thermal niche warming is more con-
-sistent than range shifts in marine species under climate change”.
+This repository contains all analyses and manuscript files for the study “Marine fishes occupy warmer waters without net redistribution”.
 
 *Authors: Federico Maioli (fedma@aqua.dtu.dk), Daniël van Denderen, Max Lindmark, Marcel Montanyès, Eric J. Ward, Sean C. Anderson, Martin Lindegren*
 
