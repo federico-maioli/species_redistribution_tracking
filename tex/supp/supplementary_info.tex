@@ -1,12 +1,18 @@
 % PNAS class, style and logo files live in PNAS_stuff/
-\makeatletter\def\input@path{{PNAS_stuff/}{./}}\makeatother
+
+\makeatletter
+
+\def\input@path{{PNAS_stuff/}{./}}
+
+\makeatother
+
 \documentclass[9pt,twoside,lineno]{pnas-new}
+
 \graphicspath{{./}{PNAS_stuff/}}
-% Use the lineno option to display guide line numbers if required.
 
 \templatetype{pnassupportinginfo}
 
-\title{Thermal niche warming is more consistent than range shifts in marine species under climate change}
+\title{Marine fishes occupy warmer waters without net redistribution}
 \author{F. Maioli, P.\,D. van Denderen, M. Lindmark, M. Montanyès, E.\,J. Ward, S.\,C. Anderson and M. Lindegren}
 \correspondingauthor{Federico Maioli \\E-mail: fedma@aqua.dtu.dk}
 
@@ -25,8 +31,7 @@
 \begin{figure}[H]
 \centering
 \includegraphics[width=.8\textwidth]{../../output/figures/supp/static_vs_dynamic_niche.png}
-\caption{ Realized versus static thermal-niche warming across regions.
-Mean decadal trends in realized thermal niches are plotted against warming expected under static species distributions (biomass weights held constant through time) for each region. The dashed 1:1 line indicates equal realized and static warming. Points below the line indicate regions where redistribution reduced thermal exposure relative to a fixed distribution (net buffering), whereas points above the line indicate greater realized warming than expected under static distributions. Marine regions: EBS = Eastern Bering Sea, GOA = Gulf of Alaska, BC = British Columbia, USWC = U.S. West Coast, NEUS–SS = Northeast U.S. and Scotian Shelf, GOM = Gulf of Mexico, BS = Barents Sea, NS = North Sea, CBS = Celtic–Biscay Shelf, BAL = Baltic Sea, NIC = Northern Iberian Coast.}\label{fig:static_vs_dynamic_niche}
+\caption{ Observed versus static warming of occupied temperatures across regions. Decadal trends in mean occupied bottom temperature are plotted against the warming expected under static species distributions (biomass weights held constant through time) for each region. The dashed 1:1 line indicates equal observed and static warming. Points below the line indicate regions where redistribution reduced thermal exposure relative to a fixed distribution (net buffering), whereas points above the line indicate greater observed warming than expected under static distributions. Marine regions: EBS = Eastern Bering Sea, GOA = Gulf of Alaska, BC = British Columbia, USWC = U.S. West Coast, NEUS–SS = Northeast U.S. and Scotian Shelf, GOM = Gulf of Mexico, BS = Barents Sea, NS = North Sea, CBS = Celtic–Biscay Shelf, BAL = Baltic Sea, NIC = Northern Iberian Coast.}\label{fig:static_vs_dynamic_niche}
 \end{figure}
 
 \begin{figure}
@@ -177,6 +182,6 @@ $\mathbf{R}_r$ & Region-specific correlations among responses & \texttt{cor(regi
 
 \dataset{species_shifts.csv}{Summary of estimated spatial and thermal shifts for demersal fish species across regions. Latitudinal (\textit{lat\_shift}) and longitudinal (\textit{lon\_shift}) shifts are expressed in km decade$^{-1}$, depth shifts (\textit{depth\_shift}) in m decade$^{-1}$, and thermal shifts (\textit{thermal\_shift}) in $^\circ$C decade$^{-1}$. Columns include: \textit{outcome} (type of shift), \textit{region} (study area), \textit{species} (scientific name), \textit{sp\_id} (species identifier), \textit{median\_slope} and \textit{mean\_slope} (rates of change), \textit{lower\_95} and \textit{upper\_95} (95\% credible interval bounds), \textit{significant} (whether the credible interval excludes zero), and \textit{direction\_label} (direction of change; e.g., Northing, Westing, Shallowing, Cooling, or Not significant). Marine regions: EBS = Eastern Bering Sea; GOA = Gulf of Alaska; BC = British Columbia; USWC = U.S. West Coast; NEUS--SS = Northeast U.S. and Scotian Shelf; GOM = Gulf of Mexico; BS = Barents Sea; NS = North Sea; CBS = Celtic--Biscay Shelf; BAL = Baltic Sea; NIC = Northern Iberian Coast.}
 
-\bibliography{references_supp}
+\bibliography{tex/supp/references_supp}
 
 \end{document}
