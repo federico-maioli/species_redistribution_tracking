@@ -16,3 +16,7 @@
 # Compiled PDFs (keep the PNAS logo, which is a source asset)
 *.pdf
 !**/PNAS_stuff/PNAS_Logo.pdf
+
+# Generated submission package (rebuild with make_submission.sh)
+submission/
+make_submission.sh
