@@ -1,0 +1,124 @@
+\documentclass[11pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{parskip}
+
+% ----- Colors -----
+\definecolor{revcolor}{RGB}{0,0,0}        % reviewer text: black
+\definecolor{replycolor}{RGB}{0,90,180}   % author reply: blue
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    urlcolor=blue,
+    citecolor=blue
+}
+
+% ----- Reviewer comment block -----
+\newcommand{\reviewer}[1]{\par\medskip\noindent\textcolor{revcolor}{#1}\par}
+
+% ----- Author reply block (blue text, no box) -----
+\newenvironment{reply}
+{\par\smallskip\begingroup\color{replycolor}\noindent\textbf{R:}\ }
+{\endgroup\par\medskip}
+
+\title{Response to Reviewers}
+\author{Maioli et al.}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\noindent We thank the reviewer for the constructive comments.
+Below, reviewer comments are shown in \textcolor{revcolor}{black} and our responses in \textcolor{replycolor}{blue}.
+
+\reviewer{Review of "Marine fishes occupy warmer waters without net redistribution". This is the first time I have reviewed this manuscript and I would like to commend the authors on compiling and analyzing such a large and complex set of datasets. I understand the two components of the analysis and believe that the approach is technically sound. I am very supportive of bringing large datasets and sophisticated methods to bear on complex data sets. My main critique of the manuscript is about the motivation of the model for comparing distribution summary statistics among species and across regions. This is very much a one model to rule them all approach and I worry that in the quest to make a complicated model, the authors are focusing on the shared averages when the interesting things are in the variation among species. That said, I think this work is worthy of publication. Please take the comments below as suggestions for improvement}
+
+\begin{reply}
+We thank the reviewer for their positive assessment. Please find our point-by-point responses below.
+\end{reply}
+
+
+\reviewer{To construct such a complicated hierarchical model that shares information among species within regions and, to some extent, across regions (via the first and second term in equation 2, if I am not mistaken), is a significant feat. It will, as the authors note (e.g. in appendix B lines 64-71) shrink the estimates toward each other. They present this result as a boon to the analysis. I guess my main question is about motivation. Why would one want pull individual species toward a shared slope in the first place? The estimates will be more stable (as noted), but to my mind that is not necessarily a good thing, because that shared stability arises by borrowing support across species. Wouldn't we want some species to be able to move north quickly and others to move south quickly? As an example, perhaps a single species was, say, estimated to be moving quickly north. In this hierarchical structure, it's movement rate will be dragged back toward the species-region mean (it would be estimated to be moving north less quickly). And large outlier species should be dragged back more toward the mean than species that were near the mean movement rate (that is the nature of shrinkage). Are you sure those large movers are biologically unreasonable? What evidence do you use to conclude that?}
+
+\begin{reply}
+
+We argue the hierarchical structure follows from the data rather than from a preference for complexity. Observations cluster into populations within regions, and the alternatives to partial pooling are not neutral: complete pooling assumes every species shares one slope, while fitting each species independently assumes that knowing how every other species in a region behaved tells you nothing about any one of them. Both are assumptions. Partial pooling sits between them and lets the data decide where.
+
+Where it sits is estimated rather than imposed. The among-population (and within region) standard deviation is a parameter of the model, so if populations genuinely differ a great deal the model estimates a large spread and shrinks correspondingly little. In other words: we do not assume species respond alike and then enforce it, the degree of pooling is itself estimated.
+
+Shrinkage here acts as adaptive regularization...
+
+.... the fastest shift we estimate, \textit{Molva molva} in the Celtic--Biscay Shelf, is 196.9~km~decade$^{-1}$ [95\% CI: 142.2, 243.0], roughly 150 times the cross-regional slope of 1.33~km~decade$^{-1}$, and several populations are estimated to move at rates of this order in both directions. .. soemthing about the Student-\textit{t} likelihood...  We make no claim that large movers are biologically unreasonable, and the model does not treat them as such.
+
+\end{reply}
+
+\reviewer{For this analysis to make sense, I think you really have to believe that there are shared rates of change for the 4 measures of distribution across all of the species and that the shared rates mean something biologically. For me, the interest is in the variation among taxa not really the mean among taxa.}
+
+\begin{reply}
+We would describe the role of the shared term differently. It is not an assumption that species respond alike, but an estimate of what they have in common. Populations within a region experience the same regional warming (modulated by the depths and habitats they occupy), they are bounded by the same coastlines and bathymetry, with similar environmental gradients available to them. They are also observed through the same survey, with the same gear, footprint and sampling design. Some component of their distributional change is therefore shared by construction. 
+
+The spread of that variation is itself a parameter of the model, estimated alongside its mean, and our central result concerns both. The mean is near zero while the spread is large: populations shifted at a median absolute rate of 13.3~km~decade$^{-1}$ in latitude, against a cross-regional slope of 1.33~km~decade$^{-1}$. We do not assume that a shared rate exists and then impose it, we estimate one, and find it small relative to the differences among populations.
+
+\end{reply}
+
+\reviewer{Each species distribution is estimated independently, which seems fine, but by doing this, the authors are saying the observations contributing to the metrics of distribution (centroids and such) can be estimated independently across species. So then the distributions are independent, but the summary statistics derived from these distributions are shared among species in a linear model with coefficients drawn from multivariate normal distributions? I'm not advocating for making the authors do huge joint species distribution models, but rather to push the authors to motivate why this complicated hierarchical model is something that advances our understanding of range shifts. As presented, the model is implied to be obviously better. I don't think that conclusion is all that obvious. More complex, for sure, but not obviously better.
+}
+
+\begin{reply}
+As poitned out by the reviewer the two stages do different jobs. The first asks where a species is, which depends on that species' own data. The second asks how the trends in those summaries relate to each other. Treating trends as draws from a common distribution says something about the trends, not about the distributions they come from, so the two are not in conflict.
+
+We expect trends to share structure for concrete reasons. Populations in a region feel the same regional warming, differing mainly through the depths and habitats they use. They are constrained by the same coastlines and bathymetry, and can only move along the gradients that region offers. They are sampled by the same survey, with the same gear and design. Some part of their change is therefore common to all of them. Without a region-level term, that common part is attributed to each species separately and read as biology.
+
+What does the structure buy? Three things. It carries the uncertainty of each annual value into the trend estimates, so noisy populations do not count as though they were precise. It separates real differences among populations from estimation error. And it estimates how the four responses covary within a region, which is how we find that in some regions populations moving poleward or deeper warmed less---something separate fits cannot show.
+
+Those correlations also measure the geometric dependence the reviewer raises below. Where bathymetry ties depth to longitude, as in British Columbia and the U.S. West Coast, the correlation quantifies it rather than leaving it hidden. 
+\end{reply}
+
+
+\reviewer{I'm also interested in if the orientation of some of these survey areas. For example, in BC and the USWC, changes in depth are closely related to changes in longitude, simply because of the bathymetry. In the GOA, changes in latitude to some extent mostly mirror changes in depth. Other regions have similar confounding problems. Do you think that these confounding issues affect your ability to detect range shift estimates? This is sort of alluded to around line 235, I see.
+}
+
+\begin{reply}
+Yes, and this is actually one of the reasons why the model estimates correlations among responses separately for each region. Where bathymetry and coastline orientation constrain the possible directions of movement, a shift along one axis can be linked to a shift along another. The region-specific correlation matrix captures these relationships explicitly rather than leaving them implicit. In fact, the patterns described by the reviewer are already visible in our estimates: latitudinal and longitudinal shifts are negatively correlated in British Columbia and the U.S. West Coast, consistent with coast-parallel movement, while latitudinal and depth shifts are positively correlated in the North Sea.
+
+We would distinguish between two things here. These correlations do not prevent us from detecting movement along a given axis, since all four metrics are derived from the same predicted biomass field. What they do affect is how we interpret that movement. For example, in a region where moving offshore also means moving into deeper waters, a population shifting offshore will register as moving deeper as well, and our estimates cannot tell us which of the two is the primary driver. This is partly why we report the axes separately rather than combining them, and why we avoid making claims about trade-offs or independent responses across different dimensions of movement.
+
+We have expanded the passage at line 235 to state this explicitly (lines XX--XX).
+\end{reply}
+
+
+\reviewer{Some specific line comments.
+Figure 2. I don't much like the colors in figure 2. I find them fairly distracting and not really providing any notable additional information.}
+
+\begin{reply}
+We take the point about the colour intensity, though we would prefer to keep the current scheme. The hues identify the four dimensions and are shared with Fig.~3, so a reader moving between the figures can match dimensions at a glance. 
+\end{reply}
+
+\reviewer{Fig. S3. If we are being Bayesian and propagating error, shouldn't all of the points on the rightside have credible intervals associated with them? Also, p values are about as non-Bayesian as it gets. If you are going to trumpet your statistical methods as important, perhaps stick to your statistical gun of choice.}
+
+\begin{reply}
+Grrr
+\end{reply}
+    
+
+\reviewer{Fig. S4 is unreadable. Suggest breaking it into pieces so it is ledgible. I wanted to look at some of the species and was stymied.}
+
+\begin{reply}
+    This is now done. Also note we provide a csv file in the repo with all the estimates.. add link
+\end{reply}
+
+\reviewer{Discussion: I appreciate the emphasis on warming and associated description. I would think that it should be noted that there are several other processes involved here that should be acknowledged as affecting these estimates. All of these surveys are fisheries survey for abundant taxa harvested in large numbers by commercial fleets. The high biomass species (the species selected for SDMs here) are the ones that have high harvest rates and harvest rates are widely considered to be the main driver of fish abundance. There are any number of papers showing changes in distribution as a result of fisheries.... so I'd suggest more than a glancing reference (about line 622) is likely justified.}
+
+\begin{reply}
+    I remember George's paper is about disentangling fishing and climate in the North Sea.. 
+\end{reply}
+
+
+\end{document}
