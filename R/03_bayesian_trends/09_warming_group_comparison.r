@@ -130,11 +130,6 @@ for (i in seq_len(nrow(summary_tbl))) {
 
 # regional temperature-trend correlations --------------------------------
 
-# posterior-median regional slopes for each outcome (in per-decade units)
-region_median_slopes <- region_slopes %>%
-  group_by(outcome, region) %>%
-  summarise(median_slope = median(slope), .groups = "drop")
-
 # regional decadal temperature slopes (from prediction grid)
 grid <- read_rds(here('R/data/processed/prediction_grid.rds'))
 
@@ -157,19 +152,34 @@ temp_summary <- grid %>%
   group_by(region_short) %>%
   summarise(temp_slope = coef(lm(mean_temp ~ year))[2] * 10, .groups = "drop")
 
-# join per-outcome slopes with temperature slopes
-cor_data <- region_median_slopes %>%
+# join per-draw regional slopes with temperature slopes
+cor_data <- region_slopes %>%
   left_join(temp_summary, by = c("region" = "region_short")) %>%
   mutate(outcome = factor(outcome, levels = c("lat", "lon", "depth", "thermal")))
 
-cor_results <- cor_data %>%
+# one Pearson r (and OLS line) per posterior draw, so uncertainty in the
+# regional slopes propagates into the correlation. temperature trends are
+# treated as fixed (point estimates from lm above)
+cor_draws <- cor_data %>%
+  group_by(outcome, .draw) %>%
+  summarise(
+    r         = cor(temp_slope, slope),
+    beta      = r * sd(slope) / sd(temp_slope),
+    intercept = mean(slope) - beta * mean(temp_slope),
+    .groups   = "drop"
+  )
+
+# posterior summary of r; pd = posterior probability that r has the sign of its median
+cor_results <- cor_draws %>%
   group_by(outcome) %>%
   summarise(
-    r       = cor.test(temp_slope, median_slope)$estimate |> unname(),
-    p_value = cor.test(temp_slope, median_slope)$p.value,
-    ci_low  = cor.test(temp_slope, median_slope)$conf.int[1],
-    ci_high = cor.test(temp_slope, median_slope)$conf.int[2],
-    .groups = "drop"
+    ci_low    = quantile(r, 0.025),
+    ci_high   = quantile(r, 0.975),
+    pd        = mean(sign(r) == sign(median(r))),
+    beta      = median(beta),
+    intercept = median(intercept),
+    r         = median(r),
+    .groups   = "drop"
   )
 
 print(cor_results)
@@ -187,13 +197,15 @@ write_tex_cor <- function(x, macro, append = TRUE) {
 for (i in seq_len(nrow(cor_results))) {
   oc      <- tools::toTitleCase(as.character(cor_results$outcome[i]))
   r_str   <- mround(cor_results$r[i], 2)
-  is_tiny <- cor_results$p_value[i] < 0.001
-  p_str   <- if (is_tiny) "$<$0.001" else mround(cor_results$p_value[i], 2)
-  p_math  <- if (is_tiny) "< 0.001" else paste0("= ", mround(cor_results$p_value[i], 2))
+  dir     <- if (cor_results$r[i] >= 0) ">" else "<"
+  is_high <- cor_results$pd[i] > 0.99
+  pd_str  <- if (is_high) "$>$0.99" else mround(cor_results$pd[i], 2)
+  pd_math <- if (is_high) "> 0.99" else paste0("= ", mround(cor_results$pd[i], 2))
 
   write_tex_cor(r_str, paste0("Cor", oc, "R"))
-  write_tex_cor(p_str, paste0("Cor", oc, "P"))
-  write_tex_cor(paste0("$r = ", r_str, "$, $p ", p_math, "$"), paste0("Cor", oc))
+  write_tex_cor(pd_str, paste0("Cor", oc, "PD"))
+  write_tex_cor(paste0("$r = ", r_str, "$, $\\Pr(r ", dir, " 0) ", pd_math, "$"),
+                paste0("Cor", oc))
   write_tex_cor(
     paste0("[95\\% CI: ",
            mround(cor_results$ci_low[i], 2), ", ",
@@ -283,14 +295,26 @@ warming_lookup <- tibble(
                     rep("non_warming", length(non_warming_regions)))
 )
 
+# posterior median and 95% CrI of each regional slope
 cor_plot_data <- cor_data %>%
+  group_by(outcome, region, temp_slope) %>%
+  summarise(
+    median_slope = median(slope),
+    lower_95     = quantile(slope, 0.025),
+    upper_95     = quantile(slope, 0.975),
+    .groups      = "drop"
+  ) %>%
   left_join(warming_lookup, by = "region")
+
+# random subset of per-draw regression lines to show uncertainty
+set.seed(1)
+cor_lines <- cor_draws %>%
+  filter(.draw %in% sample(unique(.draw), 100))
 
 cor_ann <- cor_results %>%
   mutate(
-    label = ifelse(p_value < 0.001,
-                   paste0("italic(r) == ", mround(r, 2), " * ',' ~ italic(p) < 0.001"),
-                   paste0("italic(r) == ", mround(r, 2), " * ',' ~ italic(p) == ", mround(p_value, 2)))
+    label = paste0("italic(r) == '", mround(r, 2), " [", mround(ci_low, 2),
+                   ", ", mround(ci_high, 2), "]'")
   )
 
 cor_y_titles <- c(
@@ -307,17 +331,26 @@ make_cor_panel <- function(oc) {
   ggplot(d, aes(x = temp_slope, y = median_slope)) +
     geom_hline(yintercept = 0, linetype = "dashed",
                color = "grey60", linewidth = 0.3) +
-    geom_smooth(method = "lm", se = FALSE,
-                color = "grey40", linewidth = 0.4) +
+    geom_abline(data = filter(cor_lines, outcome == oc),
+                aes(intercept = intercept, slope = beta),
+                color = "grey40", linewidth = 0.2, alpha = 0.08) +
+    geom_abline(intercept = ann_row$intercept, slope = ann_row$beta,
+                color = "grey20", linewidth = 0.4) +
+    geom_linerange(aes(ymin = lower_95, ymax = upper_95),
+                   color = "grey30", linewidth = 0.3) +
+    # white label background keeps names readable over error bars and lines;
+    # points drawn after labels so they are never hidden
+    ggrepel::geom_label_repel(aes(label = region),
+                              size = 7 / .pt, family = "sans",
+                              color = "grey10", fill = alpha("white", 0.85),
+                              label.size = NA, label.padding = unit(0.1, "lines"),
+                              segment.size = 0.2, segment.color = "grey50",
+                              min.segment.length = 0, box.padding = 0.5,
+                              point.padding = 0.3, force = 2,
+                              seed = 1, max.overlaps = Inf,
+                              show.legend = FALSE) +
     geom_point(aes(fill = warming_group),
                size = 1.8, shape = 21, colour = "black", stroke = 0.3) +
-    ggrepel::geom_text_repel(aes(label = region),
-                             size = 7 / .pt, family = "sans",
-                             color = "grey20",
-                             segment.size = 0.2, segment.color = "grey60",
-                             min.segment.length = 0.1, box.padding = 0.25,
-                             seed = 1, max.overlaps = Inf,
-                             show.legend = FALSE) +
     annotate("text", x = Inf, y = -Inf, hjust = 1.05, vjust = -0.4,
              label = ann_row$label, parse = TRUE,
              size = 7 / .pt, family = "sans", color = "grey20") +
