@@ -293,87 +293,94 @@ xlims_species <- species_slopes_long %>%
   mutate(max_abs = ifelse(max_abs == 0, 0.01, max_abs),
          xlim_low = -max_abs, xlim_high = max_abs)
 
-species_plot_list_supp <- list()
+# split into two figures by region so species labels stay legible;
+# x limits are shared across both parts
+plot_species_supp <- function(regions_keep, file) {
+  species_plot_list_supp <- list()
 
-for (i in seq_along(outcomes)) {
-  outcome_name <- outcomes[i]
-  outcome_title <- outcomes_pretty[i]
-  lims <- xlims_species %>% filter(outcome == outcome_name)
-  
-  species_data <- species_slopes_long %>%
-    filter(outcome == outcome_name) %>% #%in% c('NS')
-    mutate(
-      # extract species name from region_species
-      species = region_species %>%
-        str_remove("^[^_]+_") %>%
-        str_replace_all("_", " "),
-      # create parsed label: number + italic species
-      species_label = paste0("~italic('", species, "')")
-    ) %>%
-    group_by(region, region_species) %>%
-    mutate(median_slope = median(full_slope)) %>%
-    ungroup()
-  
-  p <- species_data %>%
-    ggplot(aes(x = full_slope, y = sp_id)) +  # keep order by sp_id
-    ggstats::geom_stripped_rows(aes(y = sp_id),
-                                odd = "white", even = "grey90", alpha = 0.2) +
-    geom_vline(xintercept = 0, linetype = "dashed",
-               color = "grey40", linewidth = 0.3) +
-    stat_pointinterval(aes(color = median_slope),
-                       .width = 0.95, point_size = 0.1, interval_size = 0.1,
-                       show.legend = FALSE) +
-    col_gradients[[outcome_name]] +
-    # map labels manually while keeping order
-    scale_y_discrete(
-      labels = function(x) parse(text = species_data$species_label[match(x, species_data$sp_id)])
-    ) +
-    scale_x_continuous(breaks = scales::pretty_breaks(n = 5)) +
-    coord_cartesian(xlim = c(lims$xlim_low, lims$xlim_high)) +
-    facet_grid(region ~ ., scales = "free", space = "free", switch = "y") +
-    labs(title = outcome_title, x = "Posterior estimate", y = "Species") +
-    theme_minimal(base_size = 8, base_family = "sans") +
-    theme(
-      strip.placement = "outside",
-      plot.title = ggtext::element_markdown(hjust = 0.5, size = 7, family = "sans"),
-      strip.text.y.left = element_text(angle = 0, size = 6),
-      axis.text.y = element_text(size = 3),
-      axis.text.x = element_text(size = 7),
-      axis.title  = element_text(size = 8),
-      panel.spacing.y = unit(0.1, "cm"),
-      strip.background = element_rect(fill = "white", color = NA),
-      plot.background = element_rect(fill = "white", color = NA),
-      panel.background = element_rect(fill = "white", color = NA),
-      panel.grid = element_blank(),
-      axis.ticks = element_line(color = "black", size = 0.3),
-      axis.ticks.length = unit(2, "pt"),
-      plot.margin = margin(2, 5, 2, 5)
-    )
-  
-  if (i > 1)
-    p <- p + theme(strip.text.y.left = element_blank(),
-                   strip.background = element_blank())
-  
-  species_plot_list_supp[[outcome_name]] <- p
+  for (i in seq_along(outcomes)) {
+    outcome_name <- outcomes[i]
+    outcome_title <- outcomes_pretty[i]
+    lims <- xlims_species %>% filter(outcome == outcome_name)
+    
+    species_data <- species_slopes_long %>%
+      filter(outcome == outcome_name, region %in% regions_keep) %>%
+      mutate(
+        # extract species name from region_species
+        species = region_species %>%
+          str_remove("^[^_]+_") %>%
+          str_replace_all("_", " "),
+        # create parsed label: number + italic species
+        species_label = paste0("~italic('", species, "')")
+      ) %>%
+      group_by(region, region_species) %>%
+      mutate(median_slope = median(full_slope)) %>%
+      ungroup()
+    
+    p <- species_data %>%
+      ggplot(aes(x = full_slope, y = sp_id)) +  # keep order by sp_id
+      ggstats::geom_stripped_rows(aes(y = sp_id),
+                                  odd = "white", even = "grey90", alpha = 0.2) +
+      geom_vline(xintercept = 0, linetype = "dashed",
+                 color = "grey40", linewidth = 0.3) +
+      stat_pointinterval(aes(color = median_slope),
+                         .width = 0.95, point_size = 0.1, interval_size = 0.1,
+                         show.legend = FALSE) +
+      col_gradients[[outcome_name]] +
+      # map labels manually while keeping order
+      scale_y_discrete(
+        labels = function(x) parse(text = species_data$species_label[match(x, species_data$sp_id)])
+      ) +
+      scale_x_continuous(breaks = scales::pretty_breaks(n = 5)) +
+      coord_cartesian(xlim = c(lims$xlim_low, lims$xlim_high)) +
+      facet_grid(region ~ ., scales = "free", space = "free", switch = "y") +
+      labs(title = outcome_title, x = "Posterior estimate", y = "Species") +
+      theme_minimal(base_size = 8, base_family = "sans") +
+      theme(
+        strip.placement = "outside",
+        plot.title = ggtext::element_markdown(hjust = 0.5, size = 7, family = "sans"),
+        strip.text.y.left = element_text(angle = 0, size = 6),
+        axis.text.y = element_text(size = 5),
+        axis.text.x = element_text(size = 7),
+        axis.title  = element_text(size = 8),
+        panel.spacing.y = unit(0.1, "cm"),
+        strip.background = element_rect(fill = "white", color = NA),
+        plot.background = element_rect(fill = "white", color = NA),
+        panel.background = element_rect(fill = "white", color = NA),
+        panel.grid = element_blank(),
+        axis.ticks = element_line(color = "black", size = 0.3),
+        axis.ticks.length = unit(2, "pt"),
+        plot.margin = margin(2, 5, 2, 5)
+      )
+    
+    if (i > 1)
+      p <- p + theme(strip.text.y.left = element_blank(),
+                     strip.background = element_blank())
+    
+    species_plot_list_supp[[outcome_name]] <- p
+  }
+
+  p_species_supp <- wrap_plots(species_plot_list_supp, nrow = 1) +
+    plot_layout(axis_titles = "collect", axes = "collect_y") &
+    theme(panel.border = element_blank(),
+          panel.background = element_rect(fill = "white", colour = NA),
+          plot.background = element_rect(fill = "white", colour = NA))
+
+  ggsave(
+    file,
+    plot = p_species_supp,
+    width = 178,
+    height = 240,
+    dpi = 600,
+    units = "mm",
+    bg = "white"
+  )
 }
 
-p_species_supp <- wrap_plots(species_plot_list_supp, nrow = 1) +
-  plot_layout(axis_titles = "collect", axes = "collect_y") &
-  theme(panel.border = element_blank(),
-        panel.background = element_rect(fill = "white", colour = NA),
-        plot.background = element_rect(fill = "white", colour = NA))
-
-p_species_supp
-
-# save
-ggsave(
-  here('output/figures/supp/posterior_slopes_supp.png'),
-  width = 178,
-  height = 240,
-  dpi = 600,
-  units = "mm",
-  bg = "white"
-)
+plot_species_supp(c('EBS', 'GOA', 'BC', 'USWC', 'NEUS-SS'),
+                  here('output/figures/supp/posterior_slopes_supp1.png'))
+plot_species_supp(c('GOM', 'BS', 'NS', 'CBS', 'BAL', 'NIC'),
+                  here('output/figures/supp/posterior_slopes_supp2.png'))
 
 
 # one example for presentation --------------------------------------------
