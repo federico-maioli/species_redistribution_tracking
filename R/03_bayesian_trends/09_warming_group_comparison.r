@@ -197,15 +197,9 @@ write_tex_cor <- function(x, macro, append = TRUE) {
 for (i in seq_len(nrow(cor_results))) {
   oc      <- tools::toTitleCase(as.character(cor_results$outcome[i]))
   r_str   <- mround(cor_results$r[i], 2)
-  dir     <- if (cor_results$r[i] >= 0) ">" else "<"
-  is_high <- cor_results$pd[i] > 0.99
-  pd_str  <- if (is_high) "$>$0.99" else mround(cor_results$pd[i], 2)
-  pd_math <- if (is_high) "> 0.99" else paste0("= ", mround(cor_results$pd[i], 2))
 
   write_tex_cor(r_str, paste0("Cor", oc, "R"))
-  write_tex_cor(pd_str, paste0("Cor", oc, "PD"))
-  write_tex_cor(paste0("$r = ", r_str, "$, $\\Pr(r ", dir, " 0) ", pd_math, "$"),
-                paste0("Cor", oc))
+  write_tex_cor(paste0("$r = ", r_str, "$"), paste0("Cor", oc))
   write_tex_cor(
     paste0("[95\\% CI: ",
            mround(cor_results$ci_low[i], 2), ", ",
